@@ -4,7 +4,7 @@
 
 Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적인 용법을 배우고, 스위프트에서의 활용 방안을 제안합니다.
 
-<p align="center"><img width=300 src="http://image.yes24.com/goods/65551284/800x0"></p>
+<p align="center"><img width=400 src="http://image.yes24.com/goods/65551284/800x0"></p>
 
 ## Contents
 
