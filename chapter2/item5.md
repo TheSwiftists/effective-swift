@@ -198,27 +198,3 @@ class DataManager {
 
 }
 ```
-
-### 참고
-
-본문에 나온 Java에 Supplier<T> : 함수적 인터페이스. 매개변수를 받지 않고 단순히 무언가를 반환함. 
-
-~~~~java
-package java.util.function;
-
-@FunctionalInterface
-public interface Supplier<T> {
-  T get();
-}
-
-// Example
-import java.util.function.Supplier;
-
-public class Java8SupplierExample {
-  public static void main(String[] args) {
-    
-    Supplier<String> supplier = () -> "result: Arpit";
-    System.out.println(supplier.get()); // result: Arpit 
-  }
-}
-~~~~
