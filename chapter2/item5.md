@@ -158,43 +158,44 @@ class SpellChecker {
    vendingMachine.setupBeverage(Pepsi())
    ```
 
-### iOS 예시
+### iOS 활용 예시
 
 ```swift
 // Property Injection 
 import UIKit
 
-class ViewController: UIViewController {
-
-    lazy var requestManager: RequestManager? = RequestManager()
-
+protocol UserManagable {
+  func getUser(with userID: Int)
 }
 
-class newViewController {
-
-  let viewController = ViewController()
-  viewController.requestManager = RequestManager()
-
- }
-
-// Using Protocol
-protocol Serializer {
-
-    func serialize(data: AnyObject) -> NSData?
-
+protocol ImageManagable {
+  func getImages(of userID: Int) -> [UIImage]
 }
 
-class RequestSerializer: Serializer {
+class ImageNetworkManager: ImageManagable {
+  private let userManager: UserManagable
 
-    func serialize(data: AnyObject) -> NSData? {
-        ...
-    }
+  init(userManager: UserManagable) {
+    self.userManager = userManager
+  }
 
+  func getImages(of userID: Int) -> [UIImage] {
+    let user = userManager.getUser(with: userID)
+    let images = { ... }
+    return images
+  }  
 }
 
-class DataManager {
+class PhotoGalleryController {
+  private let imageManager: ImageManagable
 
-    var serializer: Serializer? = RequestSerializer()
+  init(imageManager: ImageManagable) {
+    self.imageManager = imageManager
+  }
 
+  func getImagesSortedInRecentOrder(of userID: Int) -> [UIImage] {
+    let images = imageManager.getImages(of: userID)
+    return images.sorted { $0.timestamp > $1.timestamp }
+  }
 }
 ```
