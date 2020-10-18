@@ -88,7 +88,7 @@ class SpellChecker {
 
 ### 의존성 주입 방법
 
-1. Constructor Injection 
+1. Initializer injection(Constructor Injection)
 
    ```swift
    protocol Drinkable {
