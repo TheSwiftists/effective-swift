@@ -160,8 +160,53 @@ class SpellChecker {
 
 ### iOS 활용 예시
 
+1. Property Injection 
+  * Segue, Storyboard를 이용한 ViewController 간 데이터 전달
+  
 ```swift
-// Property Injection 
+import UIKit
+
+class ViewController: UIViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()        
+    }
+
+    // 의존성 주입 예1
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueto" {
+            let destinationVC = segue.destination as! MainViewViewController
+            destinationVC.passedData = "Comes from the inital view controller"
+            destinationVC.delegate = self
+        }
+    }
+
+    // 의존성 주입 예2
+    @IBAction func instantiateButton(_ sender: UIButton) {       
+        let destinationVC = self.storyboard!.instantiateViewController(withIdentifier: "instantiate") as! MainViewViewController
+        destinationVC.passedData = "Comes from the inital view controller"
+        destinationVC.delegate = self
+        self.navigationController!.pushViewController(destinationVC, animated: true)
+    }    
+
+    // 나머지 구현부 생략
+}
+
+class MainViewViewController: UIViewController {
+    
+    var passedData : String?
+    var delegate : ViewController?
+
+    // 나머지 구현부 생략
+    }
+}
+
+
+```
+2. Initializer injection
+  * 네트워크에 이미지 요청
+
+```swift
 import UIKit
 
 protocol UserManagable {
@@ -175,6 +220,7 @@ protocol ImageManagable {
 class ImageNetworkManager: ImageManagable {
   private let userManager: UserManagable
 
+  // 의존성 주입
   init(userManager: UserManagable) {
     self.userManager = userManager
   }
@@ -189,6 +235,7 @@ class ImageNetworkManager: ImageManagable {
 class PhotoGalleryController {
   private let imageManager: ImageManagable
 
+  // 의존성 주입
   init(imageManager: ImageManagable) {
     self.imageManager = imageManager
   }
@@ -199,6 +246,45 @@ class PhotoGalleryController {
   }
 }
 ```
+  * Nib 등록과 ViewController 초기화(Initializer)
+```swift
+import UIKit
+
+class ViewController: UIViewController {
+
+    @IBAction func injectionButton(_ sender: UIButton) {
+        let destinationVC = SomeViewController(display: "test")
+        self.navigationController!.pushViewController(destinationVC, animated: false)
+    }
+
+    // 나머지 구현부 생략
+}  
+
+class SomeViewController: UIViewController {
+
+    var passedData : String
+    
+    @IBOutlet weak var instatiateLabel: UILabel!
+    
+    init(display: String) {
+        self.passedData = display
+        super.init(nibName: "InitializationView", bundle: nil) 
+        // Xib 파일 이름: InitializationView
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        instatiateLabel.text = passedData
+    }
+
+}
+
+```
+
 
 ### 핵심 정리
 클래스가 내부적으로 하나 이상의 자원에 의존하고, 그 자원이 클래스 동작에 영향을 준다면 싱글턴과 정적 유틸리티 클래스는 사용하지 않는 것이 좋다. 이 자원들을 클래스가 직접 만들게 해서도 안된다. 대신 필요한 자원을(혹은 그 자원을 만들어주는 팩터리를) 생성자에 (혹은 정적 팩터리나 빌더에) 넘겨주자. 의존 객체 주입이라 하는 이 기법은 클래스의 유연성, 재사용성, 테스트 용이성을 개선해준다.
