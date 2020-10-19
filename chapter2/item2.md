@@ -129,13 +129,15 @@ NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8)
 		.calories(100).sodium(35).carbohydrate(27).build();
 ```
 
-쓰고 읽기 쉽다. 유연하다.
+위 예시 코드처럼 쓰고 읽기 쉽다.
+
+가변인수 매개변수를 여러 개 사용할 수도 있게 되며, 빌더 하나로 다양한 객체를 만들 수도 있어 유연하다. 빌더에서 일련번호를 채우는 등 추가 기능을 구현할 수도 있다.
 
 ### 빌더 패턴의 단점
 
 객체 생성 전에 빌더부터 만들어야 해서 생성 비용이 클 수 있다.
 
-코드가 장황해서 매개변수 4개 정도 이상일 때 적합하다.
+코드가 비교적 장황해서 매개변수 4개 정도 이상일 때 적합하다.
 
 ### 기본 빌더 패턴 in 스위프트
 
@@ -209,10 +211,130 @@ let cocaCola = NutritionFacts.Builder(servingSize: 240, servings: 8)
 
 ### 계층적으로 설계된 클래스에서의 빌더 패턴 in 스위프트
 
-코드 추가 예정..
+계층적으로 설계된 클래스에서의 빌더 패턴을 스위프트로 구현해 봤다.
 
-### 빌더 패턴 활용법
+먼저 `Pizza` 추상 클래스의 경우 내부에 `Topping` enum이 있어야 해서 (프로토콜이 아닌) 클래스로 구현하였다.
 
-선택적 프로퍼티가 많은 URL Request 객체에 사용할 수 있다.
+`Pizza`의 abstract builder의 경우 `T`가 자기 자신을 확장한 타입이어야 하는데, 이를 표현하기 위해 프로토콜과 associated type을 이용하였고, associated type이 자기 자신 프로토콜을 따르도록 제한하였다.
+
+> 이렇게 한 이유는 스위프트 클래스는 재귀적 타입 한정을 이용한 제네릭을 지원하지 않았기 때문입니다. 더 좋은 방법이 있다면 제안 부탁드립니다.
+
+마지막으로, 클래스 내부에 프로토콜이 존재할 수 없기 때문에 Pizza의 abstract builder는 클래스 외부에 선언하였다.
+
+```swift
+protocol DefaultBuilder: class {
+    
+    associatedtype BuilderType: DefaultBuilder
+    
+    var toppings: Set<Pizza.Topping> { get set }
+    
+    // swift는 covariant return typing을 지원하지 않는 것 같아서 여기서 정의하지 않고, 
+    // 각 구체 타입에 구현하였습니다.
+    // 더 좋은 방법이 있다면 제안 부탁드립니다.
+    //func build() -> Pizza
+}
+
+extension DefaultBuilder {
+    
+    func addTopping(_ topping: Pizza.Topping) -> Self { // 구체 하위 빌더 반환(책에서 T에 해당)
+        toppings.insert(topping)
+        return self
+    }
+}
+
+class Pizza {
+    
+    enum Topping {
+        case ham, mushroom, onion, pepper, sausage
+    }
+    
+    let toppings: Set<Topping>
+    
+    init<Builder: DefaultBuilder>(with builder: Builder) {
+        // Set은 value type이기 때문에 clone하지 않아도 복사본이 할당됩니다.
+				toppings = builder.toppings
+    }
+}
+```
+
+다음은 Pizza를 상속한 두 구체 타입들이다.
+
+```swift
+class NewYorkPizza: Pizza {
+    
+    enum Size {
+        case small, medium, large
+    }
+    
+    let size: Size
+    
+    class Builder: DefaultBuilder {
+        
+        typealias BuilderType = Builder
+        
+        var toppings = Set<Pizza.Topping>()
+        
+        let size: Size
+        
+        init(size: Size) {
+            self.size = size
+        }
+        
+        func build() -> NewYorkPizza {
+            return NewYorkPizza(builder: self)
+        }
+    }
+    
+    init(builder: Builder) {
+        size = builder.size
+        super.init(with: builder)
+    }
+}
+
+class Calzone: Pizza {
+    
+    let sauceInside: Bool
+    
+    class Builder: DefaultBuilder {
+        
+        typealias BuilderType = Builder
+        
+        var toppings = Set<Pizza.Topping>()
+        
+        var sauceInside = false
+        
+        func addSauce() -> Self { // 변수명과 겹쳐서 addSauce로 변경
+            sauceInside = true
+            return self
+        }
+        
+        func build() -> Calzone {
+            return Calzone(builder: self)
+        }
+    }
+    
+    init(builder: Builder) {
+        sauceInside = builder.sauceInside
+        super.init(with: builder)
+    }
+}
+```
+
+다음은 위 계층적 빌더들을 사용하는 클라이언트 코드의 예이다. 컴파일 에러가 나지 않는다는 것을 보이기 위해 변수의 타입을 명시하였다.
+
+```swift
+let newYorkpizza: NewYorkPizza = NewYorkPizza.Builder(size: .large)
+    .addTopping(.ham).addTopping(.mushroom).build()
+let calzone: Calzone = Calzone.Builder()
+    .addSauce().addTopping(.sausage).build()
+```
+
+### 핵심 정리
+
+생성자나 정적 팩터리가 처리해야 할 매개변수가 많다면 빌더 패턴을 선택하는 게 더 낫다. 매개변수 중 다수가 필수가 아니거나 같은 타입이면 특히 더 그렇다. 빌더는 점층적 생성자보다 클라이언트 코드를 읽고 쓰기가 훨씬 간결하고, 자바빈즈보다 훨씬 안전하다.
+
+### 추가: 빌더 패턴 활용법
+
+선택적 프로퍼티가 많은 URLComponent에도 활용할 수 있다.
 
 [Swift builder design pattern - The.Swift.Dev.](https://theswiftdev.com/swift-builder-design-pattern/)
