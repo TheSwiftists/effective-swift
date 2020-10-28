@@ -52,9 +52,32 @@ extension StreetAddress: Equatable {
 
  `public static func ==(lhs: Self, rhs: Self) -> Bool` 는 필수로 구현되어야 하는 함수이다. 위의 예제처럼 해당 메서드 내에서 개별 요소에 관한 항목을 비교하도록 구현해주면 된다.
 
+<br>
+
 ### Sequence
 
+해당 요소에 순서와 반복적인 접근을 제공하는 타입으로 Sequence는 한 번에 하나씩 단계별로 실행할 수 있는 값의 목록이다. 시퀀스의 요소들을 반복하는 일반적인 방법은 for-in 루프가 있다. 다시 말해, Sequence 프로토콜을 준수하는 타입은 for-in 루프로 순회할 수 있다.
 
+```swift
+let bugs = ["Aphid", "Bumblebee", "Cicada", "Damselfly", "Earwig"]
+var hasMosquito = false
+for bug in bugs {
+    if bug == "Mosquito" {
+        hasMosquito = true
+        break
+    }
+}
+print("'bugs' has a mosquito: \(hasMosquito)")
+// Prints "'bugs' has a mosquito: false"
+```
+
+단순해 보일 수 있으나, 이렇게 순회가 가능함은 어떤 시퀀스 상에서든 많은 양의 연산을 위해 접근하는 것을 지원한다. 
+
+예를들어, Sequence 내에 특정 값이 포함되어 있는지 확인할 때와 Sequence의 끝에 도달하거나 특정값을 찾을 때까지 순차적으로 탐색할 수 있다. 
+
+또한 Sequence 프로토콜은 contains(_:) 메서드를 지원하는데, 이 메서드를 사용하면 수동으로 값을 순회 할 필요 없이 값의 포함 유무를 판단할 수 있다.
+
+<br>
 
 ### IteratorProtocol
 
@@ -77,5 +100,9 @@ extension StreetAddress: Equatable {
 #### References
 
 - [Equatable - Apple Developer Document](https://developer.apple.com/documentation/swift/equatable)
+
+- [Sequence - Apple Developer Document](https://developer.apple.com/documentation/swift/sequence)
+
+- 
 
   
