@@ -58,6 +58,8 @@ extension StreetAddress: Equatable {
 
 해당 요소에 순서와 반복적인 접근을 제공하는 타입으로 Sequence는 한 번에 하나씩 단계별로 실행할 수 있는 값의 목록이다. 시퀀스의 요소들을 반복하는 일반적인 방법은 for-in 루프가 있다. 다시 말해, Sequence 프로토콜을 준수하는 타입은 for-in 루프로 순회할 수 있다.
 
+Swift의 기본 라이브러리이고, Array, Dictionary, Set과 같은 Collection 타입의 기반이 되는 프로토콜이다. Sequence 프로토콜을 구현하면 `forEach`, `map`, `filter`, `flatMap`과 같은 다양한 함수를 사용할 수 있다.
+
 ```swift
 let bugs = ["Aphid", "Bumblebee", "Cicada", "Damselfly", "Earwig"]
 var hasMosquito = false
@@ -71,17 +73,26 @@ print("'bugs' has a mosquito: \(hasMosquito)")
 // Prints "'bugs' has a mosquito: false"
 ```
 
-단순해 보일 수 있으나, 이렇게 순회가 가능함은 어떤 시퀀스 상에서든 많은 양의 연산을 위해 접근하는 것을 지원한다. 
+단순해 보일 수 있으나, 이렇게 순회가 가능함은 어떤 시퀀스 상에서든 많은 양의 연산을 위해 접근이 가능하다는 것을 의미한다. 
 
 예를들어, Sequence 내에 특정 값이 포함되어 있는지 확인할 때와 Sequence의 끝에 도달하거나 특정값을 찾을 때까지 순차적으로 탐색할 수 있다. 
 
-또한 Sequence 프로토콜은 contains(_:) 메서드를 지원하는데, 이 메서드를 사용하면 수동으로 값을 순회 할 필요 없이 값의 포함 유무를 판단할 수 있다.
+또한 Sequence 프로토콜은 `contains(_:)` 메서드를 지원하는데, 이 메서드를 사용하면 수동으로 값을 순회 할 필요 없이 값의 포함 유무를 판단할 수 있다.
 
 <br>
 
 ### IteratorProtocol
 
+시퀀스 값을 한 번에 하나씩 제공하는 타입으로 Sequence 프로토콜과 함께 사용된다. 시퀀스는 반복 프로세스를 트래킹하고, 한번에 한 요소를 반환하는 Iterator를 생성해 개별 요소에 접근할 수 있게 한다. IteratorProtocol의 목적은 컬렉션을 반복 순회하는 `next()` 메서드를 통해 컬렉션의 반복 상태를 캡슐화 하는 것이며, 시퀀스에 있는 
 
+```swift
+protocol IteratorProtocol {
+  associatedtype Element
+  mutating func next() -> Element?
+}
+```
+
+위 코드에서 associtatedtype으로 선언된 Element는 Iterator가 생성하는 값의 유형을 지정한다. 그리고 `next()`는 해당 시퀀스에서 다음번 요소를 반환하거나, 다음번 요소가 없는 경우 nil을 반환한다.
 
 ### Comparable
 
@@ -100,9 +111,6 @@ print("'bugs' has a mosquito: \(hasMosquito)")
 #### References
 
 - [Equatable - Apple Developer Document](https://developer.apple.com/documentation/swift/equatable)
-
 - [Sequence - Apple Developer Document](https://developer.apple.com/documentation/swift/sequence)
-
-- 
-
-  
+- [IteratorProtocol - Apple Developer Document](https://developer.apple.com/documentation/swift/iteratorprotocol)
+- https://kor45cw.tistory.com/260
