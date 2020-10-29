@@ -69,3 +69,89 @@
   * **Automatic Reference Counting의 단점**
     1. retain cycles에 대처할 수 없습니다.
 
+### 메모리 누수 (Memory leak)
+
+* **메모리 누수는 언제 일어날까?**
+  서로 다른 인스턴스가 서로를 **강하게 참조**하고 있어서 참조 횟수를 0으로 만들지 못하고 영원히 메모리에서 해제되지 않는 **순환 참조** 관계일 때 메모리 누수가 발생합니다.
+
+* **강한 참조(Strong Reference)와 강한 참조 순환(Reference Cycle) 예시**
+
+  ```swift
+  class Swift {
+    var reference2: Java?
+  }
+  
+  class Java {
+    var reference1: Swift?
+  }
+  
+  var swift: Swift? = Swift()  // Swift Reference Count: 1
+  var java: Java? = Java()     // Java Reference Count: 1
+  swift?.reference2 = java     // Java Reference Count: 2
+  java?.reference1 = swift     // Swift Reference Count: 2
+  swift = nil                  // Swift Reference Count: 1
+  java = nil                   // Java Reference Count: 1
+  ```
+
+* **해결 방법**
+  강한 참조 순환 문제를 해결하기 위한 방법으로는 **weak 참조**와 **unowned 참조** 두 가지가 있습니다. **weak**와 **unowned** 참조는 순환 참조 상황에 있는 A 인스턴스가 다른 B 인스턴스를 강하게 잡고 있지 않도록(인스턴스를 참조하지만 RC를 증가시키지 않도록) 하여 강한 참조 순환을 만들지 않도록 합니다. 
+
+### Weak 참조(약한 참조)와 Unowned 참조(미소유 참조)
+
+* **Weak 참조(약한 참조)**
+  Weak 참조는 해당 참조가 남아있더라도 ARC는 인스턴스를 메모리에서 해제시킬 수 있습니다. 앞서 언급한 대로 A 인스턴스가 다른 B 인스턴스를 강하게 잡고 있지 않기 때문입니다. ARC는 자동으로 Weak 참조를 하는 객체에 **nil**을 할당할 수 있습니다. 이때, 런타임에 객체에 nil을 할당해야 하기 때문에 **옵셔널 타입의 변수(var)**로 선언해야 합니다.
+
+  Weak 참조는 강한 참조 순환 문제를 만드는 두 인스턴스에서 **다른 한쪽의 인스턴스가 상대적으로 먼저 메모리에서 해제될 가능성이 있을 때** 사용하면 됩니다.  ( Ex - delegate )
+
+  ```swift
+  class Swift {
+    var reference2: Java?
+  }
+  
+  class Java {
+    weak var reference1: Swift? // 옵셔널 타입의 변수
+  }
+  
+  var swift: Swift? = Swift()  // Swift Reference Count: 1
+  var java: Java? = Java()     // Java Reference Count: 1
+  swift?.reference2 = java     // Java Reference Count: 2
+  java?.reference1 = swift     // Swift Reference Count: 1
+  swift = nil                  // Swift Reference Count: 0 -> Java Reference Count: 1
+  java = nil                   // Java Reference Count: 0
+  
+  ```
+
+* **Unowned 참조(미소유 참조)**
+  Unowned 참조도 Weak 참조와 마찬가지로 Reference Count를 증가시키지 않으면서 인스턴스를 참조합니다. 하지만 Unowned 참조는 **인스턴스를 참조하는 도중에 해당 인스턴스가 메모리에서 사라질 일이 없다고 가정**하기 때문에 약한 참조와 달리 암묵적으로 옵셔널을 해제(`!`)하여 선언합니다.
+
+  ```swift
+  class SomeClass {
+    weak var weakVariable: Int?
+    unowned var unownedVariable: Int!
+  }
+  ```
+
+  미소유 참조는 참조하고 있던 인스턴스가 먼저 메모리에서 해제될 때 `nil`을 할당할 수 없어 오류를 발생시키므로 위험한 방법입니다. 
+
+* **Strong 참조, Weak 참조, Unowned 참조 비교**
+
+|                    | strong                             | weak                                 | unowned                                         |
+| ------------------ | ---------------------------------- | ------------------------------------ | ----------------------------------------------- |
+| Reference Counting | O                                  | X                                    | X                                               |
+| Variable(`var`)    | O                                  | O                                    | O                                               |
+| Constant(`let`)    | O                                  | X                                    | O                                               |
+| Optional           | O                                  | O                                    | X                                               |
+| Non-Optional       | O                                  | X                                    | O                                               |
+| Memory Release     | 명시적으로 `nil` 할당              | auto deinit `nil` 할당               | auto deinit 메모리 주소를 계속 갖고 있음        |
+| Expected Problem   | Strong Reference Cycle Memory Leak | 인스턴스 해제 후 접근하면 `nil` 반환 | 인스턴스 해제 후 접근하면 오류 Dangling Pointer |
+
+
+
+### 참고
+
+1. [Automatic Reference Counting - the swift programming language 5.3](https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html)
+2. [ARC vs. GC](https://docs.elementscompiler.com/Concepts/ARCvsGC/)
+3. [Garbage Collection vs Automatic Reference Counting](https://medium.com/computed-comparisons/garbage-collection-vs-automatic-reference-counting-a420bd4c7c81)
+4. [[JAVA] Garbage Collection의 기초](https://itmining.tistory.com/24)
+5. [ARC](https://velog.io/@cskim/ARCAutomatic-Reference-Counting)
+
