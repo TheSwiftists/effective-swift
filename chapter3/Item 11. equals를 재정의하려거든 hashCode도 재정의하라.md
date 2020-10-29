@@ -118,6 +118,125 @@ public static void main(String[] args){
    ```
 
 ### Swift 에서는 이 문제를 어떻게 다루고 있을까요?
+1. **Equatable 프로토콜 채택과 == 재정의**
+   **결과**: Java에서의 결과와 동일하게 재정의한 equals를 바탕으로 Car 타입의 car1, car2 객체는 논리적으로 같은 객체로 판단됩니다.
+
+   ~~~ swift
+   import Foundation
+   
+   class Car {
+       private let name: String
+       private let seater: Int
+       
+       init(name: String, seater: Int) {
+           self.name = name
+           self.seater = seater
+       }
+   }
+   
+   extension Car: Equatable {
+       static func == (lhs: Car, rhs: Car) -> Bool {
+           return lhs.name == rhs.name && lhs.seater == rhs.seater
+       }
+   }
+   
+   let car1 = Car(name: "TheSwiftists", seater: 2)
+   let car2 = Car(name: "TheSwiftists", seater: 2)
+   print(car1 == car2) // true 출력
+   ~~~
+
+   
+
+2. **Array에 담는 경우**
+   **결과**: Java에서의 결과와 동일하게 Array에 car1, car2 을 추가할 수 있습니다. 아무 문제가 없습니다.
+
+   ~~~ swift
+   import Foundation
+   
+   class Car {
+       private let name: String
+       private let seater: Int
+       
+       init(name: String, seater: Int) {
+           self.name = name
+           self.seater = seater
+       }
+   }
+   
+   extension Car: Equatable {
+       static func == (lhs: Car, rhs: Car) -> Bool {
+           return lhs.name == rhs.name && lhs.seater == rhs.seater
+       }
+   }
+   
+   let car1 = Car(name: "TheSwiftists", seater: 2)
+   let car2 = Car(name: "TheSwiftists", seater: 2)
+   var cars = [Car]()
+   
+   cars.append(car1)
+   cars.append(car2)
+   
+   print(cars.count) // 2 출력
+   ~~~
+
+3. **Set에 담는 경우(중복 값을 허용하지 않는 Collection에 담는 경우)**
+
+   ~~~swift
+   import Foundation
+   
+   class Car {
+       private let name: String
+       private let seater: Int
+       
+       init(name: String, seater: Int) {
+           self.name = name
+           self.seater = seater
+       }
+   }
+   
+   extension Car: Equatable {
+       static func == (lhs: Car, rhs: Car) -> Bool {
+           return lhs.name == rhs.name && lhs.seater == rhs.seater
+       }
+   }
+   
+   let car1 = Car(name: "TheSwiftists", seater: 2)
+   let car2 = Car(name: "TheSwiftists", seater: 2)
+   
+   var carsSet = Set<Car>() // 에러 발생
+   ~~~
+
+   ![image](https://user-images.githubusercontent.com/52783516/97587165-6e8d9880-1a3e-11eb-9c52-9cf93dce182f.png)
+
+   Swift에서는 Car 클래스가 Hashable 프로토콜을 준수하고 있지 않다는 에러를 표시하며 Set 생성 자체가 되지 않습니다. 
+   참고로 기본 타입은 모두 Hashable을 준수하고 있습니다. 이번 예제와 같은 새로운 타입의 Set을 생성해주고 싶을 때 새로운 타입이 Hashable 프로토콜을 준수하는 객체여야 합니다.
+
+4. **Hashable 프로토콜 채택과 hash(into:) 메서드 구현**
+   **결과**: car1와 car2을 논리적으로 같은 객체로 판단하기 때문에 Set에 car1을 추가한 다음 car2을 추가할 수 없습니다.(insert 결과: inserted false) 따라서 cars의 count는 1이 출력이 됩니다. 
+
+   ~~~swift
+   extension Car: Hashable {
+       // Hashable 프로토콜을 채택 후 해쉬값을 제공하기 위한 인스턴스 메소드인 hash 메서드를 만들어서 관련 클래스의 모든 저장 프로퍼티를 Hashable 하도록 만들어준다.
+       // Hashable 프로토콜을 준수하려면 hash(into:) 구현이 필수이다.
+       func hash(into hasher: inout Hasher) { //The hasher to use when combining the components of this instance.
+           hasher.combine(name)
+           hasher.combine(seater)
+       }
+   }
+   
+   var cars = Set<Car>()
+   cars.insert(car1)
+   cars.insert(car2) // failed (inserted false)
+   print(cars.count) // 1 출력
+   
+   ~~~
+
+   
+
+### Hashable 프로토콜
+
+
+
 
 
 
