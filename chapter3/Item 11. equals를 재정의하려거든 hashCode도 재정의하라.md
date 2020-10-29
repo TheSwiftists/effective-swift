@@ -211,7 +211,7 @@ public static void main(String[] args){
    Swift에서는 Car 클래스가 Hashable 프로토콜을 준수하고 있지 않다는 에러를 표시하며 Set 생성 자체가 되지 않습니다. 
    참고로 기본 타입은 모두 Hashable을 준수하고 있습니다. 이번 예제와 같은 새로운 타입의 Set을 생성해주고 싶을 때 새로운 타입이 Hashable 프로토콜을 준수하는 객체여야 합니다.
 
-4. **Hashable 프로토콜 채택과 hash(into:) 메서드 구현**
+4. **Hashable 프로토콜 채택과 `hash(into:)` 메서드 구현**
    **결과**: car1와 car2을 논리적으로 같은 객체로 판단하기 때문에 Set에 car1을 추가한 다음 car2을 추가할 수 없습니다.(insert 결과: inserted false) 따라서 cars의 count는 1이 출력이 됩니다. 
 
    ~~~swift
@@ -235,17 +235,52 @@ public static void main(String[] args){
 
 ### Hashable 프로토콜
 
+- **Hashable이란**
+  - 정수 해시 값을 제공하고 Dictionary의 키 또는 Set의 value가 될 수 있는 타입입니다. 
+  - 구조체(Structure)의 저장 프로퍼티는 모두 Hashable을 준수해야 합니다.
+  - 열거형(Enumeration)의 모든 연관값(associated values)은 모두 Hashable을 준수해야 합니다.
+  - String, Int, Bool 등의 기본 데이터 타입들은 모두 Hashable 프로토콜을 준수하고 있습니다. 하지만 커스텀 타입을 Dictionary의 key 타입으로 지정하거나 Set의 value 타입으로 지정한 경우 해당 타입이 Hashable 프로토콜을 준수하게 만들어야 합니다.
 
+* **Hashable 프로토콜을 준수하려면**
+  : 관련 모든 클래스에서 Hashable을 구현해야합니다. 즉, 관련 클래스의 모든 저장 프로퍼티를 Hashable하도록 만들면 됩니다.
 
+  - `hash(into:)` 필수 구현
 
+    ~~~swift
+    func hash(into hasher: inout Hasher)
+    ~~~
+
+    Developer Document에서는 필수 구성요소들에게 주어진 hasher를 공급함으로써 value의 필수 구성요소들을 해쉬하라고 명시하고 있습니다.(Hashes the essential components of this value by feeding them into the given `hasher`.)
+    `hash(into:)` 메서드에서 관련 클래스의 저장 프로퍼티를 모두 combine 해줘야 합니다.
+
+    
+
+    **Hasher?**
+    구조체로, **해당 인스턴스의 구성요소를 결합할 때 사용합니다.**(The hasher to use when `combining` the components of this instance.)
+    **combine?**
+
+    ~~~swift
+    mutating func combine<H>(_ value: H) where H : Hashable
+    ~~~
+
+    제네릭 인스턴스 메소드로 **Hasher 구조체에서 value를 추가하는 메소드** 입니다.
+    **해셔에 주어진 값을 추가하여 그 필수적인 부분을 해셔 상태로 혼합합니다.**(Adds the given value to this hasher, mixing its essential parts into the hasher state.)
 
 
 ### 참고
 
-[Hashable 프로토콜](https://velog.io/@dev-lena/Hashable-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C)
+1. [Dictionary - Apple Developer Document](https://developer.apple.com/documentation/swift/dictionary) 
 
-[Hashable - Apple Developer Documentation](https://developer.apple.com/documentation/swift/hashable)
+2. [Hashable - Apple Developer Document](https://developer.apple.com/documentation/swift/hashable)
 
-[Equatable - Apple Developer Documentation](https://developer.apple.com/documentation/swift/equatable)
+3. [hash(into:) - Apple Developer Document](https://developer.apple.com/documentation/swift/dictionary/2995338-hash)
 
-[equals와 hashCode는 왜 같이 재정의해야 할까?](https://woowacourse.github.io/javable/2020-07-29/equals-and-hashCode)
+4. [hasher - Apple Developer Document](https://developer.apple.com/documentation/swift/hasher)
+
+5. [combine(_:) - Apple Developer Document](https://developer.apple.com/documentation/swift/hasher/2995578-combine)
+
+6. [Equatable - Apple Developer Documentation](https://developer.apple.com/documentation/swift/equatable)
+
+7. [Hashable 프로토콜](https://velog.io/@dev-lena/Hashable-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C)
+8. [equals와 hashCode는 왜 같이 재정의해야 할까?](https://woowacourse.github.io/javable/2020-07-29/equals-and-hashCode)
+
