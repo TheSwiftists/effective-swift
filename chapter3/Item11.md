@@ -6,7 +6,7 @@ Car라는 클래스가 있습니다.
 
 해당 예제는 car1와 car2가 논리적으로 같은 객체로 판단되도록 하는 것이 목표입니다.
 
- equals를 재정의한 후, 이 Car를 각 언어의 컬렉션(Collection) 타입의 자료구조에 넣어보면서 Car 타입의 인스턴스들이 논리적으로 같은 객채로 판단되는지 살펴봅시다. 
+ equals를 재정의한 후, 이 Car를 각 언어의 컬렉션(Collection) 타입의 자료구조에 넣어보면서 Car 타입의 인스턴스들이 논리적으로 같은 객체로 판단되는지 살펴봅시다. 
 
 ### 왜 Java에서는 equals와 hashCode는 같이 재정의해야 할까요?
 
@@ -80,18 +80,18 @@ public static void main(String[] args){
 
 4. **hashCode 재정의**
 
-   3번의 결과는 왜 나오는 이유를 살펴봅시다.
+   *3번의 결과는 왜 나오는 이유*를 살펴봅시다.
    Java에서 Collection(HashMap, HashSet, HashTable)은 객체가 논리적으로 같은지 비교할 때 아래 그림과 같은 과정을 거칩니다.
 
    ![hash 값을 사용하는 객체의 비교 로직](https://woowacourse.github.io/javable/images/2020-07-29-equals-and-hashcode.png)
 
    
 
-   hashCode 메서드의 리턴 값으로 먼저 동등객체인지 확인하고 equals 메서드의 리턴 값이 true여야 논리적으로 같은 객체라고 판단합니다. 그런데 Car 클래스에는 hashCode 메서드가 재정의 되어있지 않아 Object 클래스의 hashCode 메서드가 사용된 것입니다. Object 클래스의 hashCode 메서드는 객체의 고유한 주소 값을 int 값으로 변환하기 때문에 객체마다 다른 값을 리턴합니다. 두 개의 Car 객체는 equals로 비교도 하기 전에 서로 다른 hashCode 메서드의 리턴 값으로 인해 다른 객체로 판단된 것입니다.
+   `hashCode` 메서드의 리턴 값으로 먼저 동등객체인지 확인하고 `equals` 메서드의 리턴값이 `true`여야 논리적으로 같은 객체라고 판단합니다. 그런데 `Car` 클래스에는 `hashCode` 메서드가 재정의 되어있지 않아 `Object` 클래스의 `hashCode` 메서드가 사용된 것입니다. `Object` 클래스의 `hashCode` 메서드는 객체의 고유한 주소 값을 `int` 값으로 변환하기 때문에 객체마다 다른 값을 리턴합니다. 두 개의 `Car` 객체는 `equals`로 비교도 하기 전에 서로 다른 `hashCode` 메서드의 리턴 값으로 인해 다른 객체로 판단된 것입니다.
 
    
 
-   그렇다면 hashCode를 재정의해봅시다.
+   그렇다면 `hashCode`를 재정의해봅시다.
 
    ```java
    public class Car {
@@ -119,7 +119,7 @@ public static void main(String[] args){
 
 ### Swift 에서는 이 문제를 어떻게 다루고 있을까요?
 1. **Equatable 프로토콜 채택과 == 재정의**
-   **결과**: Java에서의 결과와 동일하게 재정의한 equals를 바탕으로 Car 타입의 car1, car2 객체는 논리적으로 같은 객체로 판단됩니다.
+   **결과**: Java에서의 결과와 동일하게 재정의한 `equals`를 바탕으로 `Car` 타입의 car1, car2 객체는 논리적으로 같은 객체로 판단됩니다.
 
    ~~~ swift
    import Foundation
@@ -181,6 +181,8 @@ public static void main(String[] args){
 
 3. **Set에 담는 경우(중복 값을 허용하지 않는 Collection에 담는 경우)**
 
+   **결과**: Swift에서는 `Car` 클래스가 Hashable 프로토콜을 준수하고 있지 않다는 에러를 표시하며 Set 생성 자체가 되지 않습니다. 
+
    ~~~swift
    import Foundation
    
@@ -208,8 +210,8 @@ public static void main(String[] args){
 
    ![image](https://user-images.githubusercontent.com/52783516/97587165-6e8d9880-1a3e-11eb-9c52-9cf93dce182f.png)
 
-   Swift에서는 Car 클래스가 Hashable 프로토콜을 준수하고 있지 않다는 에러를 표시하며 Set 생성 자체가 되지 않습니다. 
-   참고로 기본 타입은 모두 Hashable을 준수하고 있습니다. 이번 예제와 같은 새로운 타입의 Set을 생성해주고 싶을 때 새로운 타입이 Hashable 프로토콜을 준수하는 객체여야 합니다.
+
+   
 
 4. **Hashable 프로토콜 채택과 `hash(into:)` 메서드 구현**
    **결과**: car1와 car2을 논리적으로 같은 객체로 판단하기 때문에 Set에 car1을 추가한 다음 car2을 추가할 수 없습니다.(insert 결과: inserted false) 따라서 cars의 count는 1이 출력이 됩니다. 
@@ -236,7 +238,8 @@ public static void main(String[] args){
 ### Hashable 프로토콜
 
 - **Hashable이란**
-  - 정수 해시 값을 제공하고 Dictionary의 키 또는 Set의 value가 될 수 있는 타입입니다. 
+  - 정수 해시 값을 제공하고 `Dictionary`의 key 또는 `Set`의 value가 될 수 있는 타입입니다. 
+  - Equatable 프로토콜을 상속하고 있습니다.
   - 구조체(Structure)의 저장 프로퍼티는 모두 Hashable을 준수해야 합니다.
   - 열거형(Enumeration)의 모든 연관값(associated values)은 모두 Hashable을 준수해야 합니다.
   - String, Int, Bool 등의 기본 데이터 타입들은 모두 Hashable 프로토콜을 준수하고 있습니다. 하지만 커스텀 타입을 Dictionary의 key 타입으로 지정하거나 Set의 value 타입으로 지정한 경우 해당 타입이 Hashable 프로토콜을 준수하게 만들어야 합니다.
