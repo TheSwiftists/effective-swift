@@ -218,9 +218,7 @@ public static void main(String[] args){
 
    ~~~swift
    extension Car: Hashable {
-       // Hashable 프로토콜을 채택 후 해쉬값을 제공하기 위한 인스턴스 메소드인 hash 메서드를 만들어서 관련 클래스의 모든 저장 프로퍼티를 Hashable 하도록 만들어준다.
-       // Hashable 프로토콜을 준수하려면 hash(into:) 구현이 필수이다.
-       func hash(into hasher: inout Hasher) { //The hasher to use when combining the components of this instance.
+       func hash(into hasher: inout Hasher) {
            hasher.combine(name)
            hasher.combine(seater)
        }
@@ -232,7 +230,7 @@ public static void main(String[] args){
    print(cars.count) // 1 출력
    
    ~~~
-
+   
    
 
 ### Hashable 프로토콜
@@ -254,7 +252,7 @@ public static void main(String[] args){
     ~~~
 
     Developer Document에서는 필수 구성요소들에게 주어진 hasher를 공급함으로써 value의 필수 구성요소들을 해쉬하라고 명시하고 있습니다.(Hashes the essential components of this value by feeding them into the given `hasher`.)
-    `hash(into:)` 메서드에서 관련 클래스의 저장 프로퍼티를 모두 combine 해줘야 합니다.
+    Hashable 프로토콜을 채택 후 해쉬값을 제공하기 위한 인스턴스 메소드인 `hash(into:)`  메서드를 만들어 관련 클래스의 모든 저장 프로퍼티를 Hashable 하도록 만들어야합니다. 즉, `hash(into:)` 메서드에서 관련 클래스의 저장 프로퍼티를 모두 combine 해줘야 합니다.
 
     
 
