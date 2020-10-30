@@ -30,7 +30,7 @@ public boolean equals(Object obj) {
 
 ### 스위프트에서는...
 
-스위프트 또한 Equatable에 의존하는 여러 타입들과 메서드들이 있어서, Equatable을 따르는 커스텀 타입들 또한 몇몇 규약을 만족해야 한다. 
+스위프트 또한 Equatable에 의존하는 여러 타입들과 메서드들이 있어서, Equatable을 따르는 커스텀 타입들 또한 몇몇 규약을 만족해야 한다. — 참조: [Equatable][equatable]
 
 다만, 자바에서는 Object의 equals 메서드를 재정의하는 방식으로 논리적 동치 확인을 구현하지만, 스위프트에서는 프로토콜을 채택하는 방식으로 구현하도록 만들어 위에서 언급한 규약들을 지키는 데에 도움을 주는 것 같다.
 
@@ -120,3 +120,12 @@ Coffee 클래스에서 `hash(into:)`를 오버라이드하지 않았을 경우, 
 
 인스턴스의 개수가 아주 많아졌을 경우, 해시 충돌 가능성이 있다.
 
+### References
+
+- [Equatable][equatable]
+- [코드스쿼드 자판기 앱 프로젝트][vendingmachineapp]
+- [자판기 앱 PR #204][pr204]
+
+[equatable]: https://developer.apple.com/documentation/swift/equatable/1539854
+[vendingmachineapp]: https://github.com/seizze/swift-vendingmachineapp
+[pr204]: https://github.com/code-squad/swift-vendingmachineapp/pull/204
