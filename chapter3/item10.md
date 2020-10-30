@@ -48,3 +48,75 @@ public protocol Equatable {
 
 자바보다 자율성은 낮지만, 프로그램이 의도치 않게 런타임에 이상 동작할 가능성을 줄이기 위해 최대한 컴파일 시점에 문제를 발견하도록 설계한 스위프트의 언어적 특성이 보인다.
 
+### 상속 관계에서의 Equivalence 확인 방법 제안
+
+[코드스쿼드 자판기 앱 프로젝트][vendingmachineapp]에서 음료수 객체들 간의 상속 관계를 구현하였는데, 이때 인스턴스들 간의 동치를 확인할 때 hashValue를 이용하였다.
+
+먼저, 가장 상위 클래스에서는 Hashable을 채택하여 `==` 연산자와 `hash(into:)` 메서드를 구현한다.
+
+```swift
+class Beverage: Hashable {
+    
+    let price: Int
+    let name: String
+    
+    init(price: Int, name: String) {
+        self.price = price
+        self.name = name
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(price)
+        hasher.combine(name)
+    }
+    
+    static func == (lhs: Beverage, rhs: Beverage) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+```
+
+이 때 `==` 연산자에서는 hashValue가 같은지를 비교한다. `hash(into:)` 메서드에서는 동치를 확인하기 위한 클래스 안의 핵심 프로퍼티들을 사용한다.
+
+```swift
+class Coffee: Beverage {
+    
+    private let caffeineContent: Int
+    private let temperature: Int
+    
+    init(
+        price: Int,
+        name: String,
+        caffeineContent: Int,
+        temperature: Int
+    ) {
+        self.caffeineContent = caffeineContent
+        self.temperature = temperature
+        super.init(price: price, name: name)
+    }
+    
+    override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
+        hasher.combine(caffeineContent)
+        hasher.combine(temperature)
+    }
+}
+```
+
+하위 클래스에서는 `==` 연산자가 아닌 `hash(into:)` 메서드를 오버라이드하며, 상위 `hash(into:)` 메서드를 호출 후 하위 클래스의 핵심 필드를 hash 계산에 포함시킨다.
+
+Beverage와 Coffee의 인스턴스들을 비교한 결과는 다음과 같다.
+
+```swift
+let beverage = Beverage(price: 1000, name: "A")
+let coffee = Coffee(price: 1000, name: "A", caffeineContent: 32, temperature: 99)
+
+print(beverage == coffee) // false
+```
+
+Coffee 클래스에서 `hash(into:)`를 오버라이드하지 않았을 경우, `print(beverage == coffee)`는 true를 출력한다.
+
+#### 주의할 점
+
+인스턴스의 개수가 아주 많아졌을 경우, 해시 충돌 가능성이 있다.
+
