@@ -37,7 +37,7 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 | 아이템 10 | [equals는 일반 규약을 지켜 재정의하라]() | |
 | 아이템 11 | [equals를 재정의하려거든 hashCode도 재정의하라]() | |
 | 아이템 12 | [toString을 항상 재정의하라]() | |
-| 아이템 13 | [clone 재정의는 주의해서 진행하라]() | |
+| 아이템 13 | [clone 재정의는 주의해서 진행하라](chapter3/item13.md) | [하이디](https://github.com/seizze) |
 | 아이템 14 | [Comparable을 구현할지 고려하라]() | |
 
 ### 4장 클래스와 인터페이스
