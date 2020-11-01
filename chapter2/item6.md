@@ -8,7 +8,7 @@
 
 ### 자주 사용되는 객체의 재사용
 
-같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다.
+같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다. 이처럼 정적 팩터리 메서드를 만들고 재사용할 수 있다.
 
 ```swift
 class Device {
@@ -24,9 +24,27 @@ class Device {
 
 ### 인스턴스 생성 비용이 높은 객체의 재사용
 
+서버에서 받아온 데이터나 디스크에서 읽어온 데이터처럼 큰 용량의 객체나 인스턴스를 생성할 때 비용의 높은 객체의 경우에도 객체를 캐싱하는 등 재사용하는 것이 좋다.
+
 ```swift
-//서버에서 받아온 데이터, 디스크에서 읽어온 데이터 캐싱하는 경우
-//예시코드 필요
+class ArticleLoader {
+    typealias Handler = (Result<Article, Error>) -> Void
+
+    private let cache = Cache<Article.ID, Article>()
+
+    func loadArticle(withID id: Article.ID,
+                     then handler: @escaping Handler) {
+        if let cached = cache[id] {
+            return handler(.success(cached))
+        }
+
+        performLoading { [weak self] result in
+            let article = try? result.get()
+            article.map { self?.cache[id] = $0 }
+            handler(result)
+        }
+    }
+}
 ```
 
 
@@ -54,4 +72,6 @@ class Device {
 ##### References
 
 - [디자인 패턴 - 객체 풀(Object pool)](http://hajeonghyeon.blogspot.com/2017/06/object-pool.html)
+
+- [cashing in swift - swiftbysundell](https://www.swiftbysundell.com/articles/caching-in-swift/)
 
