@@ -89,21 +89,31 @@ print(v1 == v2 ? "true" : "false")		//false
 Swift의 기본 라이브러리이고, Array, Dictionary, Set과 같은 Collection 타입의 기반이 되는 프로토콜이다. Sequence 프로토콜을 구현하면 `forEach`, `map`, `filter`, `flatMap`과 같은 다양한 함수를 사용할 수 있다.
 
 ```swift
-let bugs = ["Aphid", "Bumblebee", "Cicada", "Damselfly", "Earwig"]
-var hasMosquito = false
-for bug in bugs {
-    if bug == "Mosquito" {
-        hasMosquito = true
-        break
+struct Countdown: Sequence, IteratorProtocol {
+    var count: Int
+
+    mutating func next() -> Int? {
+        if count == 0 {
+            return nil
+        } else {
+            defer { count -= 1 }
+            return count
+        }
     }
 }
-print("'bugs' has a mosquito: \(hasMosquito)")
-// Prints "'bugs' has a mosquito: false"
+
+let threeToGo = Countdown(count: 3)
+for i in threeToGo {
+    print(i)
+}
+// Prints "3"
+// Prints "2"
+// Prints "1"
 ```
 
-단순해 보일 수 있으나, 이렇게 순회가 가능함은 어떤 시퀀스 상에서든 많은 양의 연산을 위해 접근이 가능하다는 것을 의미한다. 
+커스텀 타입을 생성하는 경우, Sequence 프로토콜을 채택하면 유용한 오퍼레이션들을 손쉽게 가져다 쓸 수 있다. Sequence 프로토콜을 채택하기 위해선 makeIterator() 메서드를 추가해야한다. Sequence 내부에 associatedtype으로 IteratorProtocol타입이 있어 순회하려는 대상은 IteratorProtocol 타입이어야 한다.
 
-예를들어, Sequence 내에 특정 값이 포함되어 있는지 확인할 때와 Sequence의 끝에 도달하거나 특정값을 찾을 때까지 순차적으로 탐색할 수 있다. 
+Sequence 내에 특정 값이 포함되어 있는지 확인할 때와 Sequence의 끝에 도달하거나 특정값을 찾을 때까지 순차적으로 탐색할 수 있다. 이렇게 순회가 가능함은 어떤 시퀀스 상에서든 많은 양의 연산을 위해 접근이 가능하다는 것을 의미한다. 
 
 또한 Sequence 프로토콜은 `contains(_:)` 메서드를 지원하는데, 이 메서드를 사용하면 수동으로 값을 순회 할 필요 없이 값의 포함 유무를 판단할 수 있다.
 
