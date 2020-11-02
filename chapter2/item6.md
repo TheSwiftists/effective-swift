@@ -8,14 +8,20 @@
 
 ### 자주 사용되는 객체의 재사용
 
-같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다. 이처럼 정적 팩터리 메서드를 만들고 재사용할 수 있다.
+같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다. 이처럼 싱글톤 패턴으로 인스턴스를 만들고 재사용할 수 있다.
 
 ```swift
 class Device {
+    private static let sharedInstance: Device = {
+        let instance = Device()
+        // 디바이스 설정
+        return instance
+    }()
+
     private init() { }
-    
+
     public static func initMethod() -> Device {
-        return Device()
+        return instance
     }
 }
 ```
