@@ -43,7 +43,7 @@ CustomStringconvertible은 프로토콜입니다. 해당 프로토콜을 채택�
 
 UIViewController에서는 CustomStringConvertible을 채택하지 못하는데 이미 UIViewcontroller가 NSObjectProtocol을 채택하고 있어 따로 채택할 필요없이 바로 description을 재정의하여 사용하면 됩니다. <br>
 
-```switf=
+```swift
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -65,7 +65,7 @@ class ViewController: UIViewController {
 <br>
 
 - description을 재정의 한 후 print문을 실행했을때
-   ```swift= 
+   ```swift 
     class ViewController: UIVewController {
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -99,7 +99,7 @@ describing, reflecting 모두 어떤 타입이든 인자로 받아 String으로 
 3. **모두 채택하고** describing, reflecting을 부를 경우
 : 각각 재정의된 프로퍼티로 반환됩니다.
 
-```Swift=
+```swift
 // Point
 struct Point: CustomStringConvertible, CustomDebugStringConvertible {
     let x: Int, y: Int
@@ -134,14 +134,14 @@ print(reflect)  // (debug : 1, 2)
 > debugPrint(_:separator:terminator:)
 Writes the textual representations of the given items most suitable for debugging into the standard output.
 
-```Swift=
+```swift
 debugPrint(1...5)
 // Prints "ClosedRange(1...5)"
 ```
 
 print와 debugPrint또한 description, debugDescription을 기반으로 출력하는 것 같다고 보입니다. <br> 레퍼런스 체크를 진행하지 못했지만 위의 코드에 이어서 print, debugPrint를 사용해보면 동일한 결과가 나오는 것을 확인할 수 있었습니다.
 
-```Swift=
+```swift
 print(p)      // (description 1, 2)
 debugPrint(p) // (debug : 1, 2)
 ```
@@ -152,7 +152,7 @@ debugPrint(p) // (debug : 1, 2)
 Swift에서는 단순히 객체정보나 값 뿐만 아니라 현재 파일명, 함수명, 라인번호까지 출력할 수 있습니다. <br>
 
 
-```Swift=
+```swift
 // Example
 struct Logger {
     public static func debug(_ msg: Any, file: String = #file, function: String = #function, line: Int = #line) {
