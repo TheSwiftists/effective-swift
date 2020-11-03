@@ -254,17 +254,18 @@ public static void main(String[] args){
     [Apple Developer Document](https://developer.apple.com/documentation/swift/hashable/2995575-hash)에서는 필수 구성요소들에게 주어진 hasher를 공급함으로써 value의 필수 구성요소들을 해쉬하라고 명시하고 있습니다.(Hashes the essential components of this value by feeding them into the given `hasher`.)
     Hashable 프로토콜을 채택 후 해쉬값을 제공하기 위한 인스턴스 메소드인 `hash(into:)`  메서드를 만들어 관련 클래스의 모든 프로퍼티를 Hashable 하도록 만들어야합니다. 즉, `hash(into:)` 메서드에서 관련 클래스의 프로퍼티를 모두 `combine` 해줘야 합니다.
 
+    <br>
+
+    **Hasher?**<br>
+    구조체로, **해당 인스턴스의 구성요소를 결합할 때 사용합니다.**(The hasher to use when `combining` the components of this instance.)<br>
     
-
-    **Hasher?**
-    구조체로, **해당 인스턴스의 구성요소를 결합할 때 사용합니다.**(The hasher to use when `combining` the components of this instance.)
-    **combine?**
-
+**combine?**<br>
+    
     ~~~swift
     mutating func combine<H>(_ value: H) where H : Hashable
-    ~~~
-
-    제네릭 인스턴스 메소드로 **Hasher 구조체에서 value를 추가하는 메소드** 입니다.
+~~~
+    
+    제네릭 인스턴스 메소드로 **Hasher 구조체에서 value를 추가하는 메소드** 입니다.<br>
     **해셔에 주어진 값을 추가하여 그 필수적인 부분을 해셔 상태로 혼합합니다.**(Adds the given value to this hasher, mixing its essential parts into the hasher state.)
 
 
