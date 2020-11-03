@@ -8,14 +8,20 @@
 
 ### 자주 사용되는 객체의 재사용
 
-같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다. 이처럼 정적 팩터리 메서드를 만들고 재사용할 수 있다.
+같은 기능을 가진 객체를 새로 생성하는 것보다는 재사용하는 것이 나을 때가 있다. 이처럼 싱글톤 패턴으로 인스턴스를 만들고 재사용할 수 있다.
 
 ```swift
 class Device {
+    private static let sharedInstance: Device = {
+        let instance = Device()
+        // 디바이스 설정
+        return instance
+    }()
+
     private init() { }
-    
+
     public static func initMethod() -> Device {
-        return Device()
+        return instance
     }
 }
 ```
@@ -53,7 +59,7 @@ class ArticleLoader {
 
 이번 아이템을 "객체 생성은 비싸니 피해야 한다"로 오해하면 안 된다. ARC같은 자동 참조 해제 기능이 있으므로, 작은 객체를 생성하고 회수하는 일이 크게 부담되지 않는다. 프로그램의 명확성, 간결성, 기능을 위해 객체를 추가로 생성하는 것이라면 일반적으로 좋은 일이다.
 
- 거꾸로, 아주 무거운 객체가 아닌 다음에야 단순히 객체 생성을 피하고자 여러분만의 *객체 풀(pool)을 만들지는 말자. 물론 객체 풀을 만드는 게 나은 예가 있긴 하다. 네트워크 연결처럼 접근 비용이 비싸지는 경우 재사용하는 편이 낫다. 하지만 일반적으로는 자체 객체 풀은 코드를 헷갈리게 만들고 메모리 사용량을 늘리고 성능을 떨어뜨린다. 
+ 거꾸로, 아주 무거운 객체가 아닌 다음에야 단순히 객체 생성을 피하고자 여러분만의 *객체 풀(pool)을 만들지는 말자. 물론 객체 풀을 만드는 게 나은 예가 있긴 하다. 네트워크 연결처럼 접근 비용이 비싸지는 경우 재사용하는 편이 낫다. 하지만 일반적으로는 자체 객체 풀은 코드를 헷갈리게 만들고 메모리 사용량을 늘리고 성능을 떨어뜨린다.
 
 > 객체 풀(Object pool)?
 >
@@ -74,4 +80,3 @@ class ArticleLoader {
 - [디자인 패턴 - 객체 풀(Object pool)](http://hajeonghyeon.blogspot.com/2017/06/object-pool.html)
 
 - [cashing in swift - swiftbysundell](https://www.swiftbysundell.com/articles/caching-in-swift/)
-
