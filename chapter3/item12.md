@@ -15,7 +15,7 @@
 ### toString
 Java에서의 toString은 Java의 Object 클래스에 정의되어 있는 메소드를 오버라이드해서 사용할수 있도록 되어있습니다. <br>
 
-System.out.print문 내에서 숫자 타입의 변수나 값은 자동으로 스트링으로 바뀌는데, 이때 컴파일러는 그 클래스의 toString() 메소드를 이용합니다. <br>
+System.out.print문 내에서 숫자 타입의 변수나 값은 자동으로 String으로 바뀌는데, 이때 컴파일러는 해당 클래스의 toString() 메소드를 이용합니다. <br>
 
 toString을 오버라이딩하지 않으면 Object 클래스에 정의되어 있는 toString을 사용하는데, 기본적으로는 **클래스_이름@16진수로_표시한_해시코드**로 표현되어 나타내게 됩니다. <br>
 
