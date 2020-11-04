@@ -3,8 +3,9 @@
 ## 목차
 - try-finally
 - try-with-resources
-- 자원을 회수해야하는 상황
+- 명시적으로 자원을 회수해야하는 상황
     - NotificationCenter
+    - FileHandle
     - DBConnection
 - 마무리
 
@@ -36,7 +37,7 @@ do {
 }
 ```
 
-책에도 나와 있듯이 finally 구문은 자원을 회수(닫는)하는 용도로 주로 쓰이지만, Swift에서는 더이상 필요하지 않은 인스턴스를 자동으로 할당 해제하여 리소스를 확보하는 **ARC**라는 메모리 관리 기법이 존재합니다. 순환 참조의 문제만 조심한다면 자원을 명시적으로 자원을 회수하지 않아도 됩니다.
+책에도 나와 있듯이 finally 구문은 자원을 회수(닫는)하는 용도로 주로 쓰이지만, Swift에서는 더이상 필요하지 않은 인스턴스를 자동으로 할당 해제하여 리소스를 확보하는 **ARC**라는 메모리 관리 기법이 존재합니다. <br> 순환 참조의 문제만 조심한다면 자원을 명시적으로 자원을 회수하지 않아도 됩니다.
 
 하지만 Swift에서도 명시적으로 닫아주는 작업도 필요할때가 있는데 이는 하단 목차에서 다루도록 하겠습니다.
 <br>
@@ -56,8 +57,8 @@ try문에서 인스턴스를 생성할때, 해당 자원이 `AutoCloseable`을 �
 
 <br>
 
-### 자원을 회수해야하는 상황
-기본적으로 ARC가 자동으로 할당 해제를 해주지만 명시적으로 자원을 회수해야하는 상황이 종종 있습니다. NotificationCenter 제거, dbConnection close (Sqlite)를 예로 들 수 있습니다.
+### 명시적으로 자원을 회수해야하는 상황
+기본적으로 ARC가 자동으로 할당 해제를 해주지만 명시적으로 자원을 회수해야하는 상황이 종종 있습니다. NotificationCenter 제거, FileHandler의 fileDescriptor 할당해제, dbConnection close(Sqlite)를 예로 들 수 있습니다.
 
 보통 `viewDidLoad()`에서 할당을 해주고, 클래스 인스턴스가 해제되기 직전에 불리는 `deinit()`에서 할당을 해제해주는 코드를 작성합니다.
 
@@ -85,8 +86,39 @@ class ViewController: UIViewController {
 ```
 <br>
 
+#### FileHandler
+File handle 객체를 사용해서 파일, 소켓, 파이프 및 디바이스와 관련된 데이터에 엑세스 할 수 있습니다. <br>
+파일의 경우에는 읽기, 쓰기, 검색이 가능합니다.
+<br>
+
+이니셜라이저를 사용해 소켓에 쓸수있거나 읽을 수 있는 file handle을 반환하게되는데 해당 객체가 file descriptor를 소유하게 되어 닫아줘야한다고 쓰여져 있습니다. <br>
+
+하지만 FileHandle 객체를 사용하나 명시적으로 닫아주지 않아도 되는 경우도 있습니다. <br>
+밑의 예시 코드에서 2번째 케이스로 사용된 `init(fileDescriptor fd: Int32, 
+closeOnDealloc closeopt: Bool)` 이니셜라이저에서 두번째 인자를 true로 전달해주게되면 자동으로 file descriptor를 닫아준다고 합니다.
+
+
+```Swift
+// case 1
+let file = FileHandle(forReadingAtPath: filepath)
+
+    if file == nil {
+        print("File open failed")
+    } else {
+        file?.closeFile()
+}
+
+// case 2
+let file = FileHandle(fileDescriptor: 'fileDescriptor', closeOnDealloc: true)
+}
+```
+
+<br>
+
 #### DBConnection
-SQLite를 예로 들어보겠습니다. SQLite를 사용하기위해서 connection을 생성하고 이후 사용하지 않을때는 connection을 닫아줘야합니다.
+SQLite를 예로 들어보겠습니다. SQLite를 사용하기위해서 connection을 생성하고 이후 사용하지 않을때는 connection을 닫아줘야합니다. <br>
+sqlite3_open()를 사용하게 되면 SQLite db handle은 두번째 인자에 sqlite3 객체의 인스턴스에 대한 포인터를 반환합니다. <br>
+문서에서는 sqlite3_close()를 사용해 더 이상 연결이 필요하지 않을때 해제하라고 작성되어있습니다.
 
 ```Swift
 class ViewController: UIViewController {
@@ -125,3 +157,10 @@ class ViewController: UIViewController {
 ### 마무리
 
 이번 아이템은 Swift와 맵핑되는 부분이 많이 없었지만 Swift에서 명시적으로 자원을 회수해줘야하는 상황이 있을때, 자원관리에 대해서 한번 더 생각해볼수 있는 아이템이었습니다.
+
+<br> 
+
+### 참고 문서
+- [FileHandler 애플공식문서](https://developer.apple.com/documentation/foundation/filehandle)
+- [SQLite 공식문서](https://sqlite.org/c3ref/open.html)
+- [FileHandle 예제](https://www.techotopia.com/index.php/Working_with_Files_in_Swift_on_iOS_8)
