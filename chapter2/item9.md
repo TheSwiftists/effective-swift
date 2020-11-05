@@ -6,7 +6,7 @@
 - 명시적으로 자원을 회수해야하는 상황
     - NotificationCenter
     - FileHandle
-    - DBConnection
+    - DBConnection (SQLite)
 - 마무리
 
 <br>
@@ -37,9 +37,9 @@ do {
 }
 ```
 
-책에도 나와 있듯이 finally 구문은 자원을 회수(닫는)하는 용도로 주로 쓰이지만, Swift에서는 더이상 필요하지 않은 인스턴스를 자동으로 할당 해제하여 리소스를 확보하는 **ARC**라는 메모리 관리 기법이 존재합니다. <br> 순환 참조의 문제만 조심한다면 자원을 명시적으로 자원을 회수하지 않아도 됩니다.
+책에도 나와 있듯이 finally 구문은 작업이 끝나거나 작업 도중 에러가 발생했을 때 필요한 동작이나 자원을 회수(닫는)하는 용도로 쓰입니다. 
+스위프트에서는 finally 같은 구문이 없지만 명시적으로 자원을 닫아주는 작업이 필요할 때가 있는데, 이는 하단에서 다루도록 하겠습니다.
 
-하지만 Swift에서도 명시적으로 닫아주는 작업도 필요할때가 있는데 이는 하단 목차에서 다루도록 하겠습니다.
 <br>
 
 ### try-with-resources
@@ -53,17 +53,17 @@ try(run code) {
 ```
 위의 try-finally와 비교해서 코드가 더 간결해지고, 오류 로그에서도 try 구문 내에서 발생된 예외가 기록되어 추적하기 쉬워진다는 장점들을 말하고 있습니다.
 
-try문에서 인스턴스를 생성할때, 해당 자원이 `AutoCloseable`을 구현하였으면 자동으로 자원을 회수해줍니다. Swift에서는 위와 마찬가지로 대체되는 것이 있으며 맵핑되는것이 없어 넘어가도록 하겠습니다.
+try문에서 인스턴스를 생성할때, 해당 자원이 `AutoCloseable`을 구현하였으면 자동으로 자원을 회수해줍니다. Swift에서는 해당 인터페이스와 매핑되는것이 없어 넘어가도록 하겠습니다.
 
 <br>
 
 ### 명시적으로 자원을 회수해야하는 상황
-기본적으로 ARC가 자동으로 할당 해제를 해주지만 명시적으로 자원을 회수해야하는 상황이 종종 있습니다. NotificationCenter 제거, FileHandler의 fileDescriptor 할당해제, dbConnection close(Sqlite)를 예로 들 수 있습니다.
+Swift도 명시적으로 자원을 회수해야하는 상황이 종종 있습니다. NotificationCenter 제거, FileHandler의 fileDescriptor 할당해제, dbConnection close(Sqlite)를 예로 들 수 있습니다.
 
 보통 `viewDidLoad()`에서 할당을 해주고, 클래스 인스턴스가 해제되기 직전에 불리는 `deinit()`에서 할당을 해제해주는 코드를 작성합니다.
 
 #### NotificationCenter
-공식문서에서는 iOS9.0 이나  macOS 10.11 이후 버전에서 앱을 제공한다면 따로 제거해주지 않아도 된다고 나와있지만, 자동으로 제거해주지 않고 명시적으로도 제거 할 수 있습니다.
+공식문서에서는 iOS 9.0 이나  macOS 10.11 이후 버전에서 앱을 제공한다면 자동으로 제거해주므로 따로 제거해주지 않아도 된다고 나와있지만, 명시적으로도 제거 할 수 있습니다.
 
 ```Swift
 class ViewController: UIViewController {
@@ -87,7 +87,7 @@ class ViewController: UIViewController {
 <br>
 
 #### FileHandler
-File handle 객체를 사용해서 파일, 소켓, 파이프 및 디바이스와 관련된 데이터에 엑세스 할 수 있습니다. <br>
+File handle 객체를 사용해서 파일, 소켓, 파이프 및 디바이스와 관련된 데이터에 접근 할 수 있습니다. <br>
 파일의 경우에는 읽기, 쓰기, 검색이 가능합니다.
 <br>
 
@@ -100,7 +100,7 @@ closeOnDealloc closeopt: Bool)` 이니셜라이저에서 두번째 인자를 tru
 
 ```Swift
 // case 1
-let file = FileHandle(forReadingAtPath: filepath)
+let file = FileHandle(forReadingAtPath: filepath) {
 
     if file == nil {
         print("File open failed")
@@ -110,7 +110,6 @@ let file = FileHandle(forReadingAtPath: filepath)
 
 // case 2
 let file = FileHandle(fileDescriptor: 'fileDescriptor', closeOnDealloc: true)
-}
 ```
 
 <br>
@@ -156,7 +155,7 @@ class ViewController: UIViewController {
 
 ### 마무리
 
-이번 아이템은 Swift와 맵핑되는 부분이 많이 없었지만 Swift에서 명시적으로 자원을 회수해줘야하는 상황이 있을때, 자원관리에 대해서 한번 더 생각해볼수 있는 아이템이었습니다.
+이번 아이템은 Swift와 매핑되는 부분이 많이 없었지만 Swift에서 명시적으로 자원을 회수해 줘야 하는 상황이 있을 때, 자원관리에 대해서 한 번 더 생각해 볼 수 있는 아이템이었습니다.
 
 <br> 
 
