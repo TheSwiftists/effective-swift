@@ -28,7 +28,7 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 | 아이템 6 | [불필요한 객체 생성을 피하라]() | . |
 | 아이템 7 | [다 쓴 객체 참조를 해제하라]() | . |
 | 아이템 8 | [finalizer와 cleaner 사용을 피하라]() | . |
-| 아이템 9 | [try-finally보다는 try-with-resources를 사용하라]() | . |
+| 아이템 9 | [try-finally보다는 try-with-resources를 사용하라](chapter2/item9.md) | [Lin](https://github.com/Limwin94) |
 
 ### 3장 모든 객체의 공통 메서드
 
