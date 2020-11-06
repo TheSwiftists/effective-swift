@@ -25,18 +25,18 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 | 아이템 3 | [private 생성자나 열거 타입으로 싱글턴임을 보증하라](chapter2/item3.md) | [jinie](https://github.com/idevjinie) |
 | 아이템 4 | [인스턴스화를 막으려거든 private 생성자를 사용하라](chapter2/item4.md) | [Lin](https://github.com/Limwin94) |
 | 아이템 5 | [자원을 직접 명시하지 말고 의존 객체 주입을 사용하라](chapter2/item5.md) | [Lena](https://github.com/dev-lena) |
-| 아이템 6 | [불필요한 객체 생성을 피하라]() | . |
+| 아이템 6 | [불필요한 객체 생성을 피하라](chapter2/item6.md) | [delma](https://github.com/delmaSong) |
 | 아이템 7 | [다 쓴 객체 참조를 해제하라]() | . |
-| 아이템 8 | [finalizer와 cleaner 사용을 피하라]() | . |
+| 아이템 8 | [finalizer와 cleaner 사용을 피하라](chapter2/item8.md) | [Lena](https://github.com/dev-lena) |
 | 아이템 9 | [try-finally보다는 try-with-resources를 사용하라](chapter2/item9.md) | [Lin](https://github.com/Limwin94) |
 
 ### 3장 모든 객체의 공통 메서드
 
 | 아이템 번호 | 타이틀 | 담당자 |
 |:-----:|-------|:------:|
-| 아이템 10 | [equals는 일반 규약을 지켜 재정의하라]() | |
+| 아이템 10 | [equals는 일반 규약을 지켜 재정의하라](chapter3/item10.md) | [하이디](https://github.com/seizze) |
 | 아이템 11 | [equals를 재정의하려거든 hashCode도 재정의하라]() | |
-| 아이템 12 | [toString을 항상 재정의하라]() | |
+| 아이템 12 | [toString을 항상 재정의하라](chapter3/item12.md) | [Lin](https://github.com/Limwin94) |
 | 아이템 13 | [clone 재정의는 주의해서 진행하라]() | |
 | 아이템 14 | [Comparable을 구현할지 고려하라]() | |
 
@@ -44,13 +44,13 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 
 | 아이템 번호 | 타이틀 | 담당자 |
 |:-----:|-------|:------:|
-| 아이템 15 | [클래스와 멤버의 접근 권한을 최소화하라]() | |
-| 아이템 16 | [public 클래스에서는 public 필드가 아닌 접근자 메서드를 사용하라]() | |
-| 아이템 17 | [변경 가능성을 최소화하라]() | |
-| 아이템 18 | [상속보다는 컴포지션을 사용하라]() | |
-| 아이템 19 | [상속을 고려해 설계하고 문서화하라. 그러지 않았다면 상속을 금지하라]() | |
-| 아이템 20 | [추상 클래스보다는 인터페이스를 우선하라]() | |
-| 아이템 21 | [인터페이스는 구현하는 쪽을 생각해 설계하라]() | |
+| 아이템 15 | [클래스와 멤버의 접근 권한을 최소화하라](chapter4/item15.md) | [Lin](https://github.com/Limwin94) |
+| 아이템 16 | [public 클래스에서는 public 필드가 아닌 접근자 메서드를 사용하라](chapter4/item16.md) | [delma](https://github.com/delmaSong) |
+| 아이템 17 | [변경 가능성을 최소화하라](chapter4/item17.md) | [하이디](https://github.com/seizze) |
+| 아이템 18 | [상속보다는 컴포지션을 사용하라](chapter4/item18.md) | [하이디](https://github.com/seizze) |
+| 아이템 19 | [상속을 고려해 설계하고 문서화하라. 그러지 않았다면 상속을 금지하라](chapter4/item19.md) | [Lin](https://github.com/Limwin94) |
+| 아이템 20 | [추상 클래스보다는 인터페이스를 우선하라](chapter4/item20.md) | [delma](https://github.com/delmaSong) |
+| 아이템 21 | [인터페이스는 구현하는 쪽을 생각해 설계하라](chapter4/item21.md) | [Lena](https://github.com/dev-lena) |
 | 아이템 22 | [인터페이스는 타입을 정의하는 용도로만 사용하라]() | |
 | 아이템 23 | [태그 달린 클래스보다는 클래스 계층구조를 활용하라]() | |
 | 아이템 24 | [멤버 클래스는 되도록 static으로 만들라]() | |
