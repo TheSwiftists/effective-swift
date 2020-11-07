@@ -26,8 +26,8 @@ if one == two {
 
 Equatable 프로토콜은 Hashable, Comparable 프로토콜의 기반이 되므로 해당 프로토콜을 구현하기 위해서는 Equatable 프로토콜을 구현해야 합니다. 그리고 커스텀 타입을 만든 경우 비교를 원한다면 Equatable 프로토콜을 채택하고 구현해주어야 합니다.
 
-- 구조체에서 프로퍼티 정렬 시 Equatable 준수
-- 열거형에서 연관 값 사용 시 Equatable 준수 
+- 구조체 커스텀 타입이 Equatable을 준수하게 하려면 내부 프로퍼티도 Equatable 준수해야 합니다.
+- 열거형 커스텀 타입이 Eqautable을 준수하게 하려면 그 안의 연관 값도 Equatable 준수해야 합니다.
 
 ```swift
 class StreetAddress {
