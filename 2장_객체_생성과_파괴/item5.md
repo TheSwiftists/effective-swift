@@ -234,3 +234,11 @@ class PhotoGalleryController {
 
 ### 핵심 정리
 클래스가 내부적으로 하나 이상의 자원에 의존하고, 그 자원이 클래스 동작에 영향을 준다면 싱글턴과 정적 유틸리티 클래스는 사용하지 않는 것이 좋습니다. 이 자원들을 클래스가 직접 만들게 해서도 안됩니다. 대신 필요한 자원을(혹은 그 자원을 만들어주는 팩터리를) 생성자에 (혹은 정적 팩터리나 빌더에) 넘겨주는 것이 좋습니다. 의존 객체 주입이라 하는 이 기법은 클래스의 유연성, 재사용성, 테스트 용이성을 개선해줍니다.
+
+### 참고
+
+1. [[DI\] 의존성 주입(Dependency Injection) 을 해주는 세가지 방법](https://eunjin3786.tistory.com/115)
+2. [[DI] Dependency Injection 이란?](https://medium.com/@jang.wangsu/di-dependency-injection-%EC%9D%B4%EB%9E%80-1b12fdefec4f)
+3. [DI(Dependency Injection)에 대해 알아보자 ](https://velog.io/@jojo_devstory/DIDependency-Injection%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90)
+4. [Dependency Injection in Swift](https://cocoacasts.com/dependency-injection-in-swift)
+
