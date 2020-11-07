@@ -2,8 +2,7 @@
 
 
 
-`equals` (Swift에서는 `==`)를 재정의한 후, 각 언어의 컬렉션(Collection) 타입의 자료구조에 Car 타입의 인스턴스들을 추가해보면서 논리적으로 같은 객체로 판단되는지 살펴봅시다.
-예제 코드는 Car 타입의 car1와 car2가 논리적으로 같은 객체로 판단되도록 하는 것이 목표입니다.
+`equals` (Swift에서는 `==`)를 재정의한 후, 각 언어의 컬렉션(Collection) 타입의 자료구조에 Car 타입의 인스턴스들을 추가해보면서 논리적으로 같은 객체로 판단되는지 살펴봅시다. 아래의 예제 코드는 Car 타입의 car1와 car2가 논리적으로 같은 객체로 판단되도록 하는 것이 목표입니다.
 
 ### 왜 Java에서는 equals와 hashCode는 같이 재정의해야 할까요?
 
@@ -73,7 +72,7 @@ public static void main(String[] args){
    ```
 
 * **정리** <br>
-  `hashCode`를 `equals`와 함께 재정의하지 않으면 위의 예처럼 코드가 예상과 다르게 동작할 수 있습니다. 다시 말해,**  **hash 값을 사용하는 Java의 Collection(HashSet, HashMap, HashTable)을 사용할 때 문제가 발생할 수 있습니다. 따라서 `equals`를 재정의할 때 코드의 안전성을 높이려면 `hashCode`를 같이 재정의해주는 것이 좋습니다.**
+  `hashCode`를 `equals`와 함께 재정의하지 않으면 위의 예처럼 코드가 예상과 다르게 동작할 수 있습니다. 다시 말해,  **hash 값을 사용하는 Java의 Collection(HashSet, HashMap, HashTable)을 사용할 때 문제가 발생할 수 있습니다. 따라서 `equals`를 재정의할 때 코드의 안전성을 높이려면 `hashCode`를 같이 재정의해주는 것이 좋습니다.
 
 4. **hashCode 재정의**<br>
 
@@ -119,8 +118,9 @@ public static void main(String[] args){
 ### Swift 에서는 이 문제를 어떻게 다루고 있을까요?
 1. **Equatable 프로토콜 채택과 `==` 재정의**<br>
    
+
 **결과**: Java에서의 결과와 동일하게 재정의한 `equals`를 바탕으로 `Car` 타입의 car1, car2 객체는 논리적으로 같은 객체로 판단됩니다.
-   
+
    ~~~ swift
    import Foundation
    
@@ -143,10 +143,10 @@ public static void main(String[] args){
    let car1 = Car(name: "TheSwiftists", seater: 2)
    let car2 = Car(name: "TheSwiftists", seater: 2)
    print(car1 == car2) // true 출력
-~~~
-   
+   ~~~
 
-   
+
+
 2. **Array에 담는 경우**<br>
    **결과**: Java에서의 결과와 동일하게 Array에 car1, car2 을 추가할 수 있습니다. 아무 문제가 없습니다.
 
@@ -207,13 +207,10 @@ public static void main(String[] args){
    let car2 = Car(name: "TheSwiftists", seater: 2)
    
    var carsSet = Set<Car>() // 에러 발생
-~~~
-   
-
-
+   ~~~
 4. **Hashable 프로토콜 채택과 `hash(into:)` 메서드 구현**
-   **결과**: car1와 car2을 논리적으로 같은 객체로 판단하기 때문에 Set에 car1을 추가한 다음 car2을 추가할 수 없습니다.<br>
-(insert 결과: inserted false) 따라서 cars의 count는 1이 출력이 됩니다. 
+   **결과**: car1와 car2을 논리적으로 같은 객체로 판단하기 때문에 Set에 car1을 추가한 다음 car2을 추가할 수 없습니다.(insert 결과: inserted false) <br>
+따라서 cars의 count는 1이 출력이 됩니다. 
    
    ~~~swift
    extension Car: Hashable {
@@ -227,10 +224,7 @@ public static void main(String[] args){
    cars.insert(car1)
    cars.insert(car2) // failed (inserted false)
    print(cars.count) // 1 출력
-   
    ~~~
-   
-   
 
 ### Hashable 프로토콜
 
@@ -257,17 +251,14 @@ public static void main(String[] args){
     <br>
 
     **Hasher?**<br>
-    구조체로, **해당 인스턴스의 구성요소를 결합할 때 사용합니다.**(The hasher to use when `combining` the components of this instance.)<br>
+    구조체로, **해당 인스턴스의 구성요소를 결합할 때 사용합니다.**(The hasher to use when `combining` the components of this instance.)<br>**combine?**<br>
     
-**combine?**<br>
-    
-    ~~~swift
+    ```swift
     mutating func combine<H>(_ value: H) where H : Hashable
-~~~
+    ```
     
     제네릭 인스턴스 메소드로 **Hasher 구조체에서 value를 추가하는 메소드** 입니다.<br>
-    **해셔에 주어진 값을 추가하여 그 필수적인 부분을 해셔 상태로 혼합합니다.**(Adds the given value to this hasher, mixing its essential parts into the hasher state.)
-
+        **해셔에 주어진 값을 추가하여 그 필수적인 부분을 해셔 상태로 혼합합니다.**(Adds the given value to this hasher, mixing its essential parts into the hasher state.)
 
 ### 참고
 
@@ -289,3 +280,4 @@ public static void main(String[] args){
 ### 이미지 출처
 
 1. hashCode 재정의 이미지: [equals와 hashCode는 왜 같이 재정의해야 할까?](https://woowacourse.github.io/javable/2020-07-29/equals-and-hashCode)
+
