@@ -181,10 +181,84 @@ let inheritedClass = InheritedClass()	// 에러 발생 'InheritedClass' cannot b
 
 ## 사용 예제
 
+정적 팩터리 메서드가 유용하게 사용될 수 있는 두가지 방법에 대해 소개하고자 합니다.
 
+- UI 요소 생성시
+- 테스트 stub 객체 생성시
+
+UIViewController의 하위 요소들을 configure할 때 보통은 아래와 같은 방법을 사용합니다.
+
+```swift
+class TitleLabel: UILabel {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        font = .boldSystemFont(ofSize: 24)
+        textColor = .darkGray
+        adjustsFontSizeToFitWidth = true
+        minimumScaleFactor = 0.75
+    }
+}
+```
+
+위와 같은 접근방식에 문제가 있는 것은 아니지만, 우리는 종종 같은 종류의 UI에 대해 세부 요소만 다른 여러 개의 하위 클래스를 갖게 됩니다.(`TitleLabel`, `SubtitleLabel`, `FeaturedTitleLabel` 등) 
+
+서브클래싱은 중요한 작업이지만, 현재 작업은 새로운 동작을 추가하는 것이 아닌 인스턴스화 하는 과정이어서 서브클래싱 하는 것이 이 목적에 부합한가 하는 의문이 듭니다. 그래서 어떤 동작을 가지고 있는 것이 아니라면, 정적 팩터리 메서드를 통해 새로운 인스턴스를 만들 수 있습니다.
+
+```swift
+private extension UILabel {
+    static func makeForTitle() -> UILabel {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 24)
+        label.textColor = .darkGray
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.75
+        return label
+    }
+}
+```
+
+이런 접근의 장점은, 설정 부분을 실질적인 동작 부분과 분리할 수 있다는 것입니다. 또한 private 접근 제한자를 추가해 단일 파일로 범위를 지정할 수 있어서 앱의 일부에만 단일 기능을 가지도록 확장할 수 있습니다.
+
+```swift
+class ProductViewController {
+    private lazy var titleLabel = UILabel.makeForTitle()
+}
+```
+
+그럼 위와 같이 간단하게 UI 요소를 만들 수 있습니다. 
+
+
+
+그리고 테스트 코드를 작성하는 경우가 있습니다. 특히 특정 모델에 의존하여 테스트 코드를 작성할 때, 보일러플레이트가 많이 발생하는 코드를 작성하게 되는 경우가 많아 읽기 어렵고 디버깅이 어려워질 수 있습니다. 
+
+이럴 때 정적 팩터리 메서드로 stub 데이터를 가진 모델객체를 생성하게끔 만들어 놓으면, 테스트 시 해당 메소드만을 호출하여 간단하게 stub을 가져다 쓸 수 있습니다.
+
+```swift
+extension User {
+    static func makeStub(permissions: Set<User.Permission>) -> User {
+        return User(
+            name: "TestUser",
+            age: 30,
+            signUpDate: Date(),
+            permissions: permissions
+        )
+    }
+}
+```
+
+정적 팩토리 메서드의 이름을 지정하여 메인 앱에 추가하지 않고 테스트용으로만 사용할 수 있습니다. 이렇게 하게되면 코드를 실제 로직과 명확하게 구분할 수 있고, 깨끗한 테스트 코드를 쉽게 작성하는데에 도움이 됩니다.
 
 <br>
 
 ## 핵심 정리
 
 정적 팩터리 메서드와 public 생성자는 각자의 쓰임새가 있으니 상대적인 장단점을 이해하고 사용하는 것이 좋습니다. 그렇다고 하더라도 정적 팩터리를 사용하는 게 유리한 경우가 더 많으므로 무작정 public 생성자를 제공하던 습관이 있다면 고쳐야 합니다.
+
+
+
+<br>
+
+### 참고
+
+https://www.swiftbysundell.com/articles/static-factory-methods-in-swift/
