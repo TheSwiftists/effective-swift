@@ -112,3 +112,67 @@ final class MyViewController: UIViewController {
 }
 ```
 
+
+
+**그렇다면 일일이 Dispoable 프로토콜에 구현되어있는 dispose() 를 호출하여 없애줘야 할까요?** [RxSwift 가이드 문서의 Disposing](https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#disposing) 에서 권장하는 방법 중 하나는 `dispose()` 를 직접 호출하지 말고 `DisposeBag`을 사용하는 것입니다. `DisposeBag` 이 할당 해제될 때, 각 dispoable에 `dispose` 메서드가 호출됩니다. 
+
+### RxSwift의 `DisposeBag`
+
+> DisposeBag은 메모리 관리와 ARC 관리를 위해 RxSwift에서 제공하는 툴로, 부모 객체의 상위 객체를 할당 해제하면 DeleteBag에서 Observer 객체가 폐기됩니다. 
+> DisposeBag을 가지고 있는 객체의 deinit이 호출될 때, 각 disposable Observer는 관찰하고 있던 것에서 자동으로 구독해지됩니다. DisposeBag을 사용하지 않으면 Observer는 retain cycle을 만들 수 있습니다. (무기한으로 옵저빙에 매달리거나, 할당을 취소하여 크러쉬를 유발할 수 있습니다.)
+
+[DisposeBag](https://github.com/ReactiveX/RxSwift/blob/master/RxSwift/Disposables/DisposeBag.swift) 의 내부구현 중 일부를 살펴보면
+
+```swift
+public final class DisposeBag: DisposeBase {
+  
+  private var disposables = [Disposable]()
+  
+    private func dispose() {
+    let oldDisposables = self._dispose()
+
+    for disposable in oldDisposables {
+        disposable.dispose()
+    }
+  }
+  
+  private func _dispose() -> [Disposable] {
+    self.lock.performLocked {
+        let disposables = self.disposables
+            
+        self.disposables.removeAll(keepingCapacity: false)
+        self.isDisposed = true
+            
+        return disposables
+        }
+    }
+
+  deinit {
+    self.dispose()
+  }
+}
+```
+
+이렇게 `DisposeBag`의 `Disposable` 타입의 배열에 담긴 `Disposable` 들을 `dispose` 하는 메서드가 구현되어 있습니다. 그리고 `DisposeBag`이 할당 해제될 때(`deinit` 에서) `dispose()` 메서드를 호출해 `DisposeBag`이 담고있는 `Disposable`들을 `dispose`해 각 disposable Observer는 관찰하고 있던 것에서 자동으로 구독해지시킵니다.
+
+아래 예제 코드는 `dispose()` 메서드를 사용한 예제를 `DisposeBag`을 사용하는 방법으로 바꾼 것입니다.
+
+```swift
+final class MyViewController: UIViewController {
+    let disposeBag = DisposeBag()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+      
+      let parsedObject = theObservable
+        .map { [parser] json in
+        return parser.parse(json)
+       }
+        parsedObject.subscribe(onNext: {
+          // handle your subscription
+        })
+        .disposed(by: disposeBag)
+    }
+}
+```
+
