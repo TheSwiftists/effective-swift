@@ -176,3 +176,31 @@ final class MyViewController: UIViewController {
 }
 ```
 
+
+
+### 참고
+
+### Java
+
+1. [finalize - docs.oracle](https://docs.oracle.com/javase/9/docs/api/java/lang/Object.html#finalize--)
+
+2. [Class Cleaner - docs.oracle](https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Cleaner.html)
+
+3. [Phantom Reachable - docs.oracle](https://docs.oracle.com/javase/8/docs/api/java/lang/ref/PhantomReference.html)
+
+### Swift
+
+1. [Deinitialization - Swift.org](https://docs.swift.org/swift-book/LanguageGuide/Deinitialization.html)
+
+2. [Memory management in RxSwift – DisposeBag](http://adamborek.com/memory-managment-rxswift/)
+
+3. [RxSwift](https://github.com/ReactiveX/RxSwift) 
+
+4. [RxSwift - DisposeBag](https://github.com/ReactiveX/RxSwift/blob/main/RxSwift/Disposables/DisposeBag.swift)
+
+5. [[Question-Archive](https://github.com/TTOzzi/Question-Archive)](https://github.com/TTOzzi/Question-Archive/blob/master/contents/week-3.md#q)
+
+6. [Getting Started With RxSwift and RxCocoa](https://www.raywenderlich.com/1228891-getting-started-with-rxswift-and-rxcocoa)
+
+
+
