@@ -64,3 +64,51 @@ Java의 객체 소멸자인 finalizer와 cleaner는 다음과 같은 특징을 �
 * Java 언어 명세는 finalizer와 cleaner의 수행 시점 뿐만 아니라 수행 여부도 보장하지 않습니다. 
   * Finalizer 스레드는 다른 애플리케이션 스레드보다 우선순위가 낮아 실행될 기회를 얻지 못할 수도 있습니다. 자바 언어 명세는 어떤 스레드가 finalizer를 수행할지 명시하지 않습니다.
 
+
+
+### Swift에서는 
+
+Swift에서는 클래스의 인스턴스 레퍼런스 카운트가 0이 되면 메모리에서 할당 해제합니다. 그리고 클래스의 인스턴스가 소멸되기 직전에 [deinit](https://docs.swift.org/swift-book/LanguageGuide/Deinitialization.html)이 호출됩니다. 즉, Java에서와 달리 개발자가 인스턴스의 소멸 시점과 deinit이 불릴 시점을 예측할 수 있습니다.
+
+그렇다면 deinit에서는 어떤 일을 할 수 있을까요?
+
+책 본문에 나온 C++의 내용과 같이  Swift도 인스턴스가 소멸될 때 deinit을 통해 비메모리 자원 회수 용도(reclaim other [nonmemory resources](https://stackoverflow.com/a/7037712))로 사용할 수 있습니다.
+
+> * 비메모리 자원(nonmemory resources)
+>   : 메모리의 일부를 차지하면서 다른 리소스 일부에도 접근할 수 있는 권한이 있는 데이터베이스, 네트워크, 파일 등 
+
+`deinit` 때 처리해줄 일의 예시()로는 [item9](chapter2/item9.md)(NotificationCenter, FileHandle, DBConnection(SQLite))에서 설명하고 있습니다. 이번 아이템에서는 추가적인 예시로 RxSwift의 `Dispose()` 메서드와 `DisposeBag`에 대해서 설명하겠습니다. 아래에 예시는 다양한 구현방법 중 하나입니다.
+
+### RxSwift
+
+`Dispose()` 메서드와 `DisposeBag`을 소개하기 앞서 두 가지 필요한 내용을 정리하겠습니다.
+
+> Obsevable: 변화의 알림을 보냅니다.
+>
+> Observer: Observable을 구독하고 Observable이 변화되었을 때 알림을 받습니다.
+> 
+> 
+> 
+> 
+
+### RxSwift의 `Dispose()`
+
+RxSwift 에서 [Observable](https://github.com/ReactiveX/RxSwift/blob/master/RxSwift/Observable.swift) 을 subscribe(구독) 하면 항상 [Disposable](https://github.com/ReactiveX/RxSwift/blob/master/RxSwift/Disposable.swift) 을 반환합니다. 이 Disposable 들을 dispose 해주지 않으면 메모리에 계속 남아 메모리 누수가 발생합니다. 따라서 구독한 Disposable 들을 명시적으로 dispose 해줘야합니다. 
+
+```swift
+final class MyViewController: UIViewController {
+    var subscription: Disposable?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        subscription = theObservable().subscribe(onNext: {
+            // handle your subscription
+        })
+    }
+    
+    deinit {
+        subscription?.dispose()
+    }
+}
+```
+
