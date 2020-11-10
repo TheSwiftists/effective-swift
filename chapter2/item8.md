@@ -77,19 +77,19 @@ Swift에서는 클래스의 인스턴스 레퍼런스 카운트가 0이 되면 �
 > * 비메모리 자원(nonmemory resources)
 >   : 메모리의 일부를 차지하면서 다른 리소스 일부에도 접근할 수 있는 권한이 있는 데이터베이스, 네트워크, 파일 등 
 
-`deinit` 때 처리해줄 일의 예시()로는 [item9](chapter2/item9.md)(NotificationCenter, FileHandle, DBConnection(SQLite))에서 설명하고 있습니다. 이번 아이템에서는 추가적인 예시로 RxSwift의 `Dispose()` 메서드와 `DisposeBag`에 대해서 설명하겠습니다. 아래에 예시는 다양한 구현방법 중 하나입니다.
+`deinit` 때 처리해줄 일의 예시(NotificationCenter, FileHandle, DBConnection(SQLite))로는 [item9](chapter2/item9.md)에서 설명하고 있습니다. 이번 아이템에서는 추가적인 예시로 RxSwift의 `Dispose()` 메서드와 `DisposeBag`에 대해서 설명하겠습니다. 아래에 예시는 다양한 구현방법 중 하나입니다.
+
+
 
 ### RxSwift
 
 `Dispose()` 메서드와 `DisposeBag`을 소개하기 앞서 두 가지 필요한 내용을 정리하겠습니다.
 
-> Obsevable: 변화의 알림을 보냅니다.
+> * Obsevable: 변화의 알림을 보냅니다.
 >
-> Observer: Observable을 구독하고 Observable이 변화되었을 때 알림을 받습니다.
-> 
-> 
-> 
-> 
+> * Observer: Observable을 구독하고 Observable이 변화되었을 때 알림을 받습니다.
+
+
 
 ### RxSwift의 `Dispose()`
 
@@ -114,12 +114,17 @@ final class MyViewController: UIViewController {
 
 
 
-**그렇다면 일일이 Dispoable 프로토콜에 구현되어있는 dispose() 를 호출하여 없애줘야 할까요?** [RxSwift 가이드 문서의 Disposing](https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#disposing) 에서 권장하는 방법 중 하나는 `dispose()` 를 직접 호출하지 말고 `DisposeBag`을 사용하는 것입니다. `DisposeBag` 이 할당 해제될 때, 각 dispoable에 `dispose` 메서드가 호출됩니다. 
+**위와 같은 방법을 사용하면 일일이 Dispoable 프로토콜에 구현되어있는 dispose() 를 호출하여 없애줘야 합니다.** 하지만 [RxSwift 가이드 문서의 Disposing](https://github.com/ReactiveX/RxSwift/blob/master/Documentation/GettingStarted.md#disposing) 에서 권장하는 방법 중 하나는 `dispose()` 를 직접 호출하지 않고 `DisposeBag`을 사용하는 것입니다. `DisposeBag` 이 할당 해제될 때, 각 dispoable에 `dispose` 메서드가 호출됩니다. 
+
+
 
 ### RxSwift의 `DisposeBag`
 
-> DisposeBag은 메모리 관리와 ARC 관리를 위해 RxSwift에서 제공하는 툴로, 부모 객체의 상위 객체를 할당 해제하면 DeleteBag에서 Observer 객체가 폐기됩니다. 
-> DisposeBag을 가지고 있는 객체의 deinit이 호출될 때, 각 disposable Observer는 관찰하고 있던 것에서 자동으로 구독해지됩니다. DisposeBag을 사용하지 않으면 Observer는 retain cycle을 만들 수 있습니다. (무기한으로 옵저빙에 매달리거나, 할당을 취소하여 크러쉬를 유발할 수 있습니다.)
+> * DisposeBag은 메모리 관리와 ARC 관리를 위해 RxSwift에서 제공하는 툴로, 부모 객체의 상위 객체를 할당 해제하면 DeleteBag에서 Observer 객체가 폐기됩니다. 
+> * DisposeBag을 가지고 있는 객체의 deinit이 호출될 때, 각 disposable Observer는 관찰하고 있던 것에서 자동으로 구독해지됩니다. 
+> * DisposeBag을 사용하지 않으면 Observer는 retain cycle을 만들 수 있습니다. (무기한으로 옵저빙에 매달리거나, 할당을 취소하여 크러쉬를 유발할 수 있습니다.)
+
+
 
 [DisposeBag](https://github.com/ReactiveX/RxSwift/blob/master/RxSwift/Disposables/DisposeBag.swift) 의 내부구현 중 일부를 살펴보면
 
