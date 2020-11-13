@@ -85,3 +85,18 @@ extension UIApplicationDelegate {
 
 
 이처럼 제 생각에는 Java와 다르게 Swift에서 extension을 사용해서 Protocol의 메서드를 구현하는 것을 지양하지 않는 것 같습니다. 오히려 Cocoa Touch Framework에서 사용할 만큼 선호하는 방식 같습니다. 다들 분들의 생각은 어떠신지 같이 이야기 나눠보면 좋을 것 같습니다. 
+
+
+
+### 참고
+
+1. [Delegation - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
+
+2. [UIApplicationDelegate -  Apple Developer Documentation](https://developer.apple.com/documentation/uikit/uiapplicationdelegate)
+
+3. [About the App Launch Sequence -  Apple Developer Documentation](https://developer.apple.com/documentation/uikit/app_and_environment/responding_to_the_launch_of_your_app/about_the_app_launch_sequence)
+
+4. [[iOS] 앱의 생명주기(App Life Cycle)와 앱의 구조(App Structure)](https://jinshine.github.io/2018/05/28/iOS/%EC%95%B1%EC%9D%98%20%EC%83%9D%EB%AA%85%EC%A3%BC%EA%B8%B0(App%20Life%20Cycle)%EC%99%80%20%EC%95%B1%EC%9D%98%20%EA%B5%AC%EC%A1%B0(App%20Structure)/)
+
+5. [Delegation - Cocoa Core Competencies in Documentation Archive](https://developer.apple.com/library/archive/documentation/General/Conceptual/DevPedia-CocoaCore/Delegation.html)
+
