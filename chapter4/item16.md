@@ -85,9 +85,9 @@ class ProfileViewController: UIViewController, ProfileHeaderViewDelegate {
 }
 ```
 
-이제는 `profileViewController.headerView` 로 접근 할 수 없게 됩니다. 하지만 설계상 headerView를 PremiumHeaderView로 지정하는 함수가 반드시 필요한데, 이는 어떻게 할 수 있을까요?
+이제는 `profileViewController.headerView` 로 접근 할 수 없게 됩니다. 하지만 설계상 `headerView`를 `PremiumHeaderView`로 지정하는 함수가 반드시 필요한데, 이는 어떻게 할 수 있을까요?
 
-`headerView` 자체를 노출하는 대신 다음과 같이 ProfileViewController가 사용자 모드를 지정할 수 있는 API를 만드는 것입니다.
+`headerView` 자체를 노출하는 대신 다음과 같이 `ProfileViewController`가 사용자 모드를 지정할 수 있는 API를 만드는 것입니다.
 
 ```swift
 extension ProfileViewController {
