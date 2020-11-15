@@ -77,7 +77,7 @@ Swift에서는 클래스의 인스턴스 레퍼런스 카운트가 0이 되면 �
 > * 비메모리 자원(nonmemory resources)
 >   : 메모리의 일부를 차지하면서 다른 리소스 일부에도 접근할 수 있는 권한이 있는 데이터베이스, 네트워크, 파일 등 
 
-`deinit` 때 처리해줄 일의 예시(NotificationCenter, FileHandle, DBConnection(SQLite))로는 [item9](chapter2/item9.md)에서 설명하고 있습니다. 이번 아이템에서는 추가적인 예시로 RxSwift의 `Dispose()` 메서드와 `DisposeBag`에 대해서 설명하겠습니다. 아래에 예시는 다양한 구현방법 중 하나입니다.
+`deinit` 때 처리해줄 일의 예시(NotificationCenter, FileHandle, DBConnection(SQLite))로는 [item9](item9.md)에서 설명하고 있습니다. 이번 아이템에서는 추가적인 예시로 RxSwift의 `Dispose()` 메서드와 `DisposeBag`에 대해서 설명하겠습니다. 아래에 예시는 다양한 구현방법 중 하나입니다.
 
 
 
