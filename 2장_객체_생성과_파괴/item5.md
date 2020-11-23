@@ -165,7 +165,7 @@ class SpellChecker {
 import UIKit
 
 class ViewController: UIViewController {
-    lazy var requestManager: RequestManager? = RequestManager()
+    var requestManager: RequestManager?
 }
 
 class newViewController {
