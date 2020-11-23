@@ -43,3 +43,77 @@ extension Double: TextRepresentable { }
 
 또한 기존에 제공되는 프로토콜들의 익스텐션을 통한 기본 구현 코드를 볼 수는 없지만, 공개되어있는 내부 구현을 살펴봤을 때 스위프트의 많은 기능들이 프로토콜, 익스텐션, 제네릭의 조합으로 구현되어 있는 것 같습니다. 그 중에서 한 가지 예를 들어 살펴보자면, `Array`, `Set`, `Dictionary` 에서 공통으로 채택하고 있는 프로토콜들은 `CustomDebugStringConvertible`, `CustomReflectable`, `CustomStringConvertible`, `CustomDebugStringConvertible` 등이 있는데 타입들에 공통으로 들어가는 코드의 중복을 줄이기 위해 타입별로 공유하는 부분들을 각 프로토콜에서 익스텐션을 통해 기본 구현했을 것이라고 예상할 수 있습니다. 
 
+
+
+### 프로토콜 기본 구현시 고려해야할 점
+
+다만 이런 점들은 프로토콜 기본 구현시 고려해야합니다.<br> (예제 중 ⭐️한 곳을 유의해서 봐주세요.)
+
+1. **Method Dispatch**
+
+   ```swift
+   protocol SampleProtocol {
+       func foo()
+   }
+   extension SampleProtocol {
+       func foo() {
+           print("protocol foo")
+       }
+       func bar() { 
+           print("protocol bar") ⭐️
+       }
+   }
+   class SampleClass: SampleProtocol {
+       func foo() {
+           print("class foo")
+       }
+       func bar() {
+           print("class bar")
+       }
+   }
+   let sample: SampleProtocol = SampleClass()
+   sample.foo() // "class foo"
+   sample.bar() // "protocol bar" ⭐️
+   ```
+
+   *익스텐션에서 구현한 메서드는 재정의되지 않습니다.* 
+
+   * `foo()`와 같은 **Protocol-required method**는 런타임에 실행할 메서드를 선택하는 **dynamic dispatch**를 사용합니다.
+   * `bar()`와 같은 **Extension-defined method**는 빌드 타임에 실행할 메서드를 선택하는 **static dispatch**를 사용합니다. 즉, 익스텐션에서 구현한 메서드는 재정의할 수 없고 익스텐션에서 구현한 기본구현을 사용해야합니다.
+
+2. **Dispatch Precedence and Constraints**
+
+   ```swift
+   protocol SampleProtocol {
+       func foo()
+   }
+   extension SampleProtocol {
+       func foo() {
+           print("SampleProtocol")
+       }
+   }
+   protocol BarProtocol {}
+   extension SampleProtocol where Self: BarProtocol {
+       func foo() {
+           print("BarProtocol") ⭐️
+       }
+   }
+   class SampleClass: SampleProtocol, BarProtocol {}
+   let sample: SampleProtocol = SampleClass()
+   sample.foo() // "BarProtocol" ⭐️
+   ```
+
+   프로토콜에서 요구하는 메서드(Protocol-required method)일 경우에는 제약을 사용하여 기본 구현을 재정의할 수 있습니다. 그리고 이러한 경우 *제약이 있는(constrained) 기본 구현이 제약이 없는 기본 구현보다 더 우선합니다.*
+
+   * 우선 순위: *프로토콜을 준수한 class/struct/enum-> 제약이 있는 protocol extension -> 단순 protocol extension*.
+
+
+
+### 참고
+
+1. [[Adding Protocol Conformance with an Extension - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
+2. [Protocol - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
+3. [Protocol Extensions  - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID521)
+4. [프로토콜 지향 프로그래밍 POP](https://yagom.net/courses/swift-basic/lessons/프로토콜-지향-프로그래밍-p-o-p/)
+5. [Swift: Why You Should Avoid Using Default Implementations in Protocols](https://medium.com/better-programming/swift-why-you-should-avoid-using-default-implementations-in-protocols-eeffddbed46d)
+
