@@ -8,7 +8,7 @@
 
 ### Abstract class
 
-추상 클래스란 구체적이지 않은 클래스를 의미합니다. 하나 이상의 추상 메소드(abstract method)를 포함합니다. **추상 메소드는 선언만 있고 본체는 없는 함수이며, 선언부에 `abstract` 라는 키워드를 붙입니다. **추상 메소드가 포함되었다면 클래스도 추상 클래스이므로 클래스명 앞에도 `abstract` 키워드를 붙여야 합니다. 
+추상 클래스란 구체적이지 않은 클래스를 의미합니다. 하나 이상의 추상 메소드(abstract method)를 포함합니다. **추상 메소드는 선언만 있고 본체는 없는 함수이며, 선언부에 `abstract` 라는 키워드를 붙입니다.**추상 메소드가 포함되었다면 클래스도 추상 클래스이므로 클래스명 앞에도 `abstract` 키워드를 붙여야 합니다. 
 
 그리고 추상메소드의 접근 지정자로 `private`은 사용할 수 없습니다. 자식 클래스에서 해당 메소드를 구현해야만 하기 때문입니다.
 
@@ -215,7 +215,7 @@ protocol Women {
 프로토콜이 올바르게 구현되지 않았다면 컴파일러가 컴파일 시점에 알려주는 장점이 있습니다.
 
 ```swift
-final class Delma: Women {
+struct Delma: Women {
   var heartRate = 100
   var roundingHeight: Double = 0.0
   var height: Double {
