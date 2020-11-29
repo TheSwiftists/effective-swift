@@ -129,7 +129,7 @@ struct Complex {
 함수의 동작이 동사로 설명될 경우, mutating 메서드는 명령형으로 짓고, 대응되는 nonmutating 메서드에는 "ed", 또는 "ing" 접미사를 붙입니다.
 
 - `x.sort()` ↔︎ `z = x.sorted()`
-- `x.append(y)` ↔︎ `x.appending(y)`
+- `x.append(y)` ↔︎ `z = x.appending(y)`
 
 함수의 동작이 명사로 설명될 경우, nonmutating 메서드에 명사를 사용하고, 대응되는 mutating 메서드에는 "form" 접두사를 적용합니다.
 
