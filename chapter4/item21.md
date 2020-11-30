@@ -32,9 +32,9 @@ extension TextRepresentable {
     }
 }
 
-extension Int: TextRepresentable { }
-extension String: TextRepresentable { }
-extension Double: TextRepresentable { }
+extension Int: TextRepresentable { } // 자세한 구현은 생략
+extension String: TextRepresentable { } // 자세한 구현은 생략
+extension Double: TextRepresentable { } // 자세한 구현은 생략
 
 8291.describeSelf() // 8291 
 3.14.describeSelf() // 3.14 
