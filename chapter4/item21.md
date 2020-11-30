@@ -111,7 +111,7 @@ extension Double: TextRepresentable { } // 자세한 구현은 생략
 
 ### 참고
 
-1. [[Adding Protocol Conformance with an Extension - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
+1. [Adding Protocol Conformance with an Extension - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
 2. [Protocol - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID276)
 3. [Protocol Extensions  - The Swift Programming Language](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html#ID521)
 4. [프로토콜 지향 프로그래밍 POP](https://yagom.net/courses/swift-basic/lessons/프로토콜-지향-프로그래밍-p-o-p/)
