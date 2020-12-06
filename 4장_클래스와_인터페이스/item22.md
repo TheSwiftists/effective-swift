@@ -1,10 +1,8 @@
 # item 22. 인터페이스는 타입을 정의하는 용도로만 사용하라
 
-### 목차
+> Swift Protocol의 네가지 용법에 대해 알아보자
 
-- Java의 Interface
-- Swift의 Protocol
-- 결론 및 요약
+
 
 ## Java의 Interface
 
@@ -48,7 +46,21 @@ Java의 Interface를 이용한 안티패턴과 그것을 피할 수 있는 방�
 
 ## Swift의 Protocol
 
-앞서 말했듯이 프로토콜의 주된 역할은 구체적인 구현에 앞서 추상화를 정의할 수 있도록 하는 것입니다. 프로토콜을 사용하는 것은 공용 API에 영향을 주지 않고 구현부를 swap하거나 변형하도록 할 수 있습니다. 프로토콜 지향 프로그래밍 방식을 통해 다양한 방식으로 프로토콜을 사용할 수 있습니다. 크게 네가지로 나눌 수 있는데, Apple이 프레임워크 내에서 프로토콜을 사용하는 방법과 유사한 방식으로 자체 프로토콜을 정의할 수 있는 방법을 살펴보겠습니다.
+Swift의 프로토콜 구현은 언어적인 측면에서 가장 흥미로운 부분 중 하나입니다. 앞서 말했듯이 프로토콜의 주된 역할은 구체적인 구현에 앞서 추상화를 정의할 수 있도록 하는 것입니다. 프로토콜을 사용하는 것은 공용 API에 영향을 주지 않고 구현부를 swap하거나 변형하도록 할 수 있습니다. 프로토콜 지향 프로그래밍 방식을 통해 다양한 방식으로 프로토콜을 사용할 수 있습니다. 크게 네가지로 나눌 수 있는 프로토콜의 용법에 대해 알아봅시다.
+
+ 
+
+- **Action enablers** : 각각의 주어진 타입에 정의된 동작을 하도록 함. 일반적으로 `Equatable`처럼 "able"로 끝나는 이름을 가짐
+
+- **Requirement definitions** : `Numeric`, `Sequence` 처럼 특정한 종류의 객체가 되기 위한 요구사항을 정함
+
+- **Type conversion** : `CustonStringConvertible`, `ExpressibleByStringLiteral` 처럼다양한 유형이 다른 유형으로 변환 가능하거나 원시 값 또는 리터럴을 통해 표현할 수 있음을 선언하는데 사용
+
+- **Abstract interfaces** : 여러 타입이 구현할 수 있는 통합된 API의 역할을 함. 이를 통해 원하는 대로 구현을 교체하거나, 코드를 캡슐화 하거나, mock된 객체를 테스트에서 사용할 수 있음
+
+특히 associated type 및 protocol extension을 활용해서 정의하고 사용할 수 있는 방법의 수는 아주 다양해서 프로토콜이 얼마나 강력하게 쓰일 수 있는지를 보여줍니다. 
+
+그렇기 때문에 모든 프로토콜을 동일한 방식으로 취급하는 것이 아니라 어떤 카테고리에 속하는지에 따라 디자인 하는 것이 중요합니다. 위에서 말한 프로토콜의 용법에 대해 Apple의 프레임워크는 어떻게 사용하고 있는지 알아봅시다.
 
 
 
@@ -66,9 +78,7 @@ protocol Hashable: Equatable {
 }
 ```
 
-A big benefit of the fact that those two capabilities are defined using the type system (rather than being hard-coded into the compiler) is that it lets us write generic code that’s *[constrained](https://www.swiftbysundell.com/articles/using-generic-type-constraints-in-swift-4)* to those protocols, which in turn enables us to make full use of those capabilities within such code.
-
-For example, here’s how we could extend `Array` with a method that lets us count all occurrences of a value, given that the array’s `Element` type conforms to `Equatable`:
+예를 들어 다음은 배열의`Element` 유형이`Equatable`을 준수하는 경우, 값의 모든 발생을 계산할 수있는 메서드로 `Array`를 확장하는 방법입니다.
 
 ```swift
 extension Array where Element: Equatable {
@@ -84,7 +94,9 @@ extension Array where Element: Equatable {
 }
 ```
 
-일반적으로, 특정 영역에 너무 묶여있지 않고 행동 자체에 집중할 수 있기 때문에, (Equatable과 Hashable처럼) 행동 기반의 프로토콜을 정의할 때는 가능한 한 일반적으로 만드는 것이 좋습니다.
+**특정 영역에 너무 묶여있지 않고 행동 자체에 집중할 수 있기 때문에, (Equatable과 Hashable처럼) 행동 기반의 프로토콜을 정의할 때는 가능한 한 일반적으로 만드는 것이 좋습니다.**
+
+
 
 예를 들어, 다양한 객체나 값을 로드하는 여러 유형을 통합하는 `Loadable`의 경우, `associated type`으로 프로토콜을 정의할 수 있습니다. `associated type`을 이용하면 프로토콜을 채택하는 객체들이 로드되는 결과의 타입을 선언하도록 합니다.
 
@@ -124,7 +136,7 @@ protocol Colorable {
 
 ### Defining requirements
 
-프로토콜이 사용될 수 있는 또 다른 방법으로는 API에 대한 요구사항이나 객체를 정의하는데 사용할 수 있습니다. 표준 라이브러리에서 `Collection`, `Numeric`, `Sequence`와 같은 프로토콜은 해당 프로토콜의 의미를 정의하는 데 사용됩니다.
+프로토콜이 사용될 수 있는 또 다른 방법으로는 API에 대한 요구사항이나 객체를 정의하는데 사용할 수 있습니다. 표준 라이브러리에서 `Collection`, `Numeric`, `Sequence`와 같은 프로토콜은 **해당 프로토콜의 의미를 정의하는 데 사용**됩니다.
 
 ```swift
 protocol Sequence {
@@ -144,7 +156,7 @@ protocol IteratorProtocol {
 }
 ```
 
-> iterator가 실제로 각 반복 작업을 자체적으로 수행하기 때문에 위의 프로토콜은 대신 `Iterable`이라고 불릴 수 있습니다.그러나 `IterableProtocol`이라는 이름은 `Sequence`와 더 일관된 느낌을 주기 위해 선택되었을 것입니다. 그리고 동일한 이름의 관련된 타입과 충돌을 방지하기 위해 `Iterator`라는 이름을 하지 않은 것입니다.
+> iterator가 실제로 각 반복 작업을 자체적으로 수행하기 때문에 위의 프로토콜은 대신 `Iterable`이라고 불릴 수 있습니다.그러나 `IterableProtocol`이라는 이름은 `Sequence`와 더 일관된 느낌을 주기 위해 선택되었을 것입니다. 그리고 관련된 타입과 동일한 이름의 충돌을 방지하기 위해 `Iterator`라는 이름을 하지 않은 것입니다.
 
 위의 `Sequence`와 `IteratorProtocol`을 염두에 두고 `Cacheable`과 `Colorable` 프로토콜로 돌아가 요구사항을 담고 있는 프로토콜로서 개선할 수 있는지 살펴보겠습니다.
 
@@ -165,24 +177,13 @@ protocol CachingProtocol: Codable {
 }
 ```
 
-그러나 이러한 경우에 훨씬 더 나은 접근 방식은 실제로 캐시하는 부분과 캐시 키를 생성하는 부분을 분리하는 것입니다. 이렇게 하면 모델 코드에 캐싱과 관련된 상세한 프로퍼티가 없도록 유지할 수 있습니다.
-
-키 생성 코드를 별도의 타입으로 옮김으로써 그렇게 할 수 있습니다. 그런 다음 `CacheKeyGenerator` 프로토콜 사용에 대한 요구 사항을 공식화 할 수 있습니다.
-
-```swift
-protocol CacheKeyGenerator {
-    associatedtype Value: Codable
-    func cacheKey(for value: Value) -> String
-}
-```
-
 
 
 ### Type conversions
 
 다음으로, 다른 값으로부터 convertible이 가능한 타입을 정의하는 프로토콜에 대해 알아보겠습니다.
 
-`CustomStringConvertible` 이라는 표준 라이브러리가 있습니다. 이는 모든 유형을 사용자가 정의한 문자열로 반환하는 데 사용합니다.
+`CustomStringConvertible` 이라는 표준 라이브러리가 있습니다. 모든 타입을 사용자가 정의한 문자열로 반환하는 데 사용합니다.
 
 ```swift
 protocol CustomStringConvertible {
@@ -190,7 +191,7 @@ protocol CustomStringConvertible {
 }
 ```
 
-여러 타입에서 단일 데이터 조각을 추출할 때 주로 유용합니다. 아까 앞서 살펴봤던 Titleable 프로토콜의 목적과 완벽하게 일치합니다.
+여러 타입에서 단일 데이터 조각을 추출할 때 주로 유용합니다. 아까 앞서 살펴봤던 `Titleable` 프로토콜의 목적과 완벽하게 일치합니다.
 
 `Titleable`프로토콜의 이름을 `TitleConvertible`로 변경하면 해당 프로토콜의 용도를 더 쉽게 이해할 수 있을 뿐만 아니라, 코드를 표준 라이브러리와 일관성있게 만들 수 있습니다.
 
@@ -223,7 +224,7 @@ protocol ExpressibleByNilLiteral {
 }
 ```
 
-> Note that while we’re free to conform to most built-in literal protocols within our own code as well, conforming to `ExpressibleByNilLiteral` is discouraged — as `Optional` is expected to be the only type adopting that protocol.
+> 자체 코드 내에서 대부분의 기본 제공 리터럴 프로토콜을 자유롭게 준수 할 수 있지만, `ExpressibleByNilLiteral` 준수는 권장되지 않습니다. - 'Optional'은 해당 프로토콜을 채택하는 유일한 유형이 될 것으로 예상됩니다.
 
 
 
@@ -288,27 +289,13 @@ struct MockNetworkEngine: NetworkEngine {
 
 <br>
 
-## 결론 및 요약
+### 결론
 
-Swift의 프로토콜 구현은 언어적인 측면에서 가장 흥미로운 부분 중 하나입니다. 특히 associated type 및 protocol extension을 활용해서 정의하고 사용할 수 있는 방법의 수는 아주 다양해서 프로토콜이 얼마나 강력하게 쓰일 수 있는지를 보여줍니다. 
+Java의 Interface의 사용 목적과 그에 반하는 안티패턴, 그리고 적절하게 사용할 수 있는 방법에 대해 알아보았습니다. 또한 Swift의 Protocol의 사용 목적과 Apple이 제공하는 프레임워크를 통해 네가지 용법에 대해 알아보았습니다. 
 
-그렇기 때문에 모든 프로토콜을 동일한 방식으로 취급하는 것이 아니라 어떤 카테고리에 속하는지에 따라 디자인 하는 것이 중요합니다. 요약하자면 프로토콜을 나누는 네가지 카테고리는 다음과 같습니다.
+또 한가지 기억해야 할 것은, 프로토콜이라고 무조건 -able 접미사만 붙이는 것이 아니라 용법에 따라 적절한 이름을 붙여야 어떤 기능을 하는지 정확하게 표현할 수 있고, 개발자간 소통에 드는 비용을 줄일 수 있을 것입니다.
 
-- Action enablers
 
-  : 각각의 주어진 타입에 정의된 동작을 하도록 함. 일반적으로 `Equatable`처럼 "able"로 끝나는 이름을 가짐.
-
-- Requirement definitions
-
-  : `Numeric`, `Sequence`, `ColorProvider`처럼 특정한 종류의 객체가 되기 위한 요구사항을 정함
-
-- Type conversion
-
-  : `CustonStringConvertible`, `ExpressibleByStringLiteral` 처럼다양한 유형이 다른 유형으로 변환 가능하거나 원시 값 또는 리터럴을 통해 표현할 수 있음을 선언하는데 사용
-
-- Abstract interfaces
-
-  : 여러 타입이 구현할 수 있는 통합된 API의 역할을 함. 이를 통해 우리가 원하는 대로 구현을 교체하거나, 코드를 캡슐화 하거나, mock된 객체를 테스트에서 사용할 수 있음
 
 ### 참고
 
