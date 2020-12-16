@@ -107,3 +107,73 @@ public class EnumMapExample {
 
 
 ## Swift
+
+잘못된 쓰임새
+
+```Swift
+enum Ensemble: Int {
+    case solo
+    case duet
+    case trio
+    case quartet
+    case quintet
+    case sextet
+    case septet
+    case octet
+    case nonet
+    case dectet
+        
+    var numberOfMuscians: Int {
+        return rawValue + 1
+    }
+}
+```
+
+
+올바른 쓰임새 
+
+```Swift
+enum Ensemble: Int {
+    case solo
+    case duet
+    case trio
+    case quartet
+    case quintet
+    case sextet
+    case septet
+    case octet
+    case doubleQuartet
+    case nonet
+    case dectet
+    case tripleQuartet
+    
+    var numberOfMuscians: Int {
+        switch self {
+        case .solo:
+            return 1
+        case .duet:
+            return 2
+        case .trio:
+            return 3
+        case .quartet:
+            return 4
+        case .quintet:
+            return 5
+        case .sextet:
+            return 6
+        case .septet:
+            return 7
+        case .octet:
+            return 8
+        case .doubleQuartet:
+            return 8
+        case .nonet:
+            return 9
+        case .dectet:
+            return 10
+        case .tripleQuartet:
+            return 12
+        }
+    }
+}
+```
