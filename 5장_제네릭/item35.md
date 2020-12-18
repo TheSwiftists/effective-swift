@@ -1,8 +1,6 @@
-# ordinal 메서드 대신 인스턴스 필드를 사용하라 
+# Item35. ordinal 메서드 대신 인스턴스 필드를 사용하라 
 
-대부분의 열거 타입 상수는 자연스럽게 하나의 정숫값에 대응된다. 그리고 모든 열거 타입은 해당 상수가 그 열거 타입에서 몇 번째 위치인지를 반환하는 ordinal이라는 메서드를 제공한다.
-
-유혹!!
+자바의 경우, 대부분의 열거 타입 상수는 자연스럽게 하나의 정숫값에 대응됩니다. 그리고 모든 열거 타입은 해당 상수가 그 열거 타입에서 몇 번째 위치인지를 반환하는 ordinal이라는 메서드를 제공합니다.
 
 ## Java
 
@@ -16,7 +14,11 @@ public enum Ensemble {
 }
 ```
 
+=> 동작은 하지만 유지보수하기가 끔찍한 코드입니다. 상수 선언 순서를 바꾸는 순간 `numberOfMusicians`가 오동작하며 이미 사용중인 정수와 값이 같은 상수는 추가할 방법이 없습니다. 또한 값을 중간에 비워둘 수도 없습니다. 
+
 ## ordinal 를 대체하는 코드 
+
+해결책은 간단합니다. **열거 타입 상수에 연결된 값은 ordinal 메서드로 얻지 말고, 인스턴스 필드에 저장하면 됩니다.**
 
 ```java
 public enum Ensemble {
@@ -32,8 +34,7 @@ public enum Ensemble {
 
 ## ordinal를 잘 사용한 예
 
-=> EnumSet, EnumMap 의 key로 사용하는 경우!!
-<br>=> 이런 성격의 목적에만 사용하도록 하자.
+EnumSet, EnumMap 의 key로 사용하는 경우입니다. 이런 성격의 목적에만 ordinal()를 사용하도록 합니다.
 
 ```java
 import java.util.*;  
@@ -51,64 +52,13 @@ public class EnumSetExample {
 }  
 ```
 
-```java
-// Java program to illustrate working 
-// of EnumMap and its functions.
-
-import java.util.EnumMap;
-
-
-public class EnumMapExample {
-	public enum GFG {
-		CODE, CONTRIBUTE, QUIZ, MCQ;
-	}
-
-	public static void main(String args[]) { 
-		// Java EnumMap 
-		// Creating EnumMap in java with key 
-		// as enum type STATE
-		EnumMap<GFG, String> gfgMap = new
-					EnumMap<GFG, String>(GFG.class);
-
-		// Java EnumMap Example 2:
-		// Putting values inside EnumMap in Java
-		// Inserting Enum keys different from 
-		// their natural order
-		gfgMap.put(GFG.CODE, "Start Coding with gfg");
-		gfgMap.put(GFG.CONTRIBUTE, "Contribute for others");
-		gfgMap.put(GFG.QUIZ, "Practice Quizes");
-		gfgMap.put(GFG.MCQ, "Test Speed with Mcqs");
-		
-		// Printing size of EnumMap in java
-		System.out.println("Size of EnumMap in java: " + 
-									gfgMap.size());
-	
-		// Printing Java EnumMap 
-		// Print EnumMap in natural order
-		// of enum keys (order on which they are declared)
-		System.out.println("EnumMap: " + gfgMap);
-	
-		// Retrieving value from EnumMap in java
-		System.out.println("Key : " + GFG.CODE +" Value: "
-								+ gfgMap.get(GFG.CODE));
-	
-		// Checking if EnumMap contains a particular key
-		System.out.println("Does gfgMap has "+GFG.CONTRIBUTE+": "
-							+ gfgMap.containsKey(GFG.CONTRIBUTE));
-	
-		// Checking if EnumMap contains a particular value
-		System.out.println("Does gfgMap has :" + GFG.QUIZ + " : "
-							+ gfgMap.containsValue("Practice Quizes"));
-		System.out.println("Does gfgMap has :" + GFG.QUIZ + " : "
-							+ gfgMap.containsValue(null));
-	}
-}
-```
-
-
 ## Swift
 
+* Swift의 rawValue는 값을 채택해야만 얻을 수 있습니다. (ex. Int, String) 
+
 잘못된 쓰임새
+
+* 자바 Enum의 ordinal() 과 마찬가지로 스위프트에서는 Enum의 rawValue가 있습니다.
 
 ```Swift
 enum Ensemble: Int {
@@ -129,23 +79,15 @@ enum Ensemble: Int {
 }
 ```
 
-
 올바른 쓰임새 
+
+* Swift 에는 저장 프로퍼티를 둘 수없고, 오직 연산 프로퍼티나 메서드만이 가능합니다. 따라서 rawValue의 대안책으로는 연산프로퍼티(or 메소드) + switch 방법입니다. 
+
+* Swift의 switch는 **exhausive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다. 
 
 ```Swift
 enum Ensemble: Int {
-    case solo
-    case duet
-    case trio
-    case quartet
-    case quintet
-    case sextet
-    case septet
-    case octet
-    case doubleQuartet
-    case nonet
-    case dectet
-    case tripleQuartet
+    case solo, duet, trio, quartet, quintet, sextet, septet, octet, doubleQuartet, nonet, dectet, tripleQuartet
     
     var numberOfMuscians: Int {
         switch self {
@@ -174,6 +116,34 @@ enum Ensemble: Int {
         case .tripleQuartet:
             return 12
         }
+    }
+}
+```
+
+## 번외: enum 상수들의 총 개수가 필요할때 CaseIterable을 채택해라 
+
+* 과거 c언어에서는 enum의 모든 case의 개수를 구하기 위해 다음과 같이 코드를 작성하곤 했습니다. 
+
+```c
+enum MyType {
+  Type1, // 0
+  Type2, // 1  
+  Type3,  // 2 
+  NumberOfTypes // 3 == all count
+}
+```
+=> 마지막 NumberOfTypes가 3이 되어 저절로 모든 case의 총 개수로 이용될 수 있습니다. 하지만 이 방법은 팀원들끼리 서로 알려줘야 하고, 이후 코드를 잘 못 건드릴 경우 총 개수로서 작동하지 않을 수 있는 위험이 있습니다. 
+
+* 하지만 Swift 에는 CaseIterable을 채택만 하면 위와 같은 처리를 하지 않아도 안전하게 모든 case의 총 개수를 구할 수 있습니다.
+
+```Swift 
+enum MyType: CaseIterable {
+    case Type1
+    case Type2
+    case Type3
+    
+    static var count: Int {
+        return AllCases().count
     }
 }
 ```
