@@ -11,7 +11,7 @@
 <br>
 
 ### 읽기 전에!
-이번 아이템의 내용 중 private-package에 대한 내용들이 있어 자바의 패키지와 대치되는 스위프트의 프레임워크와 open, public을 묶어 설명하려 하였습니다.
+이번 아이템의 내용 중 package-orivate에 대한 내용들이 있어 자바의 패키지와 대치되는 스위프트의 프레임워크와 open, public을 묶어 설명하려 하였습니다.
 
 하지만 비슷하게 대치되는 개념이 아니라고 생각하고, 커스텀 프레임워크 또한 일반적으로 자주 쓰이지 않는다고 생각하여 패키지에 대한 내용을 클래스로 바꾸어 fileprivate과 연관되어 작성하도록 하겠습니다.
 
@@ -52,12 +52,14 @@
 - public
 
 스위프트에서는 다섯가지 접근 제한자를 제공하고 있습니다. 
-(자바와 마찬가지로 밑으로 갈수록 접근 범위가 좁아집니다.)
-- private
-- fileprivate
-- internal
-- public
-- open
+(자바와 마찬가지로 밑으로 명시된 접근 제한자일수록 접근 범위가 넓어집니다.)
+- private : 엔티티(entites)의 사용을 해당 엔티티를 둘러싼 선언과 동일 파일내의 extension으로만 제한합니다. 
+- fileprivate : 엔티티의 사용을 자신이 정의된 소스 파일로만 제한합니다.
+- internal : 엔티티가 정의된 모듈의 어떤 소스 파일에서도 사용할 수 있지만, 외부 모듈에서는 사용하지 못하도록 합니다.
+- public : 엔티티가 정의된 모듈의 어떤 소스 파일에서도 사용가능하고 외부 모듈에서도 사용이 가능합니다.
+- open : `public`과 동일하지만 추가로 모듈 외부에서 하위 클래스를 만들고 '재정의'가 가능합니다. <br>
+`open`을 명시했다는 의미는 클래스를 상위 클래스로 사용하는 다른 모듈의 코드에 대한 영향을 이미 고려했으며, 그에 따라 클래스 코드를 설계했음을 포함하게 됩니다. 
+
 
 공개 API 이외의 프로퍼티나 메소드들은 private으로 만드는 것을 권장하고 있습니다.
 그런 다음 같은 소스파일내에 다른 클래스(혹은 구조체 등)가 접근해야 하는 멤버에 한해서 fileprivate으로 접근 범위를 확장시켜줍니다.
@@ -85,9 +87,15 @@ struct ImageProvider {
 <br>
 
 ### public 클래스의 인스턴스 필드는 되도록 public이 아니여야 한다
-> public 가변 필드를 갖는 클래스는 일반적으로 스레드 안전하지 않다.
+> public 가변 필드를 갖는 클래스는 일반적으로 thread safety 하지 않다.
+제 생각으로는 `public`이어서가 아니라 '가변' 필드기 때문에 thread unsafety한게 크다고 생각합니다.
 
-따라서 여기에서는 가변 객체를 참조하는 필드, final이 아닌 필드를 public으로 선언하지 말라고 권장합니다.
+물론 `private`으로 선언해주면 직접 접근이 불가능하여 접근에 있어서 까다로워 지는 효과는 있겠지만 완전하게 thread safety하게는 만들어주지 못합니다.
+Swift에서 GCD를 이용해 처리를 해주거나 데이터 사본을 사용해서 작업을 해주는게 thread 접근 측면에 있어서 좋다고 생각합니다.
+
+현재 item에서는 접근제한자에 대한 주제를 다루고 있기 때문에 좀더 관심이 있으신 분은 [해당 글](https://uynguyen.github.io/2018/06/05/Working-In-Thread-Safe-on-iOS/)을 읽어보시는것도 좋겠네요.
+
+여기에서는 가변 객체를 참조하는 필드, final이 아닌 필드를 public으로 선언하지 말라고 권장합니다.
 
 다만 예외를 하나 두는데 해당 클래스에 꼭 필요한 구성요소로써의 상수라면 `public static final` 필드로 공개해도 좋다고 합니다.
 또한, 기본 타입 값이나 불변 객체를 참조해야 합니다.
@@ -118,3 +126,4 @@ public static let values = [ ... ]
 - https://docs.swift.org/swift-book/LanguageGuide/AccessControl.html#//apple_ref/doc/uid/TP40014097-CH41-ID3
 https://zeddios.tistory.com/383
 - https://www.avanderlee.com/swift/fileprivate-private-differences-explained/
+- http://xho95.github.io/swift/programming/language/grammar/2017/02/28/The-Swift-Programming-Language.html
