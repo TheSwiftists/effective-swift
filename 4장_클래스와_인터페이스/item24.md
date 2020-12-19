@@ -33,7 +33,7 @@ Calculator.Operation.PLUS
 <br>
 
 하지만 Swift에서는 `static class`를 지원하지 않으며(정확히 말하자면 이미 static하게 되어있습니다.) enum 또한 저러한 형태로 사용되지 못합니다. 
-최대한 호출하는 구조를 비슷하게 만들어보면 이러한 형식이 되지 않을까요?
+최대한 호출하는 구조를 비슷하게 만들어보면 이러한 형식이 될것 같습니다.
 
 ```swift
 class Calculator {
