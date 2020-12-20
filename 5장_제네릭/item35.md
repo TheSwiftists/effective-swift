@@ -4,6 +4,8 @@
 
 ## Java
 
+###  ordinal를 잘못 사용한 경우
+
 코드 35-1 ordianal을 잘못 사용한 예 - 따라하지 말것! 
 ```java
 public enum Ensemble {
@@ -16,7 +18,7 @@ public enum Ensemble {
 
 => 동작은 하지만 유지보수하기가 끔찍한 코드입니다. 상수 선언 순서를 바꾸는 순간 `numberOfMusicians`가 오동작하며 이미 사용중인 정수와 값이 같은 상수는 추가할 방법이 없습니다. 또한 값을 중간에 비워둘 수도 없습니다. 
 
-## ordinal 를 대체하는 코드 
+### ordinal를 대체하는 해결책 
 
 해결책은 간단합니다. **열거 타입 상수에 연결된 값은 ordinal 메서드로 얻지 말고, 인스턴스 필드에 저장하면 됩니다.**
 
@@ -32,7 +34,7 @@ public enum Ensemble {
 }
 ```
 
-## ordinal를 잘 사용한 예
+### ordinal를 잘 사용한 예
 
 EnumSet, EnumMap 의 key로 사용하는 경우입니다. 이런 성격의 목적에만 ordinal()를 사용하도록 합니다.
 
@@ -56,9 +58,10 @@ public class EnumSetExample {
 
 * Swift의 rawValue는 값을 채택해야만 얻을 수 있습니다. (ex. Int, String) 
 
-잘못된 쓰임새
+### 잘못된 쓰임새: Int - rawValue 사용하기 
 
-* 자바 Enum의 ordinal() 과 마찬가지로 스위프트에서는 Enum의 rawValue가 있습니다.
+* 자바 Enum의 ordinal()과 마찬가지로 스위프트에서는 Enum의 rawValue가 있습니다.
+Int로 rawValue를 갖고 값을 명시하지 않으면 자바의 ordianl()과 같은 효과를 볼 수 있습니다.
 
 ```Swift
 enum Ensemble: Int {
@@ -78,11 +81,39 @@ enum Ensemble: Int {
     }
 }
 ```
+=> 자바의 ordianl()과 마찬가지로, 동작은 하지만 유지보수하기가 끔찍한 코드입니다. 상수 선언 순서를 바꾸는 순간 `numberOfMusicians`가 오동작하며 이미 사용중인 정수와 값이 같은 상수는 추가할 방법이 없습니다. 또한 값을 중간에 비워둘 수도 없습니다. 
 
-올바른 쓰임새 
+> rawValue에 명시적으로 값 대입하여 사용하기 
 
-* Swift 에는 저장 프로퍼티를 둘 수없고, 오직 연산 프로퍼티나 메서드만이 가능합니다. 따라서 rawValue의 대안책으로는 연산프로퍼티(or 메소드) + switch 방법입니다. 
+* 명시적으로 rawValue에 값을 대입하면 위와 같은 상황이 해결될 것처럼 보입니다. 상수 선언 순서에도 의존되지 않고, 중간에 값을 비워도 되죠. 
+그러나 값이 중복이 될때는 rawValue의 명시적 사용도 해결책이 될 순 없습니다. 
+왜냐하면 rawValue는 unique 해야 되기 때문에 OCTET(= 8), DOUBLE_QUARTET(=8) 처럼 값이 중복이 되는 경우에는 rawValue를 사용할 수 없기 때문입니다.
+그리고 numberOfMusicians 값을 rawValue의 값으로 할당해도 되는 대표 값인지 근거가 없기 때문에 사용하는 것은 부적절해 보입니다.
 
+```Swift
+enum Ensemble: Int, CaseIterable {
+    case solo = 1
+    case duet = 2
+    case trio = 3
+    case quartet = 4
+    case quintet = 5
+    case sextet = 6
+    case septet = 7
+    case octet = 8
+    case doubleQuartet = 8 // 컴파일 에러! => Raw value for enum case is not unique
+    case nonet = 9
+    case dectet = 10
+    case tripleQuartet = 12
+    
+    var numberOfMusicians: Int {
+        return rawValue
+    }
+}
+```
+
+### rawValue를 대체하는 해결책: 연산프로퍼티(or 메서드) + default 구문 없는 switch 사용하기 
+
+* Swift 에는 저장 프로퍼티를 둘 수 없고, 오직 연산 프로퍼티나 메서드만이 가능합니다. 따라서 rawValue의 대안책으로는 연산프로퍼티(or 메소드) + switch 방법입니다. 
 * Swift의 switch는 **exhausive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다. 
 
 ```Swift
