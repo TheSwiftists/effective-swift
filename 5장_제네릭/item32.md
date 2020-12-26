@@ -1,6 +1,6 @@
 # item 32. 제네릭과 가변인수(varargs)를 함께 쓸 때는 신중하라  
 
-얖서 item32 에서는 제네릭과 배열은 함께 사용할 수 없다는 것(컴파일 오류)을 배웠습니다.
+앞서 item28 에서는 제네릭과 배열은 함께 사용할 수 없다는 것(컴파일 오류)을 배웠습니다.
 하지만 이번 장에서는 **함수의 매개변수**로서 제네릭과 가변인수(= 배열)은 같이 사용할 수 있고, 사용하는 경우 조심해야 하는 점을 말합니다.
 
 이 글에서는
@@ -198,4 +198,3 @@ let attributes = pickTwo("a", "b", "c")
 https://stackoverflow.com/questions/27689220/why-cant-we-just-use-arrays-instead-of-varargs
 
 https://www.baeldung.com/java-varargs
-
