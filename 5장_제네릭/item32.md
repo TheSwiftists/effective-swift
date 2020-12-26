@@ -1,6 +1,6 @@
 # item 32. 제네릭과 가변인수(varargs)를 함께 쓸 때는 신중하라  
 
-얖서 item32 에서는 제네릭과 배열은 함께 사용할 수 없다는 것(컴파일 오류)을 배웠습니다.
+얖서 item28 에서는 제네릭과 배열은 함께 사용할 수 없다는 것(컴파일 오류)을 배웠습니다.
 하지만 이번 장에서는 **함수의 매개변수**로서 제네릭과 가변인수(= 배열)은 같이 사용할 수 있고, 사용하는 경우 조심해야 하는 점을 말합니다.
 
 이 글에서는
@@ -12,7 +12,7 @@
 
 ## 제네릭과 배열은 함께 사용할 수 없다(item28)
 
-* 제네릭과 배열을 함께 사용하면 불공변(invariant)인 제네릭의 특징이 배열로 인해 덮어지고, 타입이 불안정해져서 런타임 에러 가능성이 생깁니다. 
+* 제네릭과 배열을 함께 사용하면 불공변(invariant)인 제네릭의 특징이 배열로 인해 덮어지고, 타입이 불안정해져서 런타임 에러 가능성이 생깁니다.
 
 > 코드 28-3 제네릭 배열 생성을 허용하지 않는 이유 - 컴파일 되지 않는다.  
 ```java
@@ -25,6 +25,13 @@ String s = stringLists[0].get(0);                 // (5) ClassCastException
 
 => (1) 에서 컴파일이 된다고 가정해보면 결국 (5) 에서 런타임 오류인 `ClassCastException` 이 발생합니다. 
 따라서 `ClassCastException` 과 같은 (타입 불안정으로 인한) 런타임 오류가 발생하는 것을 방지하겠다는 제네릭 타입 시스템과 취지가 맞지 않으므로 자바에서는 배열과 제네릭을 같이 사용하는 것을 금지합니다. 
+
+> Note
+<br>(1) 배열: 공변
+<br>=> Sub가 Super의 하위 타입이라면, Sub[]도 Super[]의 하위 타입이 된다.
+<br>(2) 제네릭: 불공변 
+<br>=> Sub가 Super의 하위 타입이어도, List\<Sub>는 List\<Super>의 하위 타입이 아니고 
+List\<Super>도 List\<Sub>의 상위 타입이 아니다.
 
 ## 제네릭과 varargs를 함께 사용할 수 있지만, 역시 타입 불안정하다.
 
@@ -94,14 +101,15 @@ static <T> T[] pickTwo(T a, T b, T c) {
     throw new AssertionError();
 }
 ```
-=> pickTwo 메서드는 내부에서 toArray 메서드를 호출합니다. 이 메서드가 toArray()에 넘길 배열의 타입은 Object[]인데 pickTwo에 어떤 타입의 객체를 넘기더라도 담을 수 있는 구체적인 타입이기 때문입니다.  
+=> pickTwo 메서드는 내부에서 toArray 메서드를 호출합니다. 이 메서드가 toArray()에 넘길 배열의 타입은 Object[]가 되는데, pickTwo에 어떤 타입의 객체를 넘기더라도 담을 수 있는 구체적인 타입이기 때문입니다.
+만약 toArray에 String 값이 넘어가면 반환값이 String[] 으로 확실해지지만, 위의 예제처럼 제네릭 T 타입를 넘긴 경우 T가 어떤 타입이어도 대응해야 하기 때문에 Object[]가 반환되야 한다는 것입니다. 
 
 ```java
 public static void main(String[] args) {
     String[] attributes = pickTwo("좋은", "빠른", "저렴한");
 }
 ```
-=> 따라서 위 메서드는 아무 문제가 없는 메서드이니 별다른 경고 없이 컴파일 되지만, 결국 pickTwo의 반홥타입이 Object[]라 String[] 으로 자동 형변환되어 ClassCastException 이 발생합니다. 정리하지면 제네릭 varargs(T...) 매개변수를 그대로 반환하고 또 제네릭을 이용해 반환하는 메서드(pickTow)로 인해 ClassCastException 이 발생한 것입니다. 
+=> 따라서 위 메서드는 아무 문제가 없는 메서드이니 별다른 경고 없이 컴파일 되지만, 결국 pickTwo의 반환타입이 Object[]라 String[] 으로 자동 형변환되어 ClassCastException 이 발생합니다. 정리하지면 제네릭 varargs(T...) 매개변수를 그대로 반환하고 또 제네릭을 이용해 반환하는 메서드(pickTow)로 인해 ClassCastException 이 발생한 것입니다. 
 
 * 이 예는 제네릭 varargs 매개변수 배열에 다른 메서드가 접근하도록 허용하면 안전하지 않다는 점을 말합니다. 단, 예외가 두 가지 있습니다.
   * 첫번째, @SafeVarargs로 제대로 애노테이트된 또 다른 varargs 메서드에 넘기는 것은 안전합니다.
@@ -157,7 +165,7 @@ List<String> attributes = pickTwo("좋은", "빠른", "저렴한");
 
 ## Swift에서는 위의 자바와 같은 문제가 모두 해결됩니다. 
 
-* 애초에, Swift에서 가변인수 및 배열은 Value 타입이라 다른 값을 저장함으로써 발생하는 문제가 생기지 않습니다.
+* 애초에, Swift에서 가변인수 및 배열은 Value(값) 타입이라 다른 값을 저장함으로써 발생하는 문제가 생기지 않습니다.
 
 ```Swift
 func dangerous(stringLists: [String]...) {
@@ -167,9 +175,9 @@ func dangerous(stringLists: [String]...) {
     let s: String = stringLists[0][0];
 }
 ```
-=> 위 코드에서 stringLists를 objects 변수에 할당할 때부터 둘은 같은 객체를 바라보는게 아니라 복사가 되는 것이기 때문에 이후에 intList 값을 저장해서 일어나는 문제가 발생하지 않습니다. 
+=> 위 코드에서 stringLists를 objects 변수에 할당할 때부터 둘은 같은 객체(같은 주소값)를 바라보는게 아니라 복사가 되는 것이기 때문에 이후에 intList 값을 저장해서 일어나는 문제가 발생하지 않습니다. 
 
-=> 그리고 Swift 의 모든 컬렉션(Array,Set,Dictionary)은 Value 타입이므로 모든 컬렉션에서 위 문제는 발생하지 않습니다. 
+=> 그리고 Swift 의 모든 컬렉션(Array,Set,Dictionary)은 Value(값) 타입이므로 모든 컬렉션에서 위 문제는 발생하지 않습니다. 
 
 * Swift는 타입 안정성 언어입니다. Swift는 타입안정성을 추구하기 때문에 코드를 컴파일할 때 타입 확인 작업을 수행하고 잘못된 타입이 있다면 오류로서 표시합니다. 그 근거로 Swift 는 타입 추론을 해주는데 컴파일 타임시 모든 변수의 타입이 확인 가능합니다.  
 
