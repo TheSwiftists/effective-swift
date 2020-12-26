@@ -26,12 +26,13 @@ String s = stringLists[0].get(0);                 // (5) ClassCastException
 => (1) 에서 컴파일이 된다고 가정해보면 결국 (5) 에서 런타임 오류인 `ClassCastException` 이 발생합니다. 
 따라서 `ClassCastException` 과 같은 (타입 불안정으로 인한) 런타임 오류가 발생하는 것을 방지하겠다는 제네릭 타입 시스템과 취지가 맞지 않으므로 자바에서는 배열과 제네릭을 같이 사용하는 것을 금지합니다. 
 
-> Note
-<br>(1) 배열: 공변
-<br>=> Sub가 Super의 하위 타입이라면, Sub[]도 Super[]의 하위 타입이 된다.
-<br>(2) 제네릭: 불공변 
-<br>=> Sub가 Super의 하위 타입이어도, List\<Sub>는 List\<Super>의 하위 타입이 아니고 
-List\<Super>도 List\<Sub>의 상위 타입이 아니다.
+> Note 배열(공변) vs 제네릭(불공변)
+
+* 배열은 공변의 특성을 가지고 있습니다.
+  * Sub가 Super의 하위 타입이라면, Sub[]도 Super[]의 하위 타입이 됩니다.
+
+* 제네릭은 불공변의 특성을 가지고 있습니다.
+  * Sub가 Super의 하위 타입이어도, List\<Sub>는 List\<Super>의 하위 타입이 아니고 List\<Super>도 List\<Sub>의 상위 타입이 아닙니다.
 
 ## 제네릭과 varargs를 함께 사용할 수 있지만, 역시 타입 불안정하다.
 
@@ -165,7 +166,7 @@ List<String> attributes = pickTwo("좋은", "빠른", "저렴한");
 
 ## Swift에서는 위의 자바와 같은 문제가 모두 해결됩니다. 
 
-* 애초에, Swift에서 가변인수 및 배열은 Value(값) 타입이라 다른 값을 저장함으로써 발생하는 문제가 생기지 않습니다.
+* 애초에, Swift에서 가변인수 및 배열은 Value 타입(값 타입)이라 다른 값을 저장함으로써 발생하는 문제가 생기지 않습니다.
 
 ```Swift
 func dangerous(stringLists: [String]...) {
@@ -177,7 +178,7 @@ func dangerous(stringLists: [String]...) {
 ```
 => 위 코드에서 stringLists를 objects 변수에 할당할 때부터 둘은 같은 객체(같은 주소값)를 바라보는게 아니라 복사가 되는 것이기 때문에 이후에 intList 값을 저장해서 일어나는 문제가 발생하지 않습니다. 
 
-=> 그리고 Swift 의 모든 컬렉션(Array,Set,Dictionary)은 Value(값) 타입이므로 모든 컬렉션에서 위 문제는 발생하지 않습니다. 
+=> 그리고 Swift 의 모든 컬렉션(Array,Set,Dictionary)은 Value 타입(값 타입)이므로 모든 컬렉션에서 위 문제는 발생하지 않습니다. 
 
 * Swift는 타입 안정성 언어입니다. Swift는 타입안정성을 추구하기 때문에 코드를 컴파일할 때 타입 확인 작업을 수행하고 잘못된 타입이 있다면 오류로서 표시합니다. 그 근거로 Swift 는 타입 추론을 해주는데 컴파일 타임시 모든 변수의 타입이 확인 가능합니다.  
 
@@ -206,4 +207,3 @@ let attributes = pickTwo("a", "b", "c")
 https://stackoverflow.com/questions/27689220/why-cant-we-just-use-arrays-instead-of-varargs
 
 https://www.baeldung.com/java-varargs
-
