@@ -171,12 +171,12 @@ enum MyType {
 
 ```Swift 
 enum MyType: CaseIterable {
-    case Type1
-    case Type2
-    case Type3
+    case type1
+    case type2
+    case type3
     
     static var count: Int {
-        return AllCases().count
+        return allCases.count
     }
 }
 ```
