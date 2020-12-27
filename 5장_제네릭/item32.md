@@ -202,8 +202,47 @@ let attributes = pickTwo("a", "b", "c")
 ```
 => 제네릭을 이중으로 쓴 위의 예시도 타입 추론이 된 걸 보면 스위프트는 자바와 달리 컴파일 타임에 모든 타입이 정확히 추론됨을 알 수 있습니다.
 
-## 번외:  왜 가변인수를 사용할까? 그냥 배열을 사용하면 되지 않을까?
+## 번외: 가변인수 사용하기 
 
-https://stackoverflow.com/questions/27689220/why-cant-we-just-use-arrays-instead-of-varargs
+* 저희가 흔히 쓴던 print문이 가변인수를 사용합니다.
 
-https://www.baeldung.com/java-varargs
+```swift
+public func print(_ items: Any..., separator: String = " ", terminator: String = "\n")
+```
+
+* 메소드에서 가변인수는 오직 한개만 허용됩니다. 두 개 이상인 경우 컴파일 에러 발생합니다.
+
+```swift
+func foo(_ items: Int...) { } // succeed
+func foo(_ items: Int..., others: Int...) { } // compile error! Only a single variadic parameter '...' is permitted
+```
+
+* 가변인수 뒤에 오는 매개변수는 _(언더바 어규먼트 레이블)이 금지됩니다. 구분이 되지 않기 때문입니다.
+
+```swift
+func foo(_ items: Int..., _ number: Int) { } // compile error! A parameter following a variadic parameter requires a label
+```
+
+* 배열 대신 가변인수를 사용하는 이유 중 하나는 호출자 입장에서 메소드를 좀 더 `lightweight`하게 사용할 수 있기 때문입니다.
+
+```swift
+// When using a variadic parameter, any number of arguments can
+// be passed, and the compiler will automatically organize them
+// into an array.
+func send(_ message: Message, attaching attachments: Attachment...) {
+    ...
+}
+
+// Passing no variadic arguments:
+send(message)
+
+// Passing either a single, or multiple variadic arguments:
+send(message, attaching: image)
+send(message, attaching: image, document)
+```
+
+## References
+
+* https://stackoverflow.com/questions/27689220/why-cant-we-just-use-arrays-instead-of-varargs
+* https://www.swiftbysundell.com/tips/the-power-of-variadic-parameters/ 
+* https://abhimuralidharan.medium.com/variadic-functions-swift-54ce99a55c1d 
