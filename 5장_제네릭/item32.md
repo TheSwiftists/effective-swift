@@ -110,7 +110,7 @@ public static void main(String[] args) {
     String[] attributes = pickTwo("좋은", "빠른", "저렴한");
 }
 ```
-=> 따라서 위 메서드는 아무 문제가 없는 메서드이니 별다른 경고 없이 컴파일 되지만, 결국 pickTwo의 반환타입이 Object[]라 String[] 으로 자동 형변환되어 ClassCastException 이 발생합니다. 정리하지면 제네릭 varargs(T...) 매개변수를 그대로 반환하고 또 제네릭을 이용해 반환하는 메서드(pickTow)로 인해 ClassCastException 이 발생한 것입니다. 
+=> 따라서 위 메서드는 아무 문제가 없는 메서드이니 별다른 경고 없이 컴파일 되지만, 결국 pickTwo의 반환타입이 Object[]라 String[] 으로 자동 형변환되어 ClassCastException 이 발생합니다. 정리하자면 제네릭 varargs(T...) 매개변수를 그대로 반환하고 또 제네릭을 이용해 반환하는 메서드(pickTwo)로 인해 ClassCastException 이 발생한 것입니다. 
 
 * 이 예는 제네릭 varargs 매개변수 배열에 다른 메서드가 접근하도록 허용하면 안전하지 않다는 점을 말합니다. 단, 예외가 두 가지 있습니다.
   * 첫번째, @SafeVarargs로 제대로 애노테이트된 또 다른 varargs 메서드에 넘기는 것은 안전합니다.
