@@ -40,17 +40,19 @@ EnumSet, EnumMap 의 key로 사용하는 경우입니다. 이런 성격의 목�
 
 ```java
 import java.util.*;  
+
 enum days {  
-  SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY  
+    SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY  
 }  
+
 public class EnumSetExample {  
-  public static void main(String[] args) {  
-    Set<days> set = EnumSet.of(days.TUESDAY, days.WEDNESDAY);  
+    public static void main(String[] args) {  
+        Set<days> set = EnumSet.of(days.TUESDAY, days.WEDNESDAY);  
     // Traversing elements  
-    Iterator<days> iter = set.iterator();  
-    while (iter.hasNext())  
-      System.out.println(iter.next());  
-  }  
+        Iterator<days> iter = set.iterator();  
+        while (iter.hasNext())  
+            System.out.println(iter.next());  
+    }  
 }  
 ```
 
