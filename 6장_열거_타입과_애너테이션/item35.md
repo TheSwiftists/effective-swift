@@ -48,7 +48,7 @@ enum days {
 public class EnumSetExample {  
     public static void main(String[] args) {  
         Set<days> set = EnumSet.of(days.TUESDAY, days.WEDNESDAY);  
-    // Traversing elements  
+        // Traversing elements  
         Iterator<days> iter = set.iterator();  
         while (iter.hasNext())  
             System.out.println(iter.next());  
@@ -116,7 +116,7 @@ enum Ensemble: Int, CaseIterable {
 ### rawValue를 대체하는 해결책: 연산프로퍼티(or 메서드) + default 구문 없는 switch 사용하기 
 
 * Swift 에는 저장 프로퍼티를 둘 수 없고, 오직 연산 프로퍼티나 메서드만이 가능합니다. 따라서 rawValue의 대안책으로는 연산프로퍼티(or 메소드) + switch 방법입니다. 
-* Swift의 switch는 **exhausive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다. 
+* Swift의 switch는 **exhaustive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다. 
 
 ```Swift
 enum Ensemble: Int {
