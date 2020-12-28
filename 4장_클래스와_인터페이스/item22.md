@@ -232,7 +232,7 @@ protocol ExpressibleByNilLiteral {
 }
 ```
 
-> 자체 코드 내에서 대부분의 기본 제공 리터럴 프로토콜을 자유롭게 준수 할 수 있지만, `ExpressibleByNilLiteral` 준수는 권장되지 않습니다. - 'Optional'은 해당 프로토콜을 채택하는 유일한 유형이 될 것으로 예상됩니다.
+> 자체 코드 내에서 대부분의 기본 제공 리터럴 프로토콜을 자유롭게 준수 할 수 있지만, `ExpressibleByNilLiteral` 준수는 권장되지 않습니다. - 'Optional'은 해당 프로토콜을 채택하는 유일한 유형이 될 것으로 예상됩니다. ( `@frozen public enum Optional<Wrapped> : ExpressibleByNilLiteral` )
 
 
 
