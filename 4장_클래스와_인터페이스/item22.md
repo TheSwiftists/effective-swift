@@ -70,7 +70,7 @@ Swift의 프로토콜 구현은 언어적인 측면에서 가장 흥미로운 �
 
 ### Enabling unified actions
 
-특정한 작업을 수행하기 위해 이를 준수하는 타입이 필요한 프로토콜부터 살펴보겠습니다. 예를들어 표준 라이브러리인 `Equatable` 프로토콜은 두 인스턴스간에 동등성 검사를 수행할 수 있음 표시하는 데 사용되는 반면 `Hashable` 프로토콜은 해시될 수 있는 유형에 의해 채택됩니다.
+특정한 작업을 수행하기 위해 이를 준수하는 타입이 필요한 프로토콜부터 살펴보겠습니다. 예를들어 표준 라이브러리인 `Equatable` 프로토콜은 두 인스턴스간에 동등성 검사를 수행할 수 있음을 표시하는 데 사용되는 반면 `Hashable` 프로토콜은 해시될 수 있는 유형에 의해 채택됩니다.
 
 ```swift
 protocol Equatable {
@@ -312,4 +312,3 @@ Java의 Interface의 사용 목적과 그에 반하는 안티패턴, 그리고 �
 ### 참고
 
 [The different categories of Swift protocols](https://www.swiftbysundell.com/articles/different-categories-of-swift-protocols/)
-
