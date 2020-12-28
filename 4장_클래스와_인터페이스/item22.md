@@ -114,7 +114,7 @@ protocol Loadable {
 그러나 모든 프로토콜이 동작을 정의하는 건 아닙니다. 예를들어, 아래의 `Cacheable` 프로토콜의 이름은 캐싱 작업이 포함되어있음을 암시하지만 실제로는 다양한 유형이 자체 캐싱 키를 정의할 수 있도록 하는데 사용됩니다.
 
 ```swift
-protocol Cachable: Codable {
+protocol Cacheable: Codable {
     var cacheKey: String { get }
 }
 ```
