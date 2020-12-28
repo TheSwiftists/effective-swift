@@ -164,7 +164,7 @@ protocol IteratorProtocol {
 
 > iterator가 실제로 각 반복 작업을 자체적으로 수행하기 때문에 위의 프로토콜은 대신 `Iterable`이라고 불릴 수 있습니다.그러나 `IterableProtocol`이라는 이름은 `Sequence`와 더 일관된 느낌을 주기 위해 선택되었을 것입니다. 그리고 관련된 타입과 동일한 이름의 충돌을 방지하기 위해 `Iterator`라는 이름을 하지 않은 것입니다.
 
-위의 `Sequence`와 `IteratorProtocol`을 염두에 두고 `Cacheable`과 `Colorable` 프로토콜로 돌아가 요구사항을 담고 있는 프로토콜로서 개선할 수 있는지 살펴보겠습니다.
+위의 `Sequence`와 `IteratorProtocol`을 염두에 두고 `Cachable`과 `Colorable` 프로토콜로 돌아가 요구사항을 담고 있는 프로토콜로서 개선할 수 있는지 살펴보겠습니다.
 
 일단 `Colorable`을 `ColorProvider`로 이름을 바꾸는 것부터 시작하겠습니다. 이 프로토콜은 요구사항이 정확히 동일하더라도 완전히 새로운 의미를 부여합니다. 더 이상 색상을 지정할 수 있는 객체를 정의하는 데 사용되는 것처럼 들리지 않지만, 시스템의 다른 부분에 색상 정보를 제공하는 타입으로서 느껴집니다. 
 
