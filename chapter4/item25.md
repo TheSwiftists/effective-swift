@@ -83,7 +83,7 @@ class Manny() {
 
 - Manny 안에 Klass 를 효과적으로 숨길 수 있습니다.
   - Manny는 바로 네임스페이스입니다.
-  - Manny 내부의 코드는 Klass 를 직접 볼 수 있지만, 외부에서는 직접 볼 수 없습니다. 이를 위해서 ‘dot notation’을 사용한다. e.g.) Manny.Klass
+  - Manny 내부의 코드는 Klass 를 직접 볼 수 있지만, 외부에서는 직접 볼 수 없습니다. 이를 위해서 ‘dot notation’을 사용. e.g.) Manny.Klass
 - 네임스페이스는 이처럼 공간을 구획하기 위한 편의를 제공합니다.
 
 **Java**에서 패키지(package) 정의를 통해 네임스페이스를 관리하며 `import` 를 정의하여 패키지에 정의된 클래스를 불러옵니다. 그리고 컴파일시 클래스가 유일한 식별이 가능한지를 확인합니다.
