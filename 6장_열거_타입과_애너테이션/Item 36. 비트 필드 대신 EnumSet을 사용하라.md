@@ -175,9 +175,7 @@ if freeOptions.contains(.priority) {
 
 `OptionSet` 은 여러 메소드가 정의되어 있다. 
 
-![스크린샷 2021-01-03 오후 1.46.02](/Users/gwonii/Documents/myiOS/Study_iOS/effective-swift-doc/img/item36/스크린샷 2021-01-03 오후 1.46.02.png)
-
-
+![OptionSetMethods](<https://raw.githubusercontent.com/TheSwiftists/effective-swift/blob/item36/6%EC%9E%A5_%EC%97%B4%EA%B1%B0_%ED%83%80%EC%9E%85%EA%B3%BC_%EC%95%A0%EB%84%88%ED%85%8C%EC%9D%B4%EC%85%98/img/optionsSetMethod.png>)
 
 #### OptionSet 정리
 
