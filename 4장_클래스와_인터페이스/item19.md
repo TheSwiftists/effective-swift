@@ -40,7 +40,7 @@
 <br>
 
 예제에서는 Java의 `removeRange` 메서드를 예로 들고있습니다.
-해당 메서드를 protected로 제공한 이유는 `clear` 메서드가 이 함수를 부르기 때문인데.
+해당 메서드를 protected로 제공한 이유는 `clear` 메서드가 아래에 나와있는 `removeRange` 메서드를 부르기 때문입니다.
         
 ```Java
 protected void removeRange(int fromIndex, int toIndex) {
@@ -51,7 +51,7 @@ protected void removeRange(int fromIndex, int toIndex) {
     }
 }
 ```
-`removeRange`메서드 내부의 `it.remove()`가 O(n)이 걸리기 때문에 실질적으로 `removeRange`는 O(n^2)이 걸리게 되어버립니다.
+`removeRange`메서드 내부의 `it.remove()`가 O(n)이 걸리게 되면 `removeRange`는 O(n^2)이 걸리게 됩니다.
 따라서 해당 메서드를 호출하는 `clear` 메서드를 고성능으로 만들기 쉽게 하기 위해 `removeRange` 메서드를 재정의 할수있도록 제공하는 것입니다. 
        
 2. 상속용 클래스를 설계할때 어떤 메서드를 재정의하도록 노출해야 할지는 직접 하위 클래스를 만들어보면서 테스트(검증) 해보는것이 '유일'한 방법입니다.
