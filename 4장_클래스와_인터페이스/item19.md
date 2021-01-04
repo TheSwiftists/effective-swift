@@ -9,6 +9,7 @@
     - 어떤 메소드를 재정의 할 수 있게 해야하나?
     - 제약사항
 - 상속용 클래스가 아닌 일반적인 클래스에 대한 경우
+- 참고한 곳
 
 <br>
 
@@ -66,8 +67,7 @@ class Super {
         overrideMe()
     }
             
-    public func overrideMe() {
-    }
+    public func overrideMe() { }
 }
         
 class Sub {
@@ -88,6 +88,8 @@ sub.overrideMe()
 
 - 요지는 Java에서는 상위 클래스의 생성자가 먼저 호출되어 하위 클래스의 overrideMe 메소드를 부르게 되는데 이때 subProperty가 초기화되어있지 않은 상태에서 부르게 되므로 `NullPointerException`을 던지게 된다는 것입니다.
 - Swift에서는 상위 클래스 생성자를 호출하기 위해서는 하위 클래스의 stored property에 모든 값이 초기화 된 후 호출할 수 있기 때문에 예시와 같은 오류가 발생하기 어렵지만, stored property가 optional일 경우에는 위와 같은 상황이 발생할 여지가 있습니다.
+- Swift에서 위와 같은 초기화 흐름이 발생하는 이유는 초기화를 2단계에 나누어서 하며, 2단계 초기화시 컴파일러에서 4가지의 안전 검사를 수행하기 때문입니다. <br> Swift가 이러한 초기화 방식을 둔 이유 중 하나는 초기화되기 전에 속성 값에 접근하는 것을 막아 주고, 예상치 못하게 속성 값이 또 다른 생성자에 의해 엉뚱한 값으로 설정되어 버리는 것도 막아주기 위함입니다. <br>
+양이 방대하여 해당 문서에 따로 정리하지 않으나, Swift 공식문서 중 **Initialization**항목을 참고해보시면 도움이 될 것 같습니다.
 - 다만 개인적인 생각으로는 재정의 가능한 함수를 생성자에서 호출시킨다는 것은 예측가능하기 어려운 흐름이 발생할 수 도 있기 때문에 지양하는 방향이 올바르다고 생각합니다.
 
 <br>
@@ -103,3 +105,9 @@ sub.overrideMe()
 1. 내부에서 재정의 가능 메서드를 호출하지 않게 만들고 이를 문서화 합니다.
 2. 재정의 가능 메서드의 내부 로직을 private한 '도우미 메서드'로 옮기고, 이 '도우미 메서드'를 호출하도록 수정합니다.
 이렇게 하면 재정의 가능 메서드를 호출하는 다른 코드들은 '도우미 메서드'만을 호출하도록 합니다.
+
+<br>
+
+### 참고한 곳
+- https://docs.swift.org/swift-book/LanguageGuide/Initialization.html#ID216
+- http://xho95.github.io/xcode/swift/grammar/initialization/2016/01/23/Initialization.html
