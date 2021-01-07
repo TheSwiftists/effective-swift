@@ -1,6 +1,6 @@
 # item39. 명명패턴보다 애너테이션을 사용하라
 
-> Swift의 Attribute에 대해 알아봅시다
+> Swift의 Attributes에 대해 알아봅시다
 
 
 
@@ -22,6 +22,72 @@
 
 ## Swift
 
+Java의 애너테이션과 비슷하게 Swift에서 추가 정보를 나타내기 위한 방법으로는 Attributes가 있습니다. Attributes는 선언(declaration)시나 특정한 타입(type)에 대한 추가 정보를 제공합니다. `@` 심볼 다음에 지정하려는 Attributes의 이름과 이 Attributes가 적용될 인수를 작성하여 속성을 지정합니다.
+
+>@`attribute name`
+>
+>@`attribute name`(`attribute arguments`)
+
+
+
+주요한 몇가지 Attributes에 대해 알아봅니다.
+
+### Declaration Attributes
+
+#### available
+
+Swift의 특정 버전이나 특정 플랫폼, 운영체제 버전과 관련된 선언의 수명주기를 표시하기 위해 사용됩니다. `available`은 항상 두 개 이상의 인수 목록을 받습니다. 그리고 해당 인수는 다음 플랫폼 또는 언어 이름 중 하나로 시작합니다.
+
+> - iOS / iOSApplicationExtension
+> - macOS / macOSApplicationExtension
+> - macCatalyst / macCatalystApplicationExtension
+> - watchOS / watchOSApplicationExtension
+> - tvOS / tvOSApplicationExtension
+> - swift
+
+또한 별표(\*)를 사용해 모든 플랫폼 이름에서 선언이 가능함을 나타낼 수 있습니다. 하지만 swift의 버전 번호를 이용해 구체적인 가용성을 나타내기 위해서 별표(\*)는 사용되지 않습니다.
+
+`available` 속성과 함께 사용이 가능한 몇가지 필드에 대해 알아봅시다.
+
+- `unavailable` : 이 선언이 지정된 플랫폼에서 사용할 수 없음을 나타냅니다. swift 버전 가용성을 지정할 때는 사용 불가합니다.
+
+- `introduced`: 이 선언이 도입된 특정 플랫폼이나 언어의 첫 번째 버전임을 나타냅니다. 
+
+  ```swift
+  //introduced: version number
+  @available(iOS, introduced: 12.0)
+  ```
+
+- `deprecated`: 이 선언이 도입되면 더 이상 사용되지 않는 버전임을 나타냅니다.
+
+  ```swift
+  @available(*, deprecated)
+  class MyClass { ... }
+  
+  // message 필드를 추가해 빌드 경고 메시지 표현 가능
+  @available(*, deprecated, message: "use newMethod instead")
+  func oldMethod() { ... }
+  
+  // 이름이 바뀐 경우라면 별도로 renamed 필드를 이용해 빌드 시 표현 가능
+  @available(*, deprecated, renamed: "newMethod")
+  func oldMethod() { ... }
+  
+  // 특정 플랫폼, 특정 버전에 deprecated 됨을 표현
+  @available(iOS, deprecated: 9.0)
+  
+  // obsolete 필드를 이용해 완전히 사라질 버전을 표현
+  @available(iOS, deprecated: 9.0, obsolete: 10.0)
+  ```
+
+
+
+swift의 가용성을 나타내는 표현은 반드시 별개로 작성되어야 하고, 플랫폼에 관한 가용성 설정이 필요한 경우 `available` 속성을 아래와 같이 하나 더 지정합니다.
+
+```swift
+@available(swift 3.0.2)
+@available(macOS 10.12, iOS 10.0, *)
+class MyClass { ... }
+```
 
 
 <br>
@@ -30,3 +96,4 @@
 
 - [Swift Language Guide - Attributes](https://docs.swift.org/swift-book/ReferenceManual/Attributes.html)
 - [Java Annotation](https://asfirstalways.tistory.com/309)
+- [Attributes - deprecated](https://seorenn.tistory.com/85)
