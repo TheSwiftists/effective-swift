@@ -89,6 +89,121 @@ swift의 가용성을 나타내는 표현은 반드시 별개로 작성되어야
 class MyClass { ... }
 ```
 
+<br>
+
+#### dynamicCallable
+
+`dynamicCallable` 속성을 이용하면 class, struct, enum, protocol을 여러 인수를 받는 함수처럼 동적으로 호출(dynamically callable)이 가능합니다. 다시 말해 객체지만 함수처럼 사용이 가능합니다.  `dynamicallyCall(withArguments:)`, `dynamicallyCallable(withKeywordArguments:)` 둘 중 하나 혹은 둘 다를 구현해야 합니다.
+
+**dynamicallyCall(withArguments:)**
+
+인자는 ExpressibleByArrayLiteral을 준수해야 합니다. 리턴타입은 모든 타입이 가능합니다.
+
+```swift
+@dynamicCallable
+struct TelephoneExchange {
+    func dynamicallyCall(withArguments phoneNumber: [Int]) {
+        if phoneNumber == [4, 1, 1] {
+            print("Get Swift help on forums.swift.org")
+        }
+    }
+}
+
+let dial = TelephoneExchange()
+dial() // dial.dynamiccalyCall(withArguments: [])와 같은 의미
+dial(4, 1, 1) // dial.dynamiccalyCall(withArguments: [4, 1, 1])와 같은 의미
+dial(a: 8, 6, 7) // error. 'withKeywordArguments:' 메소드가 구현되지 않음 
+
+// Call the underlying method directly.
+dial.dynamicallyCall(withArguments: [4, 1, 1])
+```
+
+
+
+**dynamicallyCall(withKeywordArguments:)**
+
+동적 메소드 호출에 레이블을 포함할 수 있습니다. 인자는 ExpressibleByDictionaryLiteral을 준수해야 합니다.
+인자.Key는 ExpressibleByStringLiteral을 준수해야 합니다. 인자.Value는 모든 타입이 가능합니다.
+
+레이블이 없는 인자는 빈 문자열("")을 레이블로 가지게 됩니다. 그런데 만약 인자가 Dictionary 타입인 경우, 키의 중복을 허용하지 않으므로 값이 유실될 수 있습니다. 따라서 인자 타입으로 추천되는 타입은 [KeyValuePairs](https://developer.apple.com/documentation/swift/keyvaluepairs)입니다.
+
+```swift
+@dynamicCallable
+struct Repeater {
+    func dynamicallyCall(
+      withKeywordArguments pairs: KeyValuePairs<String, Int>
+    ) -> Int {
+        return pairs.count
+    }
+}
+
+let repeater = Repeater()
+repeater() //repeater.dynamicallyCall(withKeywordArguments: [:])와 같은 의미
+repeater(1, 2) //repeater.dynamicallyCall(withKeywordArguments: ["": 1, "": 2])와 같은 의미
+repeater(a: 1, b: 2) //repeater.dynamicallyCall(withKeywordArguments: ["a": 1, "b": 2])와 같은 의미
+
+```
+
+
+
+두 메서드를 모두 구현하는 경우는 메서드 호출에 레이블이 포함된 경우 `dynamicallyCall(withKeywordArguments:)` 이 호출되고 그 외의 경우에는 `dynamicallyCall(withArguments:)` 이 호출됩니다. 
+
+<br>
+
+#### dynamicMemberLookup
+
+class, struct, enum, protocol에 적용하면 런타임시 member를 이름별로 조회할 수 있습니다. `subscript(dynamicMemberLookup:)` 메소드를 구현해야 합니다. 리턴 타입은 정해져있지 않고 인자는 `ExpressibleByStringLiteral`을 준수해야 합니다. 내부에 지정된 레이블 이름으로 외부에서 호출이 가능합니다.
+
+```swift
+@dynamicMemberLookup
+struct DynamicStruct {
+    let dictionary = ["someDynamicMember": 325,
+                      "someOtherMember": 787]
+    subscript(dynamicMember member: String) -> Int {
+        return dictionary[member] ?? 1054
+    }
+}
+let s = DynamicStruct()
+
+// Use dynamic member lookup.
+let dynamic = s.someDynamicMember
+print(dynamic) // Prints "325"
+
+// Call the underlying subscript directly.
+let equivalent = s[dynamicMember: "someDynamicMember"]
+print(dynamic == equivalent)
+// Prints "true"
+
+```
+
+위의 코드를 보면 `someDynamicMember`라는 프로퍼티를 가지고 있지 않음에도 정상적으로 컴파일이 되고, `someDynamicMemeber`라는 이름으로 `DynamicStruct`의 `dictionary` 프로퍼티를 정상적으로 참조해오고 있습니다.
+
+<br>
+
+#### main
+
+class, struct, enum의 정의에 이 속성을 명시하면 프로그램 흐름의 top-level 진입점임을 나타냅니다. `main` 이 표기된 타입에는 반드시 `Void`를 반환하는 `main` 이라는 이름의 메서드가 존재해야 합니다.
+
+```swift
+@main
+struct MyTopLevel {
+  static func main() {
+    // Top-level code goes here
+  }
+}
+```
+
+혹은 `main` 속성을 정의한 타입은 다음의 가상 프로토콜을 준수하는 것과 같은 요구사항을 준수해야만 합니다.
+
+```swift
+protocol ProvidesMain {
+  static func main() throws
+}
+```
+
+실행 파일을 만들기 위해 컴파일 한 swift 코드는 [Top-Level Code](https://docs.swift.org/swift-book/ReferenceManual/Declarations.html#ID352) 에서 논의 된 것처럼 최대 하나의 top-level 진입점을 포함할 수 있습니다.
+
+
 
 <br>
 
@@ -97,3 +212,5 @@ class MyClass { ... }
 - [Swift Language Guide - Attributes](https://docs.swift.org/swift-book/ReferenceManual/Attributes.html)
 - [Java Annotation](https://asfirstalways.tistory.com/309)
 - [Attributes - deprecated](https://seorenn.tistory.com/85)
+- [Attributes - dynamicCallable](https://jcsoohwancho.github.io/2020-06-20-dynamicMemberLookup,-dynamicCallable/)
+
