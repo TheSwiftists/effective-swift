@@ -55,13 +55,13 @@ public class Student implements Describable {
 }
 ```
 
-위와 같이 빈 `interface`를 만들어서 객체의 특성을 구체화 할 수 있다. 
+위와 같이 빈 `interface`를 만들어서 객체의 특성을 구체화 할 수 있습니다. 
 
 <Br>
 
-개발 초기에는 **`Serializable`**, **`Cloneable`** 와 같은 표현을 하기 위해 사용되었다고 한다. 
+개발 초기에는 **`Serializable`**, **`Cloneable`** 와 같은 표현을 하기 위해 사용되었다고 합니다. 
 
-**Swfit** 에서는 **`Codable`**, **`Decadable`**, **`Encodable`** 등이 **마커 인터페이스 패턴** 형태로 사용되곤 한다. 
+**Swfit** 에서는 **`Codable`**, **`Decadable`**, **`Encodable`** 등이 **마커 인터페이스 패턴** 형태로 사용되곤 합니다. 
 
 <Br>
 
@@ -69,7 +69,7 @@ public class Student implements Describable {
 
 위에 1번 **객체에 대한 정보 구체화** 가 코드의 의미적은 측면에서의 용도로 사용되었다면 
 
-2번은 런타임에 객체 타입을 구체화하기 위해 사용된다. 
+2번은 런타임에 객체 타입을 구체화하기 위해 사용됩니다. 
 
 <Br>
 
@@ -109,7 +109,7 @@ let jason: Adult = .init(name: "jason", age: 28, maritalStatus: .single)
 // getData 메소드를 이용한다면 두 객체의 JSON 데이터를 얻을 수 있습니다.
 ```
 
-> `Swift` 에서는 `protocol `을 이용해서 **마커 인터페이스 패턴** 을 구현한다. 
+> `Swift` 에서는 `protocol `을 이용해서 **마커 인터페이스 패턴** 을 구현합니다. 
 
 
 
@@ -132,7 +132,7 @@ let jason: Adult = .init(name: "jason", age: 28, maritalStatus: .single)
 
 `Java`의 경우 **마크 인터페이스 패턴** 을 위해서 **어노테이션**을 만들고 자주 사용한다. 하지만 `Swift` 에서는 따로 어노테이션이 
 
-존재 하지 않기에 `protocol` 을 이용해서 직접 구현해야 한다. 
+존재 하지 않기에 `protocol` 을 이용해서 직접 구현해야 합니다. 
 
 이전에 **마커 인터페이스 패턴** 에 대해 잘 알지 못했지만 타입을 마킹하는 용도로 무의식적으로 자주 사용해왔었습니다. 
 
