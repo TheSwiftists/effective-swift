@@ -77,7 +77,7 @@ let sub = SubClass()
 sub.method(param: "str")	//str
 ```
 
-SubClass가 SubClass를 상속받고 있고 타입만 다른 메서드를 재정의하려고 합니다. 하지만 다른 타입의 파라미터를 지정함으로 재정의(overriding)된 것이 아니라 다중정의(overloading)되어버렸습니다. 
+SubClass가 SuperClass를 상속받고 있고 타입만 다른 메서드를 재정의하려고 합니다. 하지만 다른 타입의 파라미터를 지정함으로 재정의(overriding)된 것이 아니라 다중정의(overloading)되어버렸습니다. 
 
 
 
