@@ -34,11 +34,11 @@ Java의 테스트 메서드에 `test-` 접두사가 붙어야 했던 것처럼 i
 
 주요한 몇가지 Attributes에 대해 알아봅니다.
 
+<br>
+
 ### Declaration Attributes
 
 > 선언부에만 적용이 가능한 attributes
-
-<br>
 
 #### available
 
@@ -223,23 +223,15 @@ protocol ProvidesMain {
 
 > 타입에만 적용이 가능한 attributes
 
-<br>
-
 ### escaping
 
 메서드 또는 함수 선언시 매개변수의 타입에 적용이 가능하며, 지금 당장이 아닌 나중에 실행하기 위해 매개변수 값을 저장할 수 있음을 나타냅니다. 메서드 호출 수명보다 값의 수명이 더 오래 지속될 수 있음을 의미합니다. 이 속성이 선언된 매개변수의 함수는 프로퍼티나 메서드를 사용하기 위해 `self`의 명시적인 사용이 요구됩니다. 자세한 내용은 [Escaping Closures](https://docs.swift.org/swift-book/LanguageGuide/Closures.html#ID546)를 참고해주세요.
 
-
-
 <br>
-
-
 
 ## Switch Case Attributes
 
 > switch cases에만 적용이 가능한 attributes
-
-<br>
 
 ### unknown
 
