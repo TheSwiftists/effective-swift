@@ -36,6 +36,10 @@ Java의 테스트 메서드에 `test-` 접두사가 붙어야 했던 것처럼 i
 
 ### Declaration Attributes
 
+> 선언부에만 적용이 가능한 attributes
+
+<br>
+
 #### available
 
 Swift의 특정 버전이나 특정 플랫폼, 운영체제 버전과 관련된 선언의 수명주기를 표시하기 위해 사용됩니다. `available`은 항상 두 개 이상의 인수 목록을 받습니다. 그리고 해당 인수는 다음 플랫폼 또는 언어 이름 중 하나로 시작합니다.
@@ -210,6 +214,36 @@ protocol ProvidesMain {
 ### testable
 
 테스트가 가능한 컴파일된 모듈의 `import` 부분에 이 속성을 추가하면 해당 범위에서 해당 모듈을 확장된 액세스로 활성화합니다. 접근제한자가 `internal`이나 `public`으로 설정된 클래스와 클래스의 멤버들을 `open`으로 사용이 가능하고, `internal`로 설정된 다른 entity들(struct, enum..)은 `public`처럼 사용이 가능해집니다.
+
+<br>
+
+
+
+## Type Attributes
+
+> 타입에만 적용이 가능한 attributes
+
+<br>
+
+### escaping
+
+메서드 또는 함수 선언시 매개변수의 타입에 적용이 가능하며, 지금 당장이 아닌 나중에 실행하기 위해 매개변수 값을 저장할 수 있음을 나타냅니다. 메서드 호출 수명보다 값의 수명이 더 오래 지속될 수 있음을 의미합니다. 이 속성이 선언된 매개변수의 함수는 프로퍼티나 메서드를 사용하기 위해 `self`의 명시적인 사용이 요구됩니다. 자세한 내용은 [Escaping Closures](https://docs.swift.org/swift-book/LanguageGuide/Closures.html#ID546)를 참고해주세요.
+
+
+
+<br>
+
+
+
+## Switch Case Attributes
+
+> switch cases에만 적용이 가능한 attributes
+
+<br>
+
+### unknown
+
+switch case에 이 속성을 적용하면 이 case는 컴파일될 시점의 열거형의 어떤 case와도 매치되지 않을 것임을 나타냅니다. 자세한 사용 방법은 [Swtiching Over Future Enumeration Cases](https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID602)를 참고해주세요.
 
 <br>
 
