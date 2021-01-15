@@ -22,7 +22,9 @@
 
 ## Swift
 
-Java의 애너테이션과 비슷하게 Swift에서 추가 정보를 나타내기 위한 방법으로는 Attributes가 있습니다. Attributes는 선언(declaration)시나 특정한 타입(type)에 대한 추가 정보를 제공합니다. `@` 심볼 다음에 지정하려는 Attributes의 이름과 이 Attributes가 적용될 인수를 작성하여 속성을 지정합니다.
+Java의 테스트 메서드에 `test-` 접두사가 붙어야 했던 것처럼 iOS 앱 개발시 유닛테스트 메소드에도 `test-` 접두사가 붙어야만 테스트 메소드로 인지합니다. (그 외에도 테스트 메서드는 인자와 리턴 값이 없어야 한다는 조건이 있습니다.) 하지만 Swift에는 Java처럼 테스트에서의 명명패턴을 대체할 수 있는 기능이 없습니다.(혹여 제가 잘못 알고있는 것이라면 피드백 부탁합니다.) 
+
+그대신 Java의 애너테이션과 비슷하게 Swift에서 추가 정보를 나타내기 위한 방법으로는 Attributes가 있습니다. Attributes는 선언(declaration)시나 특정한 타입(type)에 대한 추가 정보를 제공합니다. `@` 심볼 다음에 지정하려는 Attributes의 이름과 이 Attributes가 적용될 인수를 작성하여 속성을 지정합니다.
 
 >@`attribute name`
 >
