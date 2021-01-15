@@ -205,7 +205,11 @@ protocol ProvidesMain {
 
 실행 파일을 만들기 위해 컴파일 한 swift 코드는 [Top-Level Code](https://docs.swift.org/swift-book/ReferenceManual/Declarations.html#ID352) 에서 논의 된 것처럼 최대 하나의 top-level 진입점을 포함할 수 있습니다.
 
+<br>
 
+### testable
+
+테스트가 가능한 컴파일된 모듈의 `import` 부분에 이 속성을 추가하면 해당 범위에서 해당 모듈을 확장된 액세스로 활성화합니다. 접근제한자가 `internal`이나 `public`으로 설정된 클래스와 클래스의 멤버들을 `open`으로 사용이 가능하고, `internal`로 설정된 다른 entity들(struct, enum..)은 `public`처럼 사용이 가능해집니다.
 
 <br>
 
