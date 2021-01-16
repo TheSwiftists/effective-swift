@@ -51,7 +51,7 @@ Swift의 특정 버전이나 특정 플랫폼, 운영체제 버전과 관련된 
 > - tvOS / tvOSApplicationExtension
 > - swift
 
-또한 별표(\*)를 사용해 모든 플랫폼 이름에서 선언이 가능함을 나타낼 수 있습니다. 하지만 swift의 버전 번호를 이용해 구체적인 가용성을 나타내기 위해서 별표(\*)는 사용되지 않습니다.
+또한 별표(\*)를 사용해 모든 플랫폼 이름에서 선언이 가능함을 나타낼 수 있습니다. 하지만 플랫폼 이름과 달리 Swift는 버전 번호를 이용해 구체적인 가용성을 나타내기 위해서 별표(\*)는 사용되지 않습니다.
 
 `available` 속성과 함께 사용이 가능한 몇가지 필드에 대해 알아봅시다.
 
@@ -245,4 +245,3 @@ switch case에 이 속성을 적용하면 이 case는 컴파일될 시점의 열
 - [Java Annotation](https://asfirstalways.tistory.com/309)
 - [Attributes - deprecated](https://seorenn.tistory.com/85)
 - [Attributes - dynamicCallable](https://jcsoohwancho.github.io/2020-06-20-dynamicMemberLookup,-dynamicCallable/)
-
