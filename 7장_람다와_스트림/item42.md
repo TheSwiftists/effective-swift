@@ -61,20 +61,32 @@ Collections.sort(words,
         System.out.println(cal.calc(n)); // 3
     }
     ```
-- 클로저 : 코드 내부 혹은 전달도 가능한 '독립된 기능 블럭'입니다.
-    ```swift
+- 클로저 : 코드 내부 혹은 전달도 가능한 '독립된 기능 블럭'입니다. 어떻게 사용하는지 3가지 정도로 살펴보도록 하겠습니다.
+    1. 클로저를 할당하여 사용 
+    ```swift 
     let cal = { (n: Int) -> Int in
         return n+1
     }
     
     cal(2) // 3
+    ```
     
-    // 전달
+    2. 클로저 전달
+    ```swift 
+    // 2. 
     func plusUsingClosure(number: Int, closure: (Int) -> Int) -> Int {
         return closure(number)
     }
     
-    plusUsingClosure(number: 2, closure: cal)
+    let result = plusUsingClosure(number: 2, closure: cal) // 3
+    ```
+    
+    3. Trailing Closures
+    ```swift 
+    // 기존에 만들어져있는 클로저를 전달할 수도 있지만 함수를 호출하면서 클로저 본문을 작성할 수도 있습니다.
+    _ = plusUsingClosure(number: 2) { num -> Int in
+        return num + 1 // 3
+    }
     ```
 
 #### 둘 모두 일급객체
