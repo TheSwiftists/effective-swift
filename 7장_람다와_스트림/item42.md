@@ -74,7 +74,7 @@ Collections.sort(words,
         return closure(number)
     }
     
-    plusUsingClosure(number: 2, closure: ci)
+    plusUsingClosure(number: 2, closure: cal)
     ```
 
 #### 둘 모두 일급객체
