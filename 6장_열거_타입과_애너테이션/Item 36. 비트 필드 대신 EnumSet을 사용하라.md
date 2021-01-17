@@ -110,7 +110,7 @@ text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC))
 
 ## Swift에서의 개념 적용 
 
-먼저 **Swift** 에서는 **java** 와 같이 비트 벡터를 기반으로 작성된 `EnumSet`과 같은 타입은 존재하지 않는다. 하지만 **Swift** 에서는 `OptionSet` 이라는 타입이 존재합니다. 
+먼저 **Swift** 에서는 **java** 와 같이 비트 벡터를 기반으로 작성된 `EnumSet`과 같은 타입은 존재하지 않습니다. 하지만 **Swift** 에서는 `OptionSet` 이라는 타입이 존재합니다. 
 
 <Br>
 
