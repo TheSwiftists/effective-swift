@@ -256,7 +256,7 @@ frozen을 쓴다는 것은 nonfrozen의 유연성(flexibility)을 포기하고 �
 frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen enum의 associated value 들은 모두 public 이거나 @usableFromInline 로 표시되어야 합니다(이는 애초에 라이브러리 코드를 외부에서 사용하는 경우에 frozen이 필요한거라 필요한 조건입니다).
 
 요약하자면, 
-  * Library Evolution Mode가 아닌 라이브러리의 모든 enum 과 struct 는 default로 frozen 타입입니다. 타입이 모두 frozen인 이유는 버전업 될 때마다 client 코드를 re-compile 해야해서 다른 버전(이전 버전 or 다음 버전)을 고려할 필요가 없기 때문입니다. 따라서 해당 라이브러리를 사용하면 Evolution Mode 라이브러리를 사용할 때보다 client 코드가 성능 최적화될 수 있습니다.
+  * Library Evolution Mode가 아닌 라이브러리의 모든 enum 과 struct 는 default로 frozen 타입입니다. 타입이 모두 frozen인 이유는 버전업 될 때마다 client 코드를 re-compile 해야해서 다른 버전(이전 버전 or 다음 버전)을 고려할 필요가 없기 때문입니다. 따라서 해당 라이브러리를 사용하면 Evolution Mode 라이브러리를 사용할 때보다 성능 최적화될 수 있습니다.
   * Library Evoltion Mode인 라이브러리는 enum 과 struct 가 default로 nonfrozen 타입입니다. default로 nonfrozen인 이유는 client 코드가 기존 버전과 다음 버전의 라이브러리 모두 사용할 수 있게 제공해야 하기 때문입니다. 따라서 nonfrozen 타입을 사용하는 Evolution Mode를 client가 사용하면 성능 최적화보다 여러 버전의 라이브러리를 re-compile 없이 사용할 수 있다는 유연성을 가질 수 있습니다. 대신 Library Evoltion Mode인 라이브러리도 **변하지 않는 것이 확정된 특정 enum과 struct**에 frozen을 마크해서 부분 최적화를 얻을 수 있습니다.
   * Swift Standard Library로 예시를 들면 `Optional`은 frozen enum이고 `DecodingError`는 nonfrozen enum입니다. 
 
@@ -270,17 +270,17 @@ frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen
 switch case에 이 속성을 적용하면 이 case는 컴파일될 시점의 열거형의 어떤 case와도 매치되지 않을 것임을 나타냅니다. 자세한 사용 방법은 [Swtiching Over Future Enumeration Cases](https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID602)를 참고해주세요.
 
 ```swift
-// FrozenEnum Type is OtherLibrary's frozen type
+// FrozenEnum Type is OtherLibrary's frozen enum
 func foo(e: OtherLibrary.FrozenEnum) {
     switch e {
         case .first:
             break
         case .two:
             break
-        }
+    }
 }
 
-// NonFrozenEnum Type is OtherLibrary's nonfrozen type
+// NonFrozenEnum Type is OtherLibrary's nonfrozen enum
 func goo(e: OtherLibrary.NonFrozenEnum) {
     switch e {
         case .first:
@@ -289,7 +289,7 @@ func goo(e: OtherLibrary.NonFrozenEnum) {
             break
         @unknown default:
             break
-        }
+    }
 }
 ```
 
