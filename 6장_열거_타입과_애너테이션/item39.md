@@ -251,7 +251,7 @@ frozen는 라이브러리가 Library Evolution Mode인 경우에만 사용이 �
 
 Library Evolution Mode에서 nonfrozen struct 및 enum의 멤버와 상호 작용하는 코드는 향후 버전의 라이브러리에서 해당 유형의 멤버 중 일부를 추가, 제거 또는 재정렬하더라도 (위의 설명처럼) 다시 컴파일하지 않고 계속 작업할 수있는 방식으로 컴파일됩니다. 컴파일러는 런타임시 정보 검색 및 간접 계층 추가와 같은 기술을 사용하여 이를 가능하게 합니다(따라서 컴파일러는 덜 최적화됩니다).
 
-frozen을 쓴다는 것은 nonfrozen의 유연성(flexibility)을 포기하고 대신 성능 최적화를 택한다는 것입니다. 이후 버전의 라이브러리는 type을 제한적으로만 변경할 수 있지만, 컴파일러는 type의 멤버(enum's case or struct's stored property)와 상호 작용하는 코드에서 추가 최적화를 수행할 수 있습니다.
+frozen을 쓴다는 것은 nonfrozen의 유연성(flexibility)을 포기하고 대신 성능 최적화를 택한다는 것입니다. 이후 버전의 라이브러리는 type을 제한적으로만 변경할 수 있지만, 컴파일러는 type의 멤버(enum's case or struct's stored property)와 상호 작용하는 코드에서 추가 최적화를 수행할 수 있습니다.
 
 frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen enum의 associated value 들은 모두 public 이거나 @usableFromInline 로 표시되어야 합니다(이는 애초에 라이브러리 코드를 외부에서 사용하는 경우에 frozen이 필요한거라 필요한 조건입니다).
 
