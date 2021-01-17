@@ -262,7 +262,36 @@ frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen
 
 ### unknown
 
+> nonfrozen enum을 사용하는 경우 사용되는 attributes 
+
+기존 enum이나 frozen enum의 경우, 모든 case를 열거하면 default 구문을 적을 필요가 없습니다.
+하지만 nonfrozen enum 을 사용하는 경우 모든 case를 나열해도 미래 버전의 enum case를 고려해야 하기 때문에 `@unknown default` 구문을 적어 대응해야 합니다. 그렇지 않으면 `Switch covers known cases, but 'TestEnum' may have additional unknown values` 라는 yellow warning이 발생합니다. 
+
 switch case에 이 속성을 적용하면 이 case는 컴파일될 시점의 열거형의 어떤 case와도 매치되지 않을 것임을 나타냅니다. 자세한 사용 방법은 [Swtiching Over Future Enumeration Cases](https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID602)를 참고해주세요.
+
+```swift
+// FrozenEnum Type is OtherLibrary's frozen type
+func foo(e: OtherLibrary.FrozenEnum) {
+    switch e {
+        case .first:
+            break
+        case .two:
+            break
+        }
+}
+
+// NonFrozenEnum Type is OtherLibrary's nonfrozen type
+func goo(e: OtherLibrary.NonFrozenEnum) {
+    switch e {
+        case .first:
+            break
+        case .two:
+            break
+        @unknown default:
+            break
+        }
+}
+```
 
 <br>
 
