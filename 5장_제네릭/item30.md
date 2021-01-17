@@ -49,6 +49,8 @@ swapTwoDoubles(&someDouble, &anotherDouble)
 이렇게 Double타입인 두 값을 바꿔주는 메서드를 만들어 보았습니다.
 그럼 String이나 다른 타입을 바꿔주고 싶으면 메서드를 또 만들어야 할까요?🧐
 
+<br>
+
 위와 아래의 메서드를 보시면 아시겠지만 똑같은 로직을 가지고 있고 다른점은 오직 받아들이는 값의 타입입니다.
 
 그럼 이제는 제네릭 메서드를 만들어 어떤 타입의 두 값이라도 바꿔줄 수 있는 메서드를 작성해보겠습니다.
@@ -81,6 +83,36 @@ func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
 대부분의 경우 `descriptive name`을 가지게 되는데 위에 언급되었던 `Dictionary`의 `Key`, `Value` 및 `Array`의 `Element`를 예를 들 수 있겠습니다.
 
 이처럼 타입 매개 변수와 이것을 사용하는 제네릭 타입/메서드 사이의 관계에 대해서 말해주지만, `swapTwoValues(_:_:)`처럼 의미있는 관계가 아닐때는 `T`, `U`와 같은 단일 문자 + Upper camel case를 사용하여 이름을 짓는 것이 전통적이라고 설명하고 있습니다.
+
+<br>
+
+#### 타입 제약(Type Constraints)
+Java의 경우 제네릭 타입에 대한 제약조건이 3가지 정도로 비교적 간단한 편입니다.
+```Java
+// 1. 제약 없음
+public <T> void someFunction() {
+    // code
+}
+
+// 2. T는 SomeClass를 상속받는 클래스만 가능.
+public <T extends SomeClass> void someFunction() {
+    // code
+}
+
+// 3. T는 SomeClass를 상속하는 클래스만 가능. (SomeClass의 상위클래스들)
+public <T super SomeClass> void someFunction() {
+    // code
+}
+```
+
+Swift 또한 제네릭 타입에 대해 제약을 둘 수 있습니다. Java 처럼 특정 클래스만을 제약할 수도 있고 프로토콜을 지정해서 제약을 둘 수 있습니다.
+```Swift
+// T는 SomeClass의 하위 클래스만 가능, U는 SomeProtocol을 채택하는 타입만 가능
+```Swift
+func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
+  // code
+}
+```
 
 <br>
 
