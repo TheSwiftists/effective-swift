@@ -70,21 +70,20 @@ class Super {
     public func overrideMe() { }
 }
         
-class Sub {
-    private var subProperty: Int
+class Sub: Super {
+    private var subProperty: String!
             
-    init() {
-        self.subProperty = 100    
+    init(subProperty: String?) {
+        self.subProperty = subProperty
     }
             
     override func overrideMe() {
-        print(subProperty)
+        print(subProperty.description)
     }
 }
-        
-let sub = Sub()
+
+let sub = Sub(subProperty: nil) // 런타임 에러 발생! Thread 1: Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value
 sub.overrideMe()
-```
 
 - 요지는 Java에서는 상위 클래스의 생성자가 먼저 호출되어 하위 클래스의 overrideMe 메소드를 부르게 되는데 이때 subProperty가 초기화되어있지 않은 상태에서 부르게 되므로 `NullPointerException`을 던지게 된다는 것입니다.
 - Swift에서는 상위 클래스 생성자를 호출하기 위해서는 하위 클래스의 stored property에 모든 값이 초기화 된 후 호출할 수 있기 때문에 예시와 같은 오류가 발생하기 어렵지만, stored property가 optional일 경우에는 위와 같은 상황이 발생할 여지가 있습니다.
