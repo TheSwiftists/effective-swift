@@ -23,10 +23,10 @@
 
 ```java
 public class Text {
-  public static final int STYLE_BOLD			      = 1 << 0
-  public static final int STYLE_ITALIC			    = 1 << 1
-  public static final int STYLE_UNDERLINE		    = 1 << 2
-  public static final int STYLE_STRIKETHROUGH	  = 1 << 3
+  public static final int STYLE_BOLD    = 1 << 0
+  public static final int STYLE_ITALIC    = 1 << 1
+  public static final int STYLE_UNDERLINE   = 1 << 2
+  public static final int STYLE_STRIKETHROUGH   = 1 << 3
  
     // or 등의 비트 연산자를 이용하여 스타일을 적용시킨다. 
   public void applyStyles(int styles) { ... }
