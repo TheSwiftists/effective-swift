@@ -61,13 +61,13 @@ public class Student implements Describable {
 
 개발 초기에는 **`Serializable`**, **`Cloneable`** 와 같은 표현을 하기 위해 사용되었다고 합니다. 
 
-**Swfit** 에서는 **`Codable`**, **`Decadable`**, **`Encodable`** 등이 **마커 인터페이스 패턴** 형태로 사용되곤 합니다. 
+**Swfit** 에서는 **`Codable`**, **`Decodable`**, **`Encodable`** 등이 **마커 인터페이스 패턴** 형태로 사용되곤 합니다. 
 
 <Br>
 
 #### 2. 객체의 런타임에 대한 정보 제공
 
-위에 1번 **객체에 대한 정보 구체화** 가 코드의 의미적은 측면에서의 용도로 사용되었다면 
+위에 1번 **객체에 대한 정보 구체화** 가 코드의 의미적인 측면에서의 용도로 사용되었다면 
 
 2번은 런타임에 객체 타입을 구체화하기 위해 사용됩니다. 
 
@@ -76,7 +76,7 @@ public class Student implements Describable {
 ```swift
 protocol Encodable {}
 protocol Decodable {}
-typealias Encodable = Encodable & Decodable
+typealias Codable = Encodable & Decodable
 
 struct Student: Codable {
   private name: String
