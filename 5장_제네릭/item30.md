@@ -99,7 +99,7 @@ public <T extends SomeClass> void someFunction() {
     // code
 }
 
-// 3. T는 SomeClass를 상속하는 클래스만 가능. (SomeClass의 상위클래스들)
+// 3. T는 SomeClass의 상위 클래스들만 가능.
 public <T super SomeClass> void someFunction() {
     // code
 }
@@ -108,7 +108,6 @@ public <T super SomeClass> void someFunction() {
 Swift 또한 제네릭 타입에 대해 제약을 둘 수 있습니다. Java 처럼 특정 클래스만을 제약할 수도 있고 프로토콜을 지정해서 제약을 둘 수 있습니다.
 ```Swift
 // T는 SomeClass의 하위 클래스만 가능, U는 SomeProtocol을 채택하는 타입만 가능
-```Swift
 func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
   // code
 }
