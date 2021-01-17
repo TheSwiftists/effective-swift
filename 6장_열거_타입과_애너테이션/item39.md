@@ -217,8 +217,6 @@ protocol ProvidesMain {
 
 <br>
 
-
-
 ## Type Attributes
 
 > 타입에만 적용이 가능한 attributes
@@ -229,7 +227,22 @@ protocol ProvidesMain {
 
 <br>
 
-## Switch Case Attributes
+## Attribute related to Library Evolution Mode
+
+> Library Evolution Mode와 관련있는 attributes
+
+먼저 [Library Evolution Mode](https://swift.org/blog/abi-stability-and-more/)가 무엇인지 설명드립니다. 
+
+* Library Evolution Mode가 아닌 라이브러리
+  * 라이브러리의 버전이 변할 때, 해당 라이브러리를 사용하는 모든 앱은 전부 re-compile 되어야 합니다. 이것은 몇 가지 장점이 있습니다: (re-compile 함으로써) 컴파일러는 앱이 사용하는 라이브러리가 정확히 어떤 버전인지 알게 되기 때문에, code size를 줄이거나 앱이 더 빠르게 동작하게 하는 이점을 취할 수 있습니다. 즉 컴파일러가 최적화됩니다.
+
+  * 그러나 만약 프로젝트의 한 entity가 다른 프레임워크에서 선언되고 해당 프레임워크가 이전 버전의 라이브러리를 사용하는 경우라면, 이 entity는 새로운 버전의 라이브러리에 맞게 re-compile 되지 않습니다(따라서 앱이 오작동 할 수 있습니다). 따라서 이러한 Version 취약성 때문에 해당 entity를 사용하는 코드는 라이브러리 버전 업데이트에 보수적일수 밖에 없습니다. 
+
+* Library Evolution Mode인 라이브러리
+  * 라이브러리가 새로운 버전이 제공되어도, 라이브러리리를 사용하는 client(앱)들은 re-compile 하지 않아도 됩니다. 즉 클라이언트는 기존 버전의 라이브러리를 사용 가능하면서도 다음 버전의 라이브러리도 사용가능합니다. 따라서 컴파일러가 최적화되지는 않지만 라이브러리를 버전업해도 위와 같은 Version 취약성으로 인한 문제는 해결됩니다.
+  * Swift Standard Library는 Library Evolution Mode 입니다.
+
+### frozen
 
 > switch cases에만 적용이 가능한 attributes
 
