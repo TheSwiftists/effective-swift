@@ -229,22 +229,36 @@ protocol ProvidesMain {
 
 ## Attribute related to Library Evolution Mode
 
-> Library Evolution Mode와 관련있는 attributes
-
 먼저 [Library Evolution Mode](https://swift.org/blog/abi-stability-and-more/)가 무엇인지 설명드립니다. 
 
 * Library Evolution Mode가 아닌 라이브러리
   * 라이브러리의 버전이 변할 때, 해당 라이브러리를 사용하는 모든 앱은 전부 re-compile 되어야 합니다. 이것은 몇 가지 장점이 있습니다: (re-compile 함으로써) 컴파일러는 앱이 사용하는 라이브러리가 정확히 어떤 버전인지 알게 되기 때문에, code size를 줄이거나 앱이 더 빠르게 동작하게 하는 이점을 취할 수 있습니다. 즉 컴파일러가 최적화됩니다.
 
-  * 그러나 만약 프로젝트의 한 entity가 다른 프레임워크에서 선언되고 해당 프레임워크가 이전 버전의 라이브러리를 사용하는 경우라면, 이 entity는 새로운 버전의 라이브러리에 맞게 re-compile 되지 않습니다(따라서 앱이 오작동 할 수 있습니다). 따라서 이러한 Version 취약성 때문에 해당 entity를 사용하는 코드는 라이브러리 버전 업데이트에 보수적일수 밖에 없습니다. 
+  * 그러나 만약 프로젝트의 한 entity가 다른 프레임워크에서 선언되고 해당 프레임워크가 이전 버전의 라이브러리를 사용하는 경우라면, 이 entity는 새로운 버전의 라이브러리에 맞게 re-compile 되지 않습니다(그래서 앱이 오작동 할 수 있습니다). 따라서 이러한 Version 취약성 때문에 해당 entity를 사용하는 코드는 라이브러리 버전 업데이트에 보수적일수 밖에 없습니다. 
 
 * Library Evolution Mode인 라이브러리
-  * 라이브러리가 새로운 버전이 제공되어도, 라이브러리리를 사용하는 client(앱)들은 re-compile 하지 않아도 됩니다. 즉 클라이언트는 기존 버전의 라이브러리를 사용 가능하면서도 다음 버전의 라이브러리도 사용가능합니다. 따라서 컴파일러가 최적화되지는 않지만 라이브러리를 버전업해도 위와 같은 Version 취약성으로 인한 문제는 해결됩니다.
-  * Swift Standard Library는 Library Evolution Mode 입니다.
+  * 라이브러리가 새로운 버전이 제공되어도, 라이브러리리를 사용하는 client(앱)들은 re-compile 하지 않아도 됩니다. 즉 클라이언트는 기존 버전의 라이브러리를 사용 가능하면서도 다음 버전의 라이브러리도 사용 가능합니다. 따라서 컴파일러가 덜 최적화되지만, 라이브러리를 버전업해도 위와 같은 Version 취약성으로 인한 문제는 해결됩니다.
+  * Swift Standard Library는 Library Evolution Mode 인 라이브러리입니다.
 
 ### frozen
 
-> switch cases에만 적용이 가능한 attributes
+> 라이브러리가 Library Evolution Mode여도 Enum이나 Struct를 최적화하기 위한 attributes 
+
+frozen는 라이브러리가 Library Evolution Mode인 경우에만 사용이 허용됩니다. frozen을 struct 또는 enumeration 선언에 적용하면 해당 타입에 대해 수행할 수 있는 변경의 종류를 제한할 수 있습니다. 따라서 다음 버전의 라이브러리에서는 `@frozen enum` 타입의 **여러 case** 와 `@frozen struct` 타입의 **stored property들을** 재정렬(reordering)하거나 삭제 및 추가할 수 없습니다. 이러한 변화들은 nonfrozen 인 타입에서는 허용되지만, frozen type에 대한 ABI 호환성을 깨뜨립니다.
+
+> NOTE
+<br> 컴파일러가 Library Evolution Mode에 있지 않으면, 모든 struct와 enum이 implicit하게 frozen으로 적용되므로, 이 attribute는 무시됩니다.
+
+Library Evolution Mode에서 nonfrozen struct 및 enum의 멤버와 상호 작용하는 코드는 향후 버전의 라이브러리에서 해당 유형의 멤버 중 일부를 추가, 제거 또는 재정렬하더라도 (위의 설명처럼) 다시 컴파일하지 않고 계속 작업할 수있는 방식으로 컴파일됩니다. 컴파일러는 런타임시 정보 검색 및 간접 계층 추가와 같은 기술을 사용하여 이를 가능하게 합니다(따라서 컴파일러는 덜 최적화됩니다).
+
+frozen을 쓴다는 것은 nonfrozen의 유연성(flexibility)을 포기하고 대신 성능 최적화를 택한다는 것입니다. 이후 버전의 라이브러리는 type을 제한적으로만 변경할 수 있지만, 컴파일러는 type의 멤버(enum's case or struct's stored property)와 상호 작용하는 코드에서 추가 최적화를 수행할 수 있습니다.
+
+frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen enum의 associated value 들은 모두 public 이거나 @usableFromInline 로 표시되어야 합니다(이는 애초에 라이브러리 코드를 외부에서 사용하는 경우에 frozen이 필요한거라 필요한 조건입니다).
+
+요약하자면, 
+  * Library Evolution Mode가 아닌 라이브러리의 모든 enum 과 struct 는 default로 frozen 타입입니다. 타입이 모두 frozen인 이유는 버전업 될 때마다 client 코드를 re-compile 해야해서 다른 버전(이전 버전 or 다음 버전)을 고려할 필요가 없기 때문입니다. 따라서 해당 라이브러리를 사용하면 Evolution Mode 라이브러리를 사용할 때보다 client 코드가 성능 최적화될 수 있습니다.
+  * Library Evoltion Mode인 라이브러리는 enum 과 struct 가 default로 nonfrozen 타입입니다. default로 nonfrozen인 이유는 client 코드가 기존 버전과 다음 버전의 라이브러리 모두 사용할 수 있게 제공해야 하기 때문입니다. 따라서 nonfrozen 타입을 사용하는 Evolution Mode를 client가 사용하면 성능 최적화보다 여러 버전의 라이브러리를 re-compile 없이 사용할 수 있다는 유연성을 가질 수 있습니다. 대신 Library Evoltion Mode인 라이브러리도 **변하지 않는 것이 확정된 특정 enum과 struct**에 frozen을 마크해서 부분 최적화를 얻을 수 있습니다.
+  * Swift Standard Library로 예시를 들면 `Optional`은 frozen enum이고 `DecodingError`는 nonfrozen enum입니다. 
 
 ### unknown
 
