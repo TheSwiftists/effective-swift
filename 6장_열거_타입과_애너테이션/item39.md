@@ -244,7 +244,7 @@ protocol ProvidesMain {
 
 > 라이브러리가 Library Evolution Mode여도 Enum이나 Struct를 최적화하기 위한 attributes 
 
-frozen는 라이브러리가 Library Evolution Mode인 경우에만 사용이 허용됩니다. frozen을 struct 또는 enumeration 선언에 적용하면 해당 타입에 대해 수행할 수 있는 변경의 종류를 제한할 수 있습니다. 따라서 다음 버전의 라이브러리에서는 `@frozen enum` 타입의 **여러 case** 와 `@frozen struct` 타입의 **stored property들을** 재정렬(reordering)하거나 삭제 및 추가할 수 없습니다. 이러한 변화들은 nonfrozen 인 타입에서는 허용되지만, frozen type에 대한 ABI 호환성을 깨뜨립니다.
+frozen는 라이브러리가 Library Evolution Mode인 경우에만 사용이 허용됩니다. frozen을 struct 또는 enumeration 선언에 적용하면 해당 타입에 대해 수행할 수 있는 변경의 종류를 제한할 수 있습니다. 다음 버전의 라이브러리에서는 `@frozen enum` 타입의 **여러 case** 와 `@frozen struct` 타입의 **stored property들을** 재정렬(reordering)하거나 삭제 및 추가할 수 없습니다(이러한 변화들은 nonfrozen 인 타입에서는 허용되지만, frozen type에 대한 ABI 호환성을 깨뜨립니다).
 
 > NOTE
 <br> 컴파일러가 Library Evolution Mode에 있지 않으면, 모든 struct와 enum이 implicit하게 frozen으로 적용되므로, 이 attribute는 무시됩니다.
@@ -257,7 +257,7 @@ frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen
 
 요약하자면, 
   * Library Evolution Mode가 아닌 라이브러리의 모든 enum 과 struct 는 default로 frozen 타입입니다. 타입이 모두 frozen인 이유는 버전업 될 때마다 client 코드를 re-compile 해야해서 다른 버전(이전 버전 or 다음 버전)을 고려할 필요가 없기 때문입니다. 따라서 해당 라이브러리를 사용하면 Evolution Mode 라이브러리를 사용할 때보다 성능 최적화될 수 있습니다.
-  * Library Evoltion Mode인 라이브러리는 enum 과 struct 가 default로 nonfrozen 타입입니다. default로 nonfrozen인 이유는 client 코드가 기존 버전과 다음 버전의 라이브러리 모두 사용할 수 있게 제공해야 하기 때문입니다. 따라서 nonfrozen 타입을 사용하는 Evolution Mode를 client가 사용하면 성능 최적화보다 여러 버전의 라이브러리를 re-compile 없이 사용할 수 있다는 유연성을 가질 수 있습니다. 대신 Library Evoltion Mode인 라이브러리도 **변하지 않는 것이 확정된 특정 enum과 struct**에 frozen을 마크해서 부분 최적화를 얻을 수 있습니다.
+  * Library Evoltion Mode인 라이브러리는 enum 과 struct 가 default로 nonfrozen 타입입니다. default로 nonfrozen인 이유는 client 코드가 기존 버전과 다음 버전의 라이브러리 모두 사용할 수 있게 제공해야 하기 때문입니다. 따라서 nonfrozen 타입을 사용하는 Evolution Mode를 client가 사용하면 성능 최적화보다 여러 버전의 라이브러리를 re-compile 없이 사용할 수 있다는 유연성을 가질 수 있습니다. 대신 Library Evoltion Mode인 라이브러리도 **불변이 확정된 특정 enum과 struct**에 frozen을 표시해서 부분 최적화를 얻을 수 있습니다.
   * Swift Standard Library로 예시를 들면 `Optional`은 frozen enum이고 `DecodingError`는 nonfrozen enum입니다. 
 
 ### unknown
@@ -265,7 +265,7 @@ frozen type(enum or struct)과 frozen struct의 저장 프로퍼티 type, frozen
 > nonfrozen enum을 사용하는 경우 사용되는 attributes 
 
 기존 enum이나 frozen enum의 경우, 모든 case를 열거하면 default 구문을 적을 필요가 없습니다.
-하지만 nonfrozen enum 을 사용하는 경우 모든 case를 나열해도 미래 버전의 enum case를 고려해야 하기 때문에 `@unknown default` 구문을 적어 대응해야 합니다. 그렇지 않으면 `Switch covers known cases, but 'TestEnum' may have additional unknown values` 라는 yellow warning이 발생합니다. 
+하지만 nonfrozen enum 을 사용하는 경우 모든 case를 나열해도 미래 버전의 enum case를 고려해야 하기 때문에 `@unknown default` 구문을 적어 대응해야 합니다. 그렇지 않으면 `Switch covers known cases, but '해당 Enum' may have additional unknown values` 라는 yellow warning이 발생합니다. 
 
 switch case에 이 속성을 적용하면 이 case는 컴파일될 시점의 열거형의 어떤 case와도 매치되지 않을 것임을 나타냅니다. 자세한 사용 방법은 [Swtiching Over Future Enumeration Cases](https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID602)를 참고해주세요.
 
