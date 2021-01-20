@@ -16,7 +16,7 @@
 ```java
 map.merge(key, 1, (count, incr) -> count + incr);
 
-// default method of Map interface
+// default merge method of Map interface
 default V merge(K key, V value,
         BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
     Objects.requireNonNull(remappingFunction);
@@ -51,7 +51,7 @@ public static int sum(int a, int b) {
 
 ## 람다가 메서드 참조보다 나은 경우 
 
-1. 람다로 작성하면 매개변수(ex. count, incr)를 꼭 작성해야 하지만 메서드 참조를 매개변수를 작성하지 않습니다. 따라서 매개변수 수가 늘어날수록 메서드 참조로 제거할 수 있는 코드 양도 늘어납니다.
+1. 람다로 작성하면 매개변수(ex. count, incr)를 꼭 작성해야 하지만 메서드 참조는 매개변수를 작성하지 않습니다. 따라서 매개변수 수가 늘어날수록 메서드 참조로 제거할 수 있는 코드 양도 늘어납니다.
 하지만 어떤 람다에서는 매개변수의 이름 자체가 프로그래머에게 좋은 가이드가 되기도 합니다. **이런 람다의 길이는 더 길지만 매개변수가 있어서 메서드 참조보다 읽기 쉽고 유지보수도 쉬울 수 있습니다.**
 
 2. 람다가 메서드 참조보다 간결할 때가 있습니다. **주로 메서드와 람다가 같은 클래스에 있을 때 그렇습니다.** 예를 들어 다음 코드가 `GoshThisClassNameIsHumongous` 클래스 안에 있다고 해봅시다.  
@@ -110,7 +110,9 @@ public boolean isAfter(Instant otherInstant) {
 ```
 => 인수는 `then` 으로 한정되어 있고, 인수 `then`은  매개변수로 따로 추가되어 있지 않습니다. isAfter는 다른 Instant와 시간을 비교하는 메서드로 위의 경우 결과적으로 `then.isAfter(other)`가 호출됨을 알 수 있습니다. 
 
-* 비한정적 참조에서는 함수 객체를 적용하는 시점에 수신 객체를 알려줍니다. 이를 위해 수신 객체 전달용 매개변수가 매개변수 목록의 첫번째로 추가되며, 그 뒤로는 참조되는 메서드 선언에 정의된 매개변수들이 뒤따릅니다. 
+* 비한정적 참조에서는 함수 객체를 적용하는 시점에 수신 객체를 알려줍니다. 이를 위해 수신 객체 전달용 매개변수가 매개변수 목록의 첫번째로 추가되며, 그 뒤로는 참조되는 메서드 선언에 정의된 매개변수들이 뒤따릅니다.
+* 비한정적 참조는 주로 스트림 파이프라인에서의 매핑과 필터 함수에 쓰입니다(아이템 45).
+
 ```java
 UnaryOperator<String> unaryOperator;
 
