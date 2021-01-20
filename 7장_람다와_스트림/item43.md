@@ -7,14 +7,30 @@
 
 ### 람다 
 
-다음 코드는 임의의 키와 Integer 값의 매핑을 관리하는 프로그램의 일부입니다. 이때 값이 키의 인스턴스 개수로 해석된다면, 이 프로그램은 멀티셋(multiset)을 구현한게 됩니다. 이 코드는 키가 맵안에 없다면 키와 숫자 1을 매핑하고, 이미 있다면 있다면 기존 매핑 값을 증가시킵니다. 
+다음 코드는 임의의 키와 Integer 값의 매핑을 관리하는 프로그램의 일부입니다. 이때 값이 키의 인스턴스 개수로 해석된다면, 이 프로그램은 멀티셋(multiset)을 구현한 게 됩니다. 이 코드는 키가 맵안에 없다면 키와 숫자 1을 매핑하고, 이미 있다면 있다면 기존 매핑 값을 증가시킵니다. 
 
 > Note. 멀티셋(multiset)이란?
 <br><br>[multiset](https://stackoverflow.com/a/2858291/11612129)은 본질적으로 map으로서 key를 가지고 있고 key에 대한 개수를 값으로 가진 자료구조입니다.
-<br> 상품별로 재고의 개수나 팔린 상품의 개수를 저장하고 사용할 때 유용합니다.
+<br> 예를 들어, 상품별로 재고의 개수나 팔린 상품의 개수를 저장하고 사용할 때 유용합니다.
 
 ```java
 map.merge(key, 1, (count, incr) -> count + incr);
+
+// default method of Map interface
+default V merge(K key, V value,
+        BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    Objects.requireNonNull(value);
+    V oldValue = get(key);
+    V newValue = (oldValue == null) ? value :
+               remappingFunction.apply(oldValue, value);
+    if (newValue == null) {
+        remove(key);
+    } else {
+        put(key, newValue);
+    }
+    return newValue;
+}
 ```
 위 코드의 Map의 merge 메서드는 키, 값, 함수를 인수로 받으며, 주어진 키가 맵 안에 없다면 주어진 {키, 값} 쌍을 그대로 저장합니다. 여기서 count는 해당 key의 원래 값을 나타내고 incr는 매개변수 값으로 넣은 1을 나타냅니다. 
 <br>따라서 해당 코드는 key에 기존 값이 없으면 값에 1을 할당하고, key에 기존 값이 있으면 기존 값에 1을 더한 값이 key의 값이 되는 코드입니다.
@@ -23,6 +39,11 @@ map.merge(key, 1, (count, incr) -> count + incr);
 ### 메서드 참조
 ```java 
 map.merge(key, 1, Integer::sum);
+
+// sum method of Interger class 
+public static int sum(int a, int b) {
+    return a + b;
+}
 ```
 자바 8이 되면서 Integer 클래스(와 모든 기본 타입의 박싱타입)는 위의 람다와 기능이 같은 정적 메서드 sum을 제공하기 시작했습니다. 따라서 람다 대신 이 메서드의 참조를 전달하면 똑같은 결과를 보기 좋게 얻을 수 있습니다.
 
@@ -56,8 +77,8 @@ service.execute(() -> acton());
 | 비한정적(인스턴스) | String::toLowerCase | str -> str.toLowerCase() | 
 | 클래스 생성자| TreeMap<K,V>::new | () -> new TreeMap<K,V>() |
 | 배열 생성자| int[]::new | len -> new int[len] |
-<br>
-인스턴스 메서드를 참조하는 유형이 두 가지 있습니다. 그중 하나는 수신 객체(receiving object; 참조 대상 인스턴스)를 특정하는 한정적(bound) 인스턴스 메서드 참조이고, 다른 하나는 수신 객체를 특정하지 않는 비한정적(unbound) 인스턴스 메서드 참조입니다. 
+
+#### 인스턴스 메서드를 참조하는 유형이 두 가지 있습니다. 그중 하나는 수신 객체(receiving object; 참조 대상 인스턴스)를 특정하는 한정적(bound) 인스턴스 메서드 참조이고, 다른 하나는 수신 객체를 특정하지 않는 비한정적(unbound) 인스턴스 메서드 참조입니다. 
 
 * 한정적 참조는 근본적으로 함수 객체가 받는 인수와 참조되는 메서드가 받는 인수가 똑같습니다. 
 
@@ -80,13 +101,16 @@ predicate = new Predicate<Instant>() {
 };
 
 Instant other = Instant.now();
-predicate.test(other);
+predicate.test(other); // true
+
+// isAfter method of Instant class 
+public boolean isAfter(Instant otherInstant) {
+    return compareTo(otherInstant) > 0;
+}
 ```
+=> 인수는 `then` 으로 한정되어 있고, 인수 `then`은  매개변수로 따로 추가되어 있지 않습니다. isAfter는 다른 Instant와 시간을 비교하는 메서드로 위의 경우 결과적으로 `then.isAfter(other)`가 호출됨을 알 수 있습니다. 
 
-=> 인수는 `then` 으로 한정되어 있고, 인수 `then`은  매개변수로 따로 추가되어 있지 않습니다. `other` 은 참조되는 메서드 선언에 정의된 매개변수입니다. 
-
-* 비한정적 참조에서는 함수 객체를 적용하는 시점에 수신 객체를 알려줍니다. 이를 위해 수신 객체 전달용 매개변수가 매개변수 목록의 첫번째로 추가되며, 그 뒤로는 참조되는 메서드 선언에 정의된 매개변수들이 뒤따릅니다.
-
+* 비한정적 참조에서는 함수 객체를 적용하는 시점에 수신 객체를 알려줍니다. 이를 위해 수신 객체 전달용 매개변수가 매개변수 목록의 첫번째로 추가되며, 그 뒤로는 참조되는 메서드 선언에 정의된 매개변수들이 뒤따릅니다. 
 ```java
 UnaryOperator<String> unaryOperator;
 
@@ -107,7 +131,7 @@ unaryOperator.apply("receiving Objects");
 ```
 
 => 인수는 한정되어 있지 않고, 수신 객체가 매개변수 목록의 첫번째로 추가되어 있음을 알 수 있습니다. 
-여기서 "receiving Objects" 가 수신 객체임을 알 수 있습니다. 
+여기서 "receiving Objects" 가 수신 객체임을 알 수 있습니다. 위의 경우 `"receiving Objects".toUpperCase()` 가 호출됨을 알 수 있습니다. 
 
 ### 메서드 참조로는 가능하지만, 람다로는 불가능한 것
 
