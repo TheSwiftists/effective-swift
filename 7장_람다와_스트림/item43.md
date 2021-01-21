@@ -108,7 +108,8 @@ public boolean isAfter(Instant otherInstant) {
     return compareTo(otherInstant) > 0;
 }
 ```
-=> 인수는 `then` 으로 한정되어 있고, 인수 `then`은  매개변수로 따로 추가되어 있지 않습니다. isAfter는 다른 Instant와 시간을 비교하는 메서드로 위의 경우 결과적으로 `then.isAfter(other)`가 호출됨을 알 수 있습니다. 
+=> 인수는 `then` 으로 한정되어 있고, 인수 `then`은  매개변수로 따로 추가되어 있지 않습니다. isAfter는 다른 Instant와 시간을 비교하는 메서드로 위의 경우 결과적으로 `then.isAfter(other)`가 호출됨을 알 수 있습니다.
+<br>=> 메서드 참조가 수신 객체 then을 **캡처(capture)** 하고 있음을 알 수 있습니다. 자바는 스위프트와 달리 캡처한 객체(or primitive type)는 주소값(or 값)이 바뀌어선 안됩니다(`java: local variables referenced from an inner class must be final or effectively final`).
 
 * 비한정적 참조에서는 함수 객체를 적용하는 시점에 수신 객체를 알려줍니다. 이를 위해 수신 객체 전달용 매개변수가 매개변수 목록의 첫번째로 추가되며, 그 뒤로는 참조되는 메서드 선언에 정의된 매개변수들이 뒤따릅니다.
 * 비한정적 참조는 주로 스트림 파이프라인에서의 매핑과 필터 함수에 쓰입니다(아이템 45).
@@ -131,7 +132,6 @@ unaryOperator = new UnaryOperator<String>() {
 };
 unaryOperator.apply("receiving Objects");
 ```
-
 => 인수는 한정되어 있지 않고, 수신 객체가 매개변수 목록의 첫번째로 추가되어 있음을 알 수 있습니다. 
 여기서 "receiving Objects" 가 수신 객체임을 알 수 있습니다. 위의 경우 `"receiving Objects".toUpperCase()` 가 호출됨을 알 수 있습니다. 
 
@@ -165,10 +165,12 @@ class Temp {
 }
 ```
 
-
 ## Swift
 
 ### 람다
+
+* 위 자바 코드를 스위프트로 바꾸면 아래와 같습니다.
+
 ```swift
 struct MultiSet {
     private var dictionary = [String: Int]()
@@ -196,6 +198,9 @@ var multiSet = MultiSet()
 ```
 
 ### 메서드 참조
+
+* 위 자바 코드를 스위프트로 바꾸면 아래와 같습니다.
+
 ```swift
 extension Int {
     static func sum(lhs: Int, rhs: Int) -> Int {
