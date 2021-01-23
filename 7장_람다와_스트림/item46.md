@@ -165,15 +165,20 @@ static func stringToEnum() -> [String: Operation] {
 
 ### groupingBy
 
+groupingBy 메서드는 입력으로 분류함수(classifier)를 받고 출력으로는 원소들을 카테고리별로 모아 놓은 맵을 담은 수집기를 반환합니다. 그리고 **이 카테고리가 해당  원소의 맵 키로 쓰입니다.**  
 groupingBy는 다중정의된 메서드로 총 3가지 메서드가 있습니다. 
 
 * classifier만 사용하는 메서드 
+
+groupingBy 메서드는 가장 간단한 것으로서 분류함수 classfier만 인수로 받고 Map을 반환합니다. 반환된 맵에 담긴 각각의 값은 해당 카테고리에 속하는 원소들을 모두 담은 List 입니다.
 
 ```java
 Map<String, List<String>> map = words.collect(groupingBy(word -> alphabetize(word)))
 ```
 
 * classifier와 downstream을 사용하는 메서드 
+
+* groupingBy가 반환하는 수집기가 리스트 외의 값을 갖는 맵을 생성하게 하려면, 분류 함수와 함께 다운스트림(downstream) 수집기도 명시해야 합니다. 아래와 같이 다운스트림 수집기로 counting()을 건네는 방법도 있습니다. 이렇게 하면 각 카테고리(키)를 (원소를 담은 컬렉션이 아닌) 해당 카테고리에 속하는 원소의 개수(값)와 매핑한 맵을 얻는다.
 
 ```java
 Map<String, Long> freq;
@@ -182,4 +187,4 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 }
 ```
 
-* classfire와 downstream, mapFactory를 모두 사용하는 메서드가 있습니다.  
+* classfier와 downstream, mapFactory를 모두 사용하는 메서드가 있습니다.
