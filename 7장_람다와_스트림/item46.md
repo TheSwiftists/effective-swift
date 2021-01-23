@@ -56,7 +56,7 @@ extension Dictionary {
 ```
 
 위 코드는 외부 상태(freq)를 수정하며 side-effect를 발생시키는 스트림 코드입니다( `word -> { freq.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다 ).
-<br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다.
+<br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다(forEach가 계산을 하는 코드는 보통 외부 값을 수정하는 side effect가 일어나느 코드이기 때문입니다).
 
 ## side effect가 없는 스트림 코드 
 
@@ -117,6 +117,7 @@ func nonSideEffectExample(file: String) {
 
 자바 프로그래머(스위프트도 마찬가지)라면 for-each 반복문을 사용할 줄 알 텐데, for-each 반복문은 forEach 종단 연산과 비슷하게 생겼습니다. 하지만 forEach 연산은 종단 연산 중 기능이 가장 적고 가장 **'덜' 스트림**답습니다. 대놓고 **반복적이라서 병렬화할 수도 없습니다.** 
 <br>**forEach 연산은 스트림 계산 결과를 보고할 때만 사용하고, 계산하는 데는 쓰지 마십시오. 반복문을 사용하십시오.**
+물론 가끔은 스트림 계산 결과를 기존 컬렉션에 추가하는 등의 다른 용도로는 쓰일 수 있습니다. 
 
 ## Collectors Method 
 
