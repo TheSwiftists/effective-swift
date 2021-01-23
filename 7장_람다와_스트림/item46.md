@@ -188,3 +188,42 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 ```
 
 * classfier와 downstream, mapFactory를 모두 사용하는 메서드가 있습니다.
+
+## Swift 의 enumerated, zip 
+
+* enumerated
+
+쌍의 시퀀스 (n, x)를 반환합니다. 여기서 n은 0에서 시작하는 연속 정수를 나타내고 x는 시퀀스의 요소를 나타냅니다.
+
+```swift
+for (n, c) in "Swift".enumerated() {
+    print("\(n): '\(c)'")
+}
+// Prints "0: 'S'"
+// Prints "1: 'w'"
+// Prints "2: 'i'"
+// Prints "3: 'f'"
+// Prints "4: 't'"
+```
+
+* zip
+
+두 타입을 합쳐 tuple로 만들어 주는 기능을 합니다. 
+
+```swift
+let names: Set = ["Sofia", "Camilla", "Martina", "Mateo", "Nicolás"]
+var shorterIndices: [Set<String>.Index] = []
+for (i, name) in zip(names.indices, names) {
+    if name.count <= 5 {
+        shorterIndices.append(i)
+    }
+}
+```
+
+```swift
+for i in shorterIndices {
+    print(names[i])
+}
+// Prints "Sofia"
+// Prints "Mateo"
+```
