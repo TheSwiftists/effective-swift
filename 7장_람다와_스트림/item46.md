@@ -170,7 +170,7 @@ groupingBy는 다중정의된 메서드로 총 3가지 메서드가 있습니다
 * classifier만 사용하는 메서드 
 
 ```java
-Map<String, List<String> map = words.collect(groupingBy(word -> alphabetize(word)))
+Map<String, List<String>> map = words.collect(groupingBy(word -> alphabetize(word)))
 ```
 
 * classifier와 downstream을 사용하는 메서드 
