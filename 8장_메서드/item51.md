@@ -188,13 +188,14 @@ class Card {
 let card = Card(cardInfo: Card.CardInfo(rank: .one, suit: .spade))
 ```
 
-* 또 Swift 에서는 매개변수를 여러 개 묶을 수 있는 튜플(Tuple)을 이용할 수 있습니다.
+또 Swift 에서는 매개변수를 여러 개 묶을 수 있는 튜플(Tuple)을 이용할 수 있습니다. Swift는 타입을 지정하는 `typealias`라는 것도 있고 튜플과 같이 사용하면 더 깔끔해집니다. 
 
 ```Swift
 class Card {
-    let cardInfo: (rank: Rank, suit: Suit)
+    typealias CardInfo = (rank: Rank, suit: Suit)
+    let cardInfo: CardInfo
     
-    init(cardInfo: (rank: Rank, suit: Suit)) {
+    init(cardInfo: CardInfo) {
         self.cardInfo = cardInfo
     }
     
