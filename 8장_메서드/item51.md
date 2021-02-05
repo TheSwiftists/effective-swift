@@ -4,15 +4,91 @@
 
 ### 메서드 이름을 신중히 짓자.
 
-[Swift API Design Guide](https://swift.org/documentation/api-design-guidelines/)는 모든 Swift Style Guide의 근간이 되는 가이드입니다. Swift API Design Guide를 참고하고 메서드 이름을 짓습니다. 다음은 가이드 중에 메서드, 매개변수 네이밍에 대한 일부 규칙입니다. 
+[Swift API Design Guide](https://swift.org/documentation/api-design-guidelines/)는 모든 Swift Style Guide의 근간이 되는 가이드입니다. Swift API Design Guide를 참고하고 메서드 이름을 지읍시다. 다음은 가이드 중에 메서드, 매개변수 네이밍에 대한 일부 규칙입니다. 
 
-> 메서드 
+* 이름으로 명확한 사용법을 제시하세요. 그 이름을 사용하는 부분의 코드를 읽는 사람에게 **혼란을 줄 수 있는 단어는 피하세요.**
 
-* 
+> BAD 
 
-> 매개변수 
+```Swift
+employees.remove(x) // 명확하지 않음: x값을 제거하는건가?
+```
 
-* 
+> GOOD
+
+```swift
+```swift
+extension List {
+	public mutating func remove(at position: Index) -> Element
+}
+
+employees.remove(at: x)
+```
+​=> 메소드 시그니처에서 at을 생략한다면 해당 메소드가 x과 같은 요소를 제거하는 건지, x위치에 있는 요소를 찾아서 제거한다는 건지 헷갈릴 수 있습니다.
+
+* **쓸모없는 단어를 제거하세요.** 이름의 모든 단어는 사용자 관점에서 주요한 정보를 제공해야만 합니다.
+
+> BAD
+
+```Swift
+public mutating func removeElement(_ member: Element) -> Element?
+
+allViews.removeElement(cancelButton)
+```
+=> 더 많은 단어를 사용하면 의도가 명확해지거나 헷갈리지 않을 수 있지만 코드를 읽는 사람에게 **중복된 정보를 제공하는 경우**는 제거해야 합니다. 위의 코드에서 Element는 호출하는 지점에서는 의미가 없으니 다음과 같은 코드가 더 좋습니다.
+
+> GOOD
+
+```Swift
+public mutating func remove(_ member: Element) -> Element?
+	
+allViews.remove(cancelButton) // 보다 명확함
+```
+
+* 매개변수 역할을 명확하게 넣어서 부족한 타입 정보를 보완하세요.
+
+매개변수 타입이 `NSObject`, `Any`, `AnyObject` 이거나 `Int`나 
+`String` 같은 기본 타입이면, 사용하는 지점에서 맥락상 타입 정보가 불명확할 수 있습니다.
+
+> BAD
+
+```Swift
+func add(_ observer: NSObject, for keyPath: String)
+grid.add(self, for: graphics) // 불분명함 
+```
+
+> GOOD
+```Swift
+func addObserver(_ observer: NSObject, forKeyPath path: String)
+grid.addObserver(self, forKeyPath: graphics) // 명확함
+```
+=> ​ 명확성을 갖도록 **부족한 타입 정보마다 역할을 설명하는 명사를 붙여줍니다.**
+
+* 문서화 할 수 있는 매개 변수 이름을 선택하세요. 함수나 메소드를 사용할 때 **매개변수가 감춰져있더라도** 여전히 중요한 역할을 합니다.
+  * 다음과 같은 이름은 문서화해도 읽기 편하고, 문서로 만들어도 자연스럽습니다.
+
+```Swift
+/// Return an `Array` containing the elements of `self`
+/// that satisfy `predicate`.
+func filter(_ predicate: (Element) -> Bool) -> [Generator.Element]
+
+/// Replace the given `subRange` of elements with `newElements`.
+mutating func replaceRange(_ subRange: Range, with newElements: [E])
+```
+
+* 반면에 다음과 같은 표현은 문법도 안맞고, 불분명합니다. 
+
+```Swift
+/// Return an `Array` containing the elements of `self`
+/// that satisfy `includedInResult`.
+func filter(_ includedInResult: (Element) -> Bool) -> [Generator.Element]
+
+/// Replace the range of elements indicated by `r` with
+/// the contents of `with`.
+mutating func replaceRange(_ r: Range, with: [E])
+```
+
+* 매개변수 기본값(defaulted parameter)을 지정해서 편리함을 더하세요. 매개 변수에 흔히 넘기는 값 자체를 기본값으로 활용하세요.
 
 더 자세한 내용은 Swift API Design Guide를 참고 바랍니다. 
 
@@ -23,11 +99,11 @@
 특히 API의 프로퍼티로 배열이 있어서 배열의 특정 값을 순회하며 찾는 경우, 해당 값을 반환하는 메소드를 만들지 말고 클로저(핸들러)를 이용해 API를 사용하는 클라이언트가 특정 조건을 클로저로 작성해 값을 찾도록 만드는 방법이 있습니다.  
 
 ```swift
-protocol CardSearchable {    
-    func searchCard(handler: (Card) -> (Void))
+protocol CardRepeatable {    
+    func repeatCard(handler: (Card) -> (Void))
 }
 
-class Deck: CardSearchable {
+class Deck: CardRepeatable {
     private var cards = [Card]()
 
     //... 생략 
@@ -90,10 +166,130 @@ let firstIndex = nums[0 ..< 3].firstIndex(of: 3)
 
 ### 기술 2: 매개변수 여러 개를 묶어주는 클래스를 만든다. 
 
-도우미 클래스 (rank suit)
+매개변수 수를 줄여주는 기술 두 번째는 매개변수 여러 개를 묶어주는 도우미 클래스를 만드는 것입니다. 이런 도우미 클래스는 보통 메소드(동작)가 없으므로 Swift에서는 구조체(struct)로 두면 좋을 것 같습니다. 특히 **잇따른** 매개변수 몇 개를 독립된 하나의 개념으로 볼 수 있을 때 추천하는 기법입니다. 
+예를 들어 카드게임을 클래스로 만든다고 해봅시다. 그러면 메서드를 호출할 때 카드의 숫자(rank)와 무늬(suit)를 뜻하는 두 매개변수를 **항상 같은 순서로 전달할 것**입니다. 따라서 이 둘을 묶는 도우미 클래스를 만들어 하나의 매개변수로 주고받으면 API는 물론 클래스 내부 구현도 깔끔해질 것입니다.
+
+```swift
+class Card {
+    struct CardInfo {
+        let rank: Rank
+        let suit: Suit
+    }
+    
+    let cardInfo: CardInfo
+    
+    init(cardInfo: CardInfo) {
+        self.cardInfo = cardInfo
+    }
+    
+    //...
+}
+
+let card = Card(cardInfo: Card.CardInfo(rank: .one, suit: .spade))
+```
+
+* 또 Swift 에서는 매개변수를 여러 개 묶을 수 있는 튜플(Tuple)을 이용할 수 있습니다.
+
+```Swift
+class Card {
+    let cardInfo: (rank: Rank, suit: Suit)
+    
+    init(cardInfo: (rank: Rank, suit: Suit)) {
+        self.cardInfo = cardInfo
+    }
+    
+    //...
+}
+
+let card = Card(cardInfo: (rank: .one, suit: .spade))
+```
 
 ### 기술 3: 객체 생성에 사용한 빌더 패턴을 메서드 호출에 응용한다.
 
+세 번째는 앞서의 두 기법을 혼합한 것으로, 객체 생성에 사용한 빌더 패턴(아이템 2)을 메서드 호출에 응용한다고 보면 됩니다. 이 기법은 매개변수가 많을 때, 특히 **그중 일부는 생략해도 괜찮을 때** 도움이 됩니다. 먼저 모든 매개변수를 하나로 추상화한 객체를 정의하고, 클라이언트에서 이 객체의 세터(setter) 메서드를 호출해 필요한 값을 설정하게 하는 것입니다. 이때 각 세터 메서드는 매개변수 하나 혹은 서로 연관된 몇 개만 설정하게 하는 것입니다. 클라이언트는 먼저 필요한 매개변수를 다 설정한 다음, execute 메서드를 호출해 앞서 설정한 매개변수들의 유효성을 검사합니다. 마지막으로, 설정이 완료된 객체를 넘겨 원하는 계산을 수행합니다. 
+
+> Java
+
+```java
+class NutritionFacts {
+    private int servingSize;
+    private int servings;
+    private int calories;
+    private int fat;
+    private int sodium;
+
+    public NutritionFacts servingSize(int servingSize) {
+        this.servingSize = servingSize;
+        return this;
+    }
+
+    public NutritionFacts servings(int servings) {
+        this.servings = servings;
+        return this;
+    }
+
+    public NutritionFacts calories(int calories) {
+        this.calories = calories;
+        return this;
+    }
+
+    public NutritionFacts fat(int fat) {
+        this.fat = fat;
+        return this;
+    }
+
+    public NutritionFacts sodium(int sodium) {
+        this.sodium = sodium;
+        return this;
+    }
+
+    public boolean execute() {
+        return servingSize > 0 && servings > 0 && calories > 0;
+    }
+}
+
+NutritionFacts nutritionFacts = new NutritionFacts().servingSize(1).servings(2).calories(3);
+if(!nutritionFacts.execute()) { return; }
+
+add(nutritionFacts);
+```
+
+> Swift
+
+```swift
+class NutritionFacts {
+    private let servingSize: Int
+    private let servings: Int
+    private let calories: Int
+    private var fat: Int?
+    private var sodium: Int?
+    
+    init?(
+        servingSize: Int,
+        servings: Int,
+        calories: Int,
+        fat: Int? = nil,
+        sodium: Int? = nil
+    ) {
+        guard servingSize > 0, servings > 0 , calories > 0 else {
+            return nil
+        }
+        
+        self.servingSize = servingSize
+        self.servings = servings
+        self.calories = calories
+        self.fat = fat
+        self.sodium = sodium
+    }
+}
+
+guard let nutritionFacts = NutritionFacts(
+                servingSize: 1, servings: 2, calories: 3) else { return }
+        
+add(nutritionFacts: nutritionFacts)
+```
+
+=> Swift 는 execute() 메소드를 따로 구현할 필요없이 `init?` 사용하면 됩니다. 
 
 ## 매개변수의 타입으로는 클래스보다는 프로토콜이 더 낫다. 
 
