@@ -119,7 +119,15 @@ static func max<T: Comparable>(collections: [T]) -> T? {
 
 ## 옵셔널 활용
 
+* 메서드가 옵셔널을 반환한다면 클라이언트는 값을 받지 못했을 때 취할 행동을 선택해야 합니다. 선택지로는 기본값 설정, 예외던지기, 값 바로 꺼내기 등 3가지 방법이 있습니다.  
+
 ### 옵셔널 활용 1 - 기본값을 정해둘 수 있습니다. 
+
+> Java 
+
+```java
+String lastWordInLexicon = max(words).orElse("단어 없음...");
+```
 
 > Swift
 
@@ -131,7 +139,81 @@ print(maxValue) // 100
 
 ### 옵셔널 활용 2 - 원하는 예외를 던질 수 있습니다.
 
+또는 상황에 맞는 예외를 던질 수 있습니다. 다음 코드에서 실제 예외가 아니라 예외 팩터리를 건넨것에 주목합시다. 이렇게 하면 예외가 실제로 발생하지 않는 한 예외 생성 비용은 들지 않습니다. 
+
+> Java 
+
+```java
+Toy myToy = max(toys).orElseThrow(SometingException::new);
+```
+
+> Swift 
+
+Swift 는 해당 기능이 없습니다. 따라서 똑같이 기능을 갖추려면 extension 을 이용해 기능 구현해야 합니다. 
+
+```swift
+extension Optional {
+    func orThrow(_ errorExpression: @autoclosure () -> Error) throws -> Wrapped {
+        switch self {
+        case .some(let value):
+            return value
+        case .none:
+            throw errorExpression()
+        }
+    }
+}
+
+let file = try loadFile(at: path).orThrow(MissingFileError())
+```
+=> [Swift by Sundell](https://www.swiftbysundell.com/tips/unwrapping-an-optional-or-throwing-an-error/)의 예시입니다. 
+
 ### 옵셔널 활용 3 - 항상 값이 채워져 있다고 가정합니다. 
+
+> Java
+
+옵셔널에 항상 값이 채워져 있다고 확신한다며 그냥 곧바로 값을 꺼내 사용하는 선택지도 있습니다. 다만 잘못 판단한 것이라면 `NoSuchElementException` 이 발생합니다. 
+
+```java
+Element lastNobleGas = max(Elements.NOBLE_GASES).get();
+```
+
+> Swift
+Swift 에서는 `!`을 이용하면 강제적으로 Optional 에서 값을 바로 꺼내 사용할 수 있습니다(Forced Unwrapping). 대신 마찬가지로 값이 없는 경우엔 런타임 에러가 발생합니다. 
+
+```Swift
+let lastNobleGas: Element = Example.max(collections: Elements.NobleGases)!
+// ! 을 사용해서 타입은 옵셔널이 아닙니다. 
+```
+
+## 옵셔널의 안전 밸브 역할의 메서드 
+
+> Java
+
+* isPresent 메서드 
+  * 옵셔널이 채워져 있으면 true를, 비어 있으면 false를 반환합니다.
+
+```java
+static Optional<String> getOptionalName() {
+    return Optional.of("Jason");
+}
+
+Optional<String> name = getOptionalName();
+System.out.println("내 이름: " + (name.isPresent() ? name.get() : "이름 없음"));
+```
+
+> Swift 
+
+* 옵셔널 바인딩 (`if let`, `guard let`) 
+  * 값이 nil이 아닌 경우에만 unwrapping 되어 변수에 값이 할당됩니다. !(forced unwrapping) 보다 매우 안전합니다. 
+
+```swift
+if let maxValue = max(collections: [1, 2, 3]) {
+    print(maxValue) // 3
+}
+
+guard let maxValue = max(collections: [1, 2, 3]) else { return }
+print(maxValue) // 3
+```
 
 ## 반환 값으로 옵셔널을 사용하면 안되는 경우 
 
@@ -154,6 +236,37 @@ func generateCards() -> [Card] // 외부에서 옵셔널 처리를 하지 않아
 
 결과가 없을 수 있을 때 사용하고 **Swift의 경우, 제일 우선되는 선택지**입니다. Java는 null과 Optional이 분리된 개념이라 두 가지 선택지를 모두 고려해야 하지만, Swift는 옵셔널과 nil이 연관된 개념이기 때문에 옵셔널을 먼저 고려합니다. 
 
-## Java 맵 vs Swift 딕셔너리
+## Java 맵, Swift 딕셔너리
 
+> Java: Map
+
+맵(Map)의 값으로 **옵셔널을 사용하면 절대 안됩니다.** 만약 그리 한다면 맵 안에 키가 없다는 사실을 나타내는 방법이 두 가지가 됩니다. 하나는 키 자체가 없는 경우이고, 다른 하나는 키는 있지만 그 키가 속이 빈 옵셔널(`Optional.empty()`)인 경우입니다. 쓸데없이 복잡성만 높여서 혼란과 오류 가능성을 키울 뿐입니다. 
+
+```java
+Map<String, Optional<Integer>> map = Map.of("key", Optional.empty());
+System.out.println(map.get("notKey")); // null
+System.out.println(map.get("key")); // Optional.empty
+```
+=> 자바는 위와 같이 키가 없는 경우 null을 반환합니다. 
+
+> Swift: Dictionary
+
+딕셔너리(Dictionary)는 키와 대응하는 값이 있든 없든, **특정 키로 대응하는 값을 반환할 때 옵셔널 타입으로 반환합니다.** 따라서 반환된 값은 키가 없으면 nil이 나오고, 키가 있으면 값이 옵셔널로 래핑되어 도출됩니다. 
+따라서 딕셔너리의 값 타입도 옵셔널타입은 지양해야 합니다. 자바의 Map과 마찬가지로 맵 안에 키가 없다는 사실이 키 자체가 없는 경우와 키는 있지만 값이 nil인 경우 총 2가지가 되어 복잡성만 높이기 때문입니다. 
+
+```swift
+let three = dic["three"]
+print(three) // nil 
+
+let four = dic["four"]
+print(four) // Optional(4)
+
+if let four = four { // unwrapping
+    print(four) // 4
+}
+```
+
+=> **일반화해 이야기하면 옵셔널을 컬렉션의 키, 값, 원소나 배열의 원소로 사용하는 게 적절한 상황은 거의 없습니다.**
+
+## 프로퍼티로 옵셔널 타입을 두는 경우는 필수적인 프로퍼티가 아닌 선택적 프로퍼티인 경우에 둡니다. 
 
