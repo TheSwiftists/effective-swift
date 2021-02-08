@@ -17,7 +17,6 @@ employees.remove(x) // 명확하지 않음: x값을 제거하는건가?
 > GOOD
 
 ```swift
-```swift
 extension List {
 	public mutating func remove(at position: Index) -> Element
 }
