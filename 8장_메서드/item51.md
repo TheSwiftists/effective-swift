@@ -212,11 +212,11 @@ let card = Card(cardInfo: (rank: .one, suit: .spade))
 
 ```java
 class NutritionFacts {
-    private int servingSize;
-    private int servings;
-    private int calories;
-    private int fat;
-    private int sodium;
+    private int servingSize; // 필수 매개변수
+    private int servings;  // 필수 매개변수
+    private int calories; // 필수 매개변수
+    private int fat; // 선택 매개변수 
+    private int sodium; // 선택 매개변수
 
     public NutritionFacts servingSize(int servingSize) {
         this.servingSize = servingSize;
@@ -243,6 +243,7 @@ class NutritionFacts {
         return this;
     }
 
+    // 필수 매개변수들을 검증한다. 
     public boolean execute() {
         return servingSize > 0 && servings > 0 && calories > 0;
     }
@@ -258,11 +259,11 @@ add(nutritionFacts);
 
 ```swift
 class NutritionFacts {
-    private let servingSize: Int
-    private let servings: Int
-    private let calories: Int
-    private var fat: Int?
-    private var sodium: Int?
+    private let servingSize: Int // 필수 매개변수 
+    private let servings: Int // 필수 매개변수 
+    private let calories: Int // 필수 매개변수 
+    private var fat: Int? // 선택 매개변수 
+    private var sodium: Int? // 선택 매개변수 
     
     init?(
         servingSize: Int,
@@ -271,6 +272,7 @@ class NutritionFacts {
         fat: Int? = nil,
         sodium: Int? = nil
     ) {
+        // 필수 매개변수들을 검증한다. 
         guard servingSize > 0, servings > 0 , calories > 0 else {
             return nil
         }
@@ -282,14 +284,11 @@ class NutritionFacts {
         self.sodium = sodium
     }
 }
-
 guard let nutritionFacts = NutritionFacts(
                 servingSize: 1, servings: 2, calories: 3) else { return }
         
 add(nutritionFacts: nutritionFacts)
 ```
-
-=> Swift 는 execute() 메소드를 따로 구현할 필요없이 `init?` 사용하면 됩니다. 
 
 ## 매개변수의 타입으로는 클래스보다는 프로토콜이 더 낫다. 
 
