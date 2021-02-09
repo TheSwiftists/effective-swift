@@ -20,7 +20,7 @@ func functionName(parameter1: Type, parameter2: Type...) -> returnType {
 
 **Variadic**: '임의의 갯수 인수를 받을 수 있는' 
 
-즉, **Variadic parameter**는 0개 이상의 특정 타입 인수를 받을 수 있는 매개변수를 말하며 메서드가 호출될 때 전달되어 사용 가능합니다. **Variadic parameter**를 사용하기 위해서는 매개변수 타입 이름 뒤에 `...`를 붙여 사용합니다. **Variadic parameter**에 전달된 값은 함수 본문 내에서 적절한 타입의 배열로 사용할 수 있습니다. 예를 들어 `doubleArray`를 이름으로 갖고있는 `Double...` 타입의 **Variadic parameter**는 `[Double]` 타입의 상수 배열로 함수 본문 내에서 사용할 수 있습니다.
+즉, **Variadic parameter** 는 0개 이상의 특정 타입 인수를 받을 수 있는 매개변수를 말하며 메서드가 호출될 때 전달되어 사용 가능합니다. **Variadic parameter** 를 사용하기 위해서는 매개변수 타입 이름 뒤에 `...` 를 붙여 사용합니다. **Variadic parameter** 에 전달된 값은 함수 본문 내에서 적절한 타입의 배열로 사용할 수 있습니다. 예를 들어 `doubleArray` 를 이름으로 갖고있는 `Double...` 타입의 **Variadic parameter** 는 `[Double]` 타입의 상수 배열로 함수 본문 내에서 사용할 수 있습니다.
 
 <u>**Variadic parameter**는 인수 개수가 정해지지 않았을 때 유용합니다.</u> 
 
@@ -38,10 +38,8 @@ func arithmeticMean(_ numbers: Double...) -> Double {
     }
     return total / Double(numbers.count)
 }
-arithmeticMean(1, 2, 3, 4, 5)
-// returns 3.0, which is the arithmetic mean of these five numbers
-arithmeticMean(3, 8.25, 18.75)
-// returns 10.0, which is the arithmetic mean of these three numbers
+arithmeticMean(1, 2, 3, 4, 5) // returns 3.0
+arithmeticMean(3, 8.25, 18.75) // returns 10.0
 ```
 
 * 합 구하기
@@ -122,9 +120,9 @@ send(message, attaching: image, document)
 
 
 ```swift
+// 컴파일 오류가 발생하는 코드
 func shoppingList(items: String..., prices: Float...) { ... }
 ```
-
 
 
 * Array Parameters의 특징
