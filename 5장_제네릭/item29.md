@@ -10,7 +10,7 @@ func min<T: Comparable>(_ x: T, _ y: T) -> T {
 }
 ```
 
-컴파일러에는 이 함수를 위해 코드를 보내는데 필요한 두 가지 필수 정보인 1. _T타입 변수의 사이즈_와 2. _런타임에 호출해야하는_ `<` 메서드의 특정 오버로드 주소가 없습니다.
+컴파일러에는 이 함수를 위해 코드를 보내는데 필요한 두 가지 필수 정보인 1. _T타입 변수의 사이즈_ 와 2. _런타임에 호출해야하는_ `<` 메서드의 특정 오버로드 주소가 없습니다.
 
 컴파일러가 제네릭 타입을 가진 값(value)을 발견할 때마다 해당 값을 컨테이너에 보관합니다. 이 컨테이너는 값을 저장할 수 있는 고정 크기가 있습니다. 값이 너무 크면 Swift는 힙(heap)에 할당하고 해당 컨테이너에 대한 참조(주소값)를 저장합니다.
 
@@ -98,7 +98,7 @@ print(anyStack.items) // ["Effective Swift"]
 
 - 제네릭 함수가 처리해야 할 기능이 특정 타입에 한정되어야만 처리할 수 있는 경우
   Ex) 아래 '타입 제약 예시'의 `substractTwoValue(_: _:)` 뺄셈 함수의 경우,
-  _뺄셈 연산자를 사용할 수 있는 타입_이어야 하기 때문에 매개변수를 BinaryInteger 프로토콜을 준수하는 타입으로 한정.
+  _뺄셈 연산자를 사용할 수 있는 타입_ 이어야 하기 때문에 매개변수를 BinaryInteger 프로토콜을 준수하는 타입으로 한정.
 
 - 제네릭 타입을 특정 프로토콜을 따르는 타입만 사용할 수 있도록 제약을 두어야 하는 경우
 
@@ -150,6 +150,7 @@ protocol Container {
 }
 
 struct IntStack: Container {
+    typealias Item = Int // 🙌🏻
     // original IntStack implementation
     var items = [Int]() 
     mutating func push(_ item: Int) {
@@ -159,7 +160,6 @@ struct IntStack: Container {
         return items.removeLast()
     }
     // conformance to the Container protocol
-    typealias Item = Int // 🙌🏻
     mutating func append(_ item: Int) {
         self.push(item)
     }
