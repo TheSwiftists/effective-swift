@@ -27,7 +27,7 @@
 
 **열거 타입을 사용하는 경우**
 
-저자는 필요한 원소를 컴파일 타임에 다 알 수 있는 상수 집합이라면 항상 열거 타입을 사용하라고 권고하고 있습니다. 또한 열거 타입은 나중에 상수가 추가 되어도 바이너리 수준에서 호환되로록 설계되었기 때문에 열거 타입에 정의된 상수 개수가 영원히 고정 불변일 필요는 없습니다.
+저자는 필요한 원소를 컴파일 타임에 다 알 수 있는 상수 집합이라면 항상 열거 타입을 사용하라고 권고하고 있습니다. 또한 열거 타입은 나중에 상수가 추가 되어도 바이너리 수준에서 호환되도록 설계되었기 때문에 열거 타입에 정의된 상수 개수가 영원히 고정 불변일 필요는 없습니다.
 
 **핵심 정리**
 
@@ -60,7 +60,7 @@ Java에서 열거 타입은 확실히 정수 상수보다 뛰어납니다. 더 �
 > -출처: Enumerations - the swift programming languageswift 5.3
 
 > ... 그렇기 때문에 모든 열거형의 데이터 타입은 같은 타입(주로 정수 타입)으로 취급합니다. 
-> 이는 열거형 각각이 고유의 타입으로 인식될 수 없다는 문제 때문에 여러 열거형을 사용할 때 프로그래멍의 실수로 인한 버그가 생길 수도 있습니다. 
+> 이는 열거형 각각이 고유의 타입으로 인식될 수 없다는 문제 때문에 여러 열거형을 사용할 때 프로그래밍의 실수로 인한 버그가 생길 수도 있습니다. 
 > 그러나 스위프트의 열거형은 각 열거형이 **고유의 타입**으로 인정되기 때문에 실수로 버그가 일어날 가능성을 원천 봉쇄할 수 있습니다.
 > -출처: 스위프트 프로그래밍 Swift5 3판(지은이: 야곰) 4.5 열거형
 
@@ -69,7 +69,7 @@ Java에서 열거 타입은 확실히 정수 상수보다 뛰어납니다. 더 �
 1. 배열이나 딕셔너리 같은 타입과 다르게 프로그래머가 정의해준 항목 값 외에는 추가/수정이 불가합니다. 
 2. 항목별로 원시값(rawValue)을 가질 수도, 가지지 않을 수도 있습니다. 
    예를 들어 C언어는 열거타입의 각 항목 값이 정수 타입으로 기본 지정되지만, 스위프트의 열거타입은 각 항목이 그 자체로 고유의 값이 될 수 있습니다. 
-3. Swift에서는 열거 타입은 case 값으로 string`, `character`, `integer`, `floting 타입을 사용할 수 있습니다. 
+3. Swift에서는 열거 타입은 case 값으로 `string`, `character`, `integer`, `floting` 타입을 사용할 수 있습니다. 
 4. 계산 프로퍼티(computed property)를 가질 수 있습니다. enum의 현재 값에 대한 추가적인 정보를 제공하기 위한 수단으로 사용됩니다.
 5. 인스턴스 메소드(instance method)를 가질 수 있습니다. enum이 나타내는 값에 관련된 추가 기능을 제공합니다.
 6. 생성자(initializer)를 가질 수 있습니다. enum의 기본 값을 제공하기 위해 사용합니다.
@@ -146,7 +146,77 @@ let professor = School.professor(name:"Jack", age:56)
 
 하지만 중요한 부분은 열거형이 상태 수를 미리 지정할 수 있을 때만 유용하기 때문에 런타임에 결정될 수 있는 더 많은 자유 형식 값(free-form values)의 경우 구조체(structure), 프로토콜 또는 클래스와 같은 다른 구성 요소가 더 적합할 가능성이 높습니다.
 
+### 전략 열거 패턴 (The strategy enum pattern)
 
+전략 열거 패턴에서 중요한 것은 각각의 케이스에 맞는 특정한 행동이 정의하는 것 (for each constant, implement constant-specific method) 이라고 생각합니다.
+> To perform the pay calculation safely with **constant-specific method** implementations, you would have to duplicate the overtime pay computation **for each constant**, or move the computation into two helper methods, one for weekdays and one for weekend days, and invoke the appropriate helper method from each con- stant. 
+- Effective Java 3rd Edition
+
+```swift
+// 코드 34-8를 Swift로 변환
+enum PayrollDay {
+    case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    static private var MINS_PER_SHIFT: Int = 8 * 60 // enums must not contatin stored properties
+    func pay(minutesWorked: Int, payRate: Int)-> Int { 
+        var basePay: Int = minutesWorked * payRate
+        var overtimePay: Int
+        switch(self) {
+        case .SATURDAY, .SUNDAY: // Weekend
+            overtimePay = basePay / 2;
+            break;
+        default: // Weekday
+            overtimePay = 
+            minutesWorked <= PayrollDay.MINS_PER_SHIFT ?
+             0 : (minutesWorked - PayrollDay.MINS_PER_SHIFT) * payRate /2
+        }
+       return basePay + overtimePay
+    }
+  }
+```
+
+코드 34-8를 제가 이해한 바대로 전략 열거 타입 패턴을 적용하여 바꿔봤습니다.
+
+```swift
+// 코드34-9를 Swift에 맞게 변환
+struct PayrollDay {
+    private let payType: PayType
+    private static var MINS_PER_SHIFT = 8 * 60 
+    
+    init(_ payType: PayType = .WEEKDAY) {
+        self.payType = payType
+    }
+    
+    func pay(minutesWorked: Int, payRate: Int) -> Int {
+        return payType.pay(minsWorked: minutesWorked, payRate: payRate)
+    }
+    
+    enum PayType {
+        
+        case WEEKDAY, WEEKEND
+        
+        func pay(minsWorked: Int, payRate: Int) -> Int {
+            switch self {
+            case .WEEKDAY:
+                return minsWorked <= PayrollDay.MINS_PER_SHIFT ? 0 : (minsWorked - PayrollDay.MINS_PER_SHIFT) * payRate / 2
+            case .WEEKEND:
+                return minsWorked * payRate / 2
+            }
+        }
+    }
+}
+
+// 사용
+let weekendPay = PayrollDay(.WEEKEND)
+weekendPay.pay(minutesWorked: 1500, payRate: 2) // 1500
+let weekdayPay = PayrollDay()
+weekdayPay.pay(minutesWorked: 1500, payRate: 2) // 1020
+```
+
+* `PayrollDay`의 `payType`에 따라 pay가 다르게 계산(`PayType.pay(minsWorked:,payRate:)`)됩니다. 
+* `PayrollDay`의 init에서 `WEEKDAY`로 기본값을 주었고, `WEEKDAY`가 아니라 `WEEKEND`일 경우  init을 통해 초기화할 `PayrollDay`의 `payType`을 설정할 수 있습니다.
+* `PayrollDay`를 enum이 아니라 **Structure**로 한 이유: 책에 나와있는 Java 예제 코드에서는 `PayType` 타입의 `payType`을 enum 안에 저장하고 있습니다(Java에서 enum은 class입니다). 하지만 Swift의 enum에는 프로퍼티를 저장할 수 없습니다. `PayrollDay`의 각 case(MONDAY - SUNDAY)가 사용되는 곳이 없고, `WEEKDAY`와 `WEEKEND` 를 구분하여 pay를 계산하는게 핵심이라고 생각해 `PayrollDay`를 enum으로 구현하지 않고 Structure로 구현했습니다. 
+
+혹시 다른 의견 있으면 자유롭게 남겨주세요! 함께 논의해보면 좋을 것 같습니다 :)
 
 ### 참고
 
