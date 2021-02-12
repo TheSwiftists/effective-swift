@@ -24,7 +24,7 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 | 아이템 2 | [생성자에 매개변수가 많다면 빌더를 고려하라](2장_객체_생성과_파괴/item2.md) | | [하이디][heidi] |
 | 아이템 3 | [private 생성자나 열거 타입으로 싱글턴임을 보증하라](2장_객체_생성과_파괴/item3.md) | | [jinie][jinie] |
 | 아이템 4 | [인스턴스화를 막으려거든 private 생성자를 사용하라](2장_객체_생성과_파괴/item4.md) | | [Lin][lin] |
-| 아이템 5 | [자원을 직접 명시하지 말고 의존 객체 주입을 사용하라](2장_객체_생성과_파괴/item5.md) | | [Lena][lena] |
+| 아이템 5 | [자원을 직접 명시하지 말고 의존 객체 주입을 사용하라](2장_객체_생성과_파괴/item5.md) | 의존성 주입(Dependency Injection) ( + iOS 활용 예시) | [Lena][lena] |
 | 아이템 6 | [불필요한 객체 생성을 피하라](2장_객체_생성과_파괴/item6.md) | | [delma][delma] |
 | 아이템 7 | [다 쓴 객체 참조를 해제하라](2장_객체_생성과_파괴/item7.md) | | [Lena][lena] |
 | 아이템 8 | [finalizer와 cleaner 사용을 피하라](2장_객체_생성과_파괴/item8.md) | Swift deinit 활용 예시 (feat. RxSwift의 Dispose()와 DisposeBag) | [Lena][lena] |
