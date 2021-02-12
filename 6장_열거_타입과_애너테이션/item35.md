@@ -182,6 +182,16 @@ struct Ensemble {
     static let quartet = Ensemble(kind: .quartet, numberOfMusicians: 4)
     //... 생략
 }
+
+var ensemble: Ensemble = .solo
+print(ensemble.numberOfMusicians) // 1
+
+ensemble = .octet
+print(ensemble.numberOfMusicians) // 8
+
+ensemble = .doubleQuartet
+print(ensemble.numberOfMusicians) // 8
+// numberOfMusicians의 값으로 중복이 가능합니다.  
 ```
 => `Kind`는 예시로 든 이름일 뿐이지, 꼭 따르지 않아도 됩니다. struct 이름으로 `Choir`, 중첩 enum 이름으로 `Ensemble`도 어울립니다.
 
