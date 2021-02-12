@@ -211,6 +211,10 @@ func foo(ensemble: Ensemble) {
 }
 ```
 
+* private init 으로 생성을 제한하고 상수로만 선언했기 때문에, 아래 스크릿샷처럼 xcode에서 마치 enum인 것처럼 **타입을 제안**받을 수 있습니다.
+
+<img width="378" alt="스크린샷 2021-02-12 오후 10 09 10" src="https://user-images.githubusercontent.com/38216027/107772304-6c4a1280-6d7f-11eb-8280-9ce0cd7c6fdf.png">
+
 ## 번외: enum 상수들의 총 개수가 필요할때 CaseIterable을 채택해라 
 
 * 과거 c언어에서는 enum의 모든 case의 개수를 구하기 위해 다음과 같이 코드를 작성하곤 했습니다. 
