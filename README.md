@@ -35,7 +35,7 @@ Effective Java 3/E을 읽고 프로그래밍에서의 관례적이고 효과적�
 | 아이템 번호 | <center>타이틀</center> | <center>서브 타이틀</center> | 담당자 |
 |:-----:|-------|-------|:------:|
 | 아이템 10 | [equals는 일반 규약을 지켜 재정의하라](3장_모든_객체의_공통_메서드/item10.md) | | [하이디][heidi] |
-| 아이템 11 | [equals를 재정의하려거든 hashCode도 재정의하라](3장_모든_객체의_공통_메서드/item11.md) | | [Lena][lena] |
+| 아이템 11 | [equals를 재정의하려거든 hashCode도 재정의하라](3장_모든_객체의_공통_메서드/item11.md) | Hashable 프로토콜과 Equatable 프로토콜 | [Lena][lena] |
 | 아이템 12 | [toString을 항상 재정의하라](3장_모든_객체의_공통_메서드/item12.md) | | [Lin][lin] |
 | 아이템 13 | [clone 재정의는 주의해서 진행하라](3장_모든_객체의_공통_메서드/item13.md) | | [하이디][heidi] |
 | 아이템 14 | [Comparable을 구현할지 고려하라](3장_모든_객체의_공통_메서드/item14.md) | | [delma][delma] |
