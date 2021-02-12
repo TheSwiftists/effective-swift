@@ -89,7 +89,7 @@ enum Ensemble: Int {
 
 * 명시적으로 rawValue에 값을 대입하면 위와 같은 상황이 해결될 것처럼 보입니다. 상수 선언 순서에도 의존되지 않고, 중간에 값을 비워도 되죠. 
 그러나 값이 중복이 될때는 rawValue의 명시적 사용도 해결책이 될 순 없습니다. 
-왜냐하면 rawValue는 unique 해야 되기 때문에 OCTET(= 8), DOUBLE_QUARTET(=8) 처럼 값이 중복이 되는 경우에는 rawValue를 사용할 수 없기 때문입니다.
+왜냐하면 rawValue는 unique 해야 되기 때문에 OCTET(=8), DOUBLE_QUARTET(=8) 처럼 값이 중복이 되는 경우에는 rawValue를 사용할 수 없기 때문입니다.
 그리고 numberOfMusicians 값을 rawValue의 값으로 할당해도 되는 대표 값인지 근거가 없기 때문에 사용하는 것은 부적절해 보입니다.
 
 ```Swift
