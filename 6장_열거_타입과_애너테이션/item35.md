@@ -116,7 +116,7 @@ enum Ensemble: Int, CaseIterable {
 ### rawValue를 대체하는 해결책: 연산프로퍼티(or 메서드) + default 구문 없는 switch 사용하기 
 
 * Swift 에는 저장 프로퍼티를 둘 수 없고, 오직 연산 프로퍼티나 메서드만이 가능합니다. 따라서 rawValue의 대안책으로는 연산프로퍼티(or 메소드) + switch 방법입니다. 
-* Swift의 switch는 **exhaustive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다. 
+* Swift의 switch는 **exhaustive** 해서 default를 쓰지 않는한 값을 추가할 때 switch 컴파일 오류를 통해 case를 추가해야 함을 알 수 있습니다.
 
 ```Swift
 enum Ensemble: Int {
@@ -150,6 +150,54 @@ enum Ensemble: Int {
             return 12
         }
     }
+}
+```
+=> 하지만 이 방식은 연산 프로퍼티가 하나씩 추가될 때마다 위처럼 계속 나열해야하는 단점이 있습니다. 
+
+### rawValue를 대체하는 해결책2: 구조체 + 중첩 열거형 + private init
+
+또 다른 방법으로는 구조체(struct)와 열거 타입(enum)을 혼합해서 사용하는 방법이 있습니다.
+* 먼저 구조체(`Ensemble`)로 선언합니다. 따라서 **저장 프로퍼티를 가질 수 있으므로, numberOfMusians를 프로퍼티로 갖게 할 수 있습니다.** 
+* 그리고 중첩 열거 타입(`Kind`)을 갖게 합니다. 위의 예시와 똑같이 **Ensemble의 모든 case를 갖게 할 수 있습니다.** 
+* 마지막으로 **init을 private**하게 두어, 외부에서는 생성할 수 없게 합니다. 그러면 **정적 상수(`static let`)로서** 선언할 수 밖에 없습니다. 
+* 결과적으로, 자바 Enum의 인스턴스 필드의 경우처럼 **중간에 값을 비우거나 끼워 넣을 수 있고, numberOfMusicians의 중복이 가능**합니다.
+
+```swift
+struct Ensemble {
+    enum Kind {
+        case solo, duet, trio, quartet, quintet, sextet, septet, octet, doubleQuartet, nonet, dectet, tripleQuartet
+    }
+
+    let kind: Kind
+    let numberOfMusicians: Int
+    
+    private init(kind: Kind, numberOfMusicians: Int) {
+        self.kind = kind
+        self.numberOfMusicians = numberOfMusicians
+    }
+    
+    static let solo = Ensemble(kind: .solo, numberOfMusicians: 1)
+    static let duet = Ensemble(kind: .duet, numberOfMusicians: 2)
+    static let trio = Ensemble(kind: .trio, numberOfMusicians: 3)
+    static let quartet = Ensemble(kind: .quartet, numberOfMusicians: 4)
+    //... 생략
+}
+```
+=> `Kind`는 예시로 든 이름일 뿐이지, 꼭 따르지 않아도 됩니다. struct 이름으로 `Choir`, 중첩 enum 이름으로 `Ensemble`도 어울립니다.
+
+* 또 struct 임에도 불구하고, 외부에서 분기처리할 때 중첩 열거 타입(`Kind`)를 사용하면 일반 열거형처럼 분기처리할 수 있습니다. 
+
+```Swift
+// 외부에서 사용하는 경우 
+func foo(ensemble: Ensemble) {
+    switch ensemble.kind {
+    case .solo:
+        break
+    case .duet:
+        break
+    case .trio:
+        break
+    //... 생략
 }
 ```
 
