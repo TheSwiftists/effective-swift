@@ -99,7 +99,7 @@ func magnitude3D(x: Double, y: Double, z: Double) -> Double {
 
 ### Code blocks
 
-코드 블럭을 임베드해 함수의 적절한 사용법이나 구현 세부사항을 보여줄 수 있습니다. 최소한 4개의 공백으로 코드 블럭을 삽입할 수 있습니다.  또는 세개의 백틱(```` `) 또는 틸드(`~~~`)로 코드 블럭 앞 뒤를 묶어 구분할 수 있습니다.
+코드 블럭을 임베드해 함수의 적절한 사용법이나 구현 세부사항을 보여줄 수 있습니다. 최소한 4개의 공백으로 코드 블럭을 삽입할 수 있습니다.  또는 세개의 백틱(` ``` `) 또는 틸드(`~~~`)로 코드 블럭 앞 뒤를 묶어 구분할 수 있습니다.
 
 ```swift
 /**
@@ -150,4 +150,3 @@ var area: CGFloat { get }
 
 - https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_markup_formatting_ref/SymbolDocumentation.html
 - https://nshipster.com/swift-documentation/
-
