@@ -8,7 +8,7 @@
 
 ### Xcode Quick Help란?
 
-Markup을 이용해 Swift 코드의 모든 심볼(클래스, 메서드, enum..)에 대해 정형화된 Quick Help 주석을 작성하면 Option키를 클릭했을 때 작성된 주석을 Pop-up 형식으로 확인할 수 있습니다. 또한 입력 포인터가 심볼에 위치해 있을 때 Xcode 오른쪽에 있는 인스펙터 탭에 Quick Help 부분에서 작성된 주석을 확인할 수 있습니다.
+Markup을 이용해 Swift 코드의 모든 심볼(Class, Method, enum..)에 대해 정형화된 Quick Help 주석을 작성하면 Option키를 클릭했을 때 작성된 주석을 Pop-up 형식으로 확인할 수 있습니다. 또한 입력 포인터가 심볼에 위치해 있을 때 Xcode 오른쪽에 있는 인스펙터 탭에 Quick Help 부분에서 작성된 주석을 확인할 수 있습니다.
 
 <img width=80% alt="MFR_code_quick_help_2x" src="https://user-images.githubusercontent.com/40784518/107853021-1c3e7f00-6e57-11eb-9711-3e7c2152d1e5.png">
 
