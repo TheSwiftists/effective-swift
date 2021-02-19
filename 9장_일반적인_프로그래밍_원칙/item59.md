@@ -71,7 +71,7 @@ EX) 대표적인 Third Party 라이브러리:
 > 바퀴를 다시 발명하지 맙시다. 아주 특별한 나만의 기능이 아니라면 누군가 이미 라이브러리 형태로 구현해놓았을 가능성이 큽니다. 그런 라이브러리가 있다면, 쓰면 됩니다. 있는지 잘 모르겠다면 찾아보는 걸 권장합니다. 일반적으로 라이브러리의 코드는 여러분이 직접 작성한 것보다 품질이 좋고, 점차 개선될 가능성이 큽니다. 여러분의 실력을 폄하하는 게 아닙니다. 코드 품질에도 규모의 경제가 적용됩니다. 즉, 라이브러리 코드는 개발자 각자가 작성하는 것보다 주목을 훨씬 많이 받으므로 코드 품질도 그만큼 높아집니다.
 -출처: 이펙티브 자바
 
-### 출처
-1. 이펙티브 자바, 
+### 참고
+1. 이펙티브 자바 (Effective Java), Effective Java 3/E ,조슈아 블로크
 2. [Swift Standard Library](https://developer.apple.com/documentation/swift/swift_standard_library)
 3. [Top 10 Most Useful iOS Libraries in 2020](https://infinum.com/the-capsized-eight/top-10-most-useful-iOS-libraries)
