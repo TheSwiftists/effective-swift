@@ -6,7 +6,7 @@
 
 ###  ordinal를 잘못 사용한 경우
 
-코드 35-1 ordianal을 잘못 사용한 예 - 따라하지 말것! 
+코드 35-1 ordinal을 잘못 사용한 예 - 따라하지 말것! 
 ```java
 public enum Ensemble {
     SOLO, DUET, TRIO, QUARTET, QUINTET,
@@ -63,7 +63,7 @@ public class EnumSetExample {
 ### 잘못된 쓰임새: Int - rawValue 사용하기 
 
 * 자바 Enum의 ordinal()과 마찬가지로 스위프트에서는 Enum의 rawValue가 있습니다.
-Int로 rawValue를 갖고 값을 명시하지 않으면 자바의 ordianl()과 같은 효과를 볼 수 있습니다.
+Int로 rawValue를 갖고 값을 명시하지 않으면 자바의 ordinal()과 같은 효과를 볼 수 있습니다.
 
 ```Swift
 enum Ensemble: Int {
@@ -83,7 +83,7 @@ enum Ensemble: Int {
     }
 }
 ```
-=> 자바의 ordianl()과 마찬가지로, 동작은 하지만 유지보수하기가 끔찍한 코드입니다. 상수 선언 순서를 바꾸는 순간 `numberOfMusicians`가 오동작하며 이미 사용중인 정수와 값이 같은 상수는 추가할 방법이 없습니다. 또한 값을 중간에 비워둘 수도 없습니다. 
+=> 자바의 ordinal()과 마찬가지로, 동작은 하지만 유지보수하기가 끔찍한 코드입니다. 상수 선언 순서를 바꾸는 순간 `numberOfMusicians`가 오동작하며 이미 사용중인 정수와 값이 같은 상수는 추가할 방법이 없습니다. 또한 값을 중간에 비워둘 수도 없습니다. 
 
 > rawValue에 명시적으로 값 대입하여 사용하기 
 
