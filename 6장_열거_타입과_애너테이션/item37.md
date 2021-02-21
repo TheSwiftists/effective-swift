@@ -25,8 +25,57 @@ item37 본문 마지막에
 
 라는 말이 나오는데 이 부분에 대해서는 이 [링크](https://www.tutorialspoint.com/difference-between-enummap-and-hashmap-in-java)를 참고하면 좋을 것 같습니다. (이번 주제와 연관성이 적어 직접 설명하지는 않겠습니다.) 
 
+### Phase-Transition 예시를 Swift 버전으로 바꾸기 
 
+해당 아이템의 코드 37-5 부터 코드 37-7 까지의 예시인 Phase-Transition을 Swift 버전으로 변환해 보았습니다. Transition을 Enum 타입이 아닌 Struct 타입으로 두고 `CaseIterable` 과 `Equatable` 을 채택하게 해서 Swift 버전으로 구현할 수 있었습니다. 개인적으로 새로 알게 된 것은 Enum 타입뿐만 아니라 Struct, Class 타입도 CaseIterable 을 채택할 수 있다는 점입니다.
 
+```swift
+enum Phase: CaseIterable {
+    case solid
+    case liquid
+    case gas
+    
+    struct Transition: CaseIterable, Equatable {
+        public static var allCases: [Transition] {
+            return [melt, freeze, boil, condense, sublime, deposit]
+        }
+        
+        let from: Phase
+        let to: Phase
+        
+        static let melt = Transition(from: .solid, to: .liquid)
+        static let freeze = Transition(from: .liquid, to: .solid)
+        static let boil = Transition(from: .liquid, to: .gas)
+        static let condense = Transition(from: .gas, to: .liquid)
+        static let sublime = Transition(from: .solid, to: .gas)
+        static let deposit = Transition(from: .gas, to: .solid)
+        
+        private init(from: Phase, to: Phase) {
+            self.from = from
+            self.to = to
+        }
+        
+        static let m: [Phase: [Phase: Transition]] = Transition.allCases.reduce([Phase: [Phase: Transition]]()) { (result, transition) -> [Phase: [Phase: Transition]] in
+            var result = result
+            
+            if result[transition.from] == nil {
+                result[transition.from] = [transition.to: transition]
+                return result
+            }
+            
+            result[transition.from]![transition.to] = transition
+            return result
+        }
+        
+        static func from(from: Phase, to: Phase) -> Transition? {
+            guard m[from] != nil else { return nil }
+            guard m[from]![to] != nil else { return nil }
+            
+            return m[from]![to]!
+        }
+    }
+}
+```
 ### Swift에서 EnumMap 사용 예시
 
 **< Fonts Dictionary >**
@@ -152,8 +201,6 @@ let fonts = EnumMap<TextType, UIFont> { type in
 let titleFont = fonts[.title]
 let subtitleFont = fonts[.subtitle]
 ```
-
-
 
 ### 참고
 
