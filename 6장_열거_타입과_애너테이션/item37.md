@@ -25,9 +25,64 @@ item37 본문 마지막에
 
 라는 말이 나오는데 이 부분에 대해서는 이 [링크](https://www.tutorialspoint.com/difference-between-enummap-and-hashmap-in-java)를 참고하면 좋을 것 같습니다. (이번 주제와 연관성이 적어 직접 설명하지는 않겠습니다.) 
 
+### Plant-LifeCycle 예시를 Swift 버전으로 바꾸기 
+해당 아이템의 코드 37-1 부터 코드 37-2 까지의 예시인 Plant-LifeCycle을 Swift 버전으로 바꾸어 보았습니다.
+
+* 자바 enum의 ordinal()에 대응되는 것을 구현해보자면 CaseIterable을 채택하고, Int를 채택한 enum의 `rawValue` 를 사용하는 것일 겁니다. 이 방식은 자바의 `ordianl()` 예시처럼 `Index out of Range` 에러가 발생할 수 있는 방식입니다. 
+
+```swift
+struct Plant: Hashable, Equatable {
+    enum LifeCycle: Int, CaseIterable {
+        case annual
+        case perennial
+        case biennial
+    }
+    
+    let name: String
+    let lifeCycle: LifeCycle
+    
+    init(name: String, lifeCycle: LifeCycle) {
+        self.name = name
+        self.lifeCycle = lifeCycle
+    }
+}
+
+let garden: [Plant] = [Plant(name: "foo", lifeCycle: .annual),
+                       Plant(name: "goo", lifeCycle: .perennial),
+                       Plant(name: "koo", lifeCycle: .biennial)]
+var plantsByLifeCycle: Array<Set<Plant>> = Array.init(repeating: Set<Plant>(), count: Plant.LifeCycle.allCases.count)
+
+for plant in garden {
+    plantsByLifeCycle[plant.lifeCycle.rawValue].insert(plant)
+}
+
+for i in 0 ..< plantsByLifeCycle.count {
+    print("\(Plant.LifeCycle.allCases[i]): \(plantsByLifeCycle[i])")
+}
+
+// annual: [Plant(name: "foo", lifeCycle: Plant.LifeCycle.annual)]
+// perennial: [Plant(name: "goo", lifeCycle: Plant.LifeCycle.perennial)]
+// biennial: [Plant(name: "koo", lifeCycle: Plant.LifeCycle.biennial)]
+```
+
+* 아래처럼 `Plant.LifeCycle.allCases`의 `reduce` 메서드를 사용하면 자바의 `EnumMap<Plant.LifeCycle, Set<Plant>` 에 대응하는 자료구조를 만들 수 있습니다. 그리고 `var` 가 아닌 상수 `let` 으로 선언할 수 있습니다. 
+
+```swift
+let plantsByLifeCycle: [Plant.LifeCycle: Set<Plant>] = Plant.LifeCycle.allCases.reduce([Plant.LifeCycle: Set<Plant>]()) { (result, lifeCycle) -> [Plant.LifeCycle: Set<Plant>] in
+    var result = result
+    result[lifeCycle] = Set<Plant>(garden.filter{ $0.lifeCycle == lifeCycle })
+    return result
+}
+
+print(plantsByLifeCycle)
+
+// [Plant.LifeCycle.biennial: Set([Plant(name: "koo", lifeCycle: Plant.LifeCycle.biennial)]), Plant.LifeCycle.annual: Set([Plant(name: "foo", lifeCycle: Plant.LifeCycle.annual)]), Plant.LifeCycle.perennial: Set([Plant(name: "goo", lifeCycle: Plant.LifeCycle.perennial)])]
+```
+
+
 ### Phase-Transition 예시를 Swift 버전으로 바꾸기 
 
-해당 아이템의 코드 37-5 부터 코드 37-7 까지의 예시인 Phase-Transition을 Swift 버전으로 변환해 보았습니다. Transition을 Enum 타입이 아닌 Struct 타입으로 두고 `CaseIterable` 과 `Equatable` 을 채택하게 해서 Swift 버전으로 구현할 수 있었습니다. 개인적으로 새로 알게 된 것은 Enum 타입뿐만 아니라 Struct, Class 타입도 CaseIterable 을 채택할 수 있다는 점입니다.
+해당 아이템의 코드 37-5 부터 코드 37-7 까지의 예시인 Phase-Transition을 Swift 버전으로 바꾸어 보았습니다. Transition을 Enum 타입이 아닌 Struct 타입으로 두고 `CaseIterable` 과 `Equatable` 을 채택하게 해서 Swift 버전으로 구현할 수 있었습니다. 개인적으로 새로 알게 된 것은 Enum 타입뿐만 아니라 Struct, Class 타입도 CaseIterable 을 채택할 수 있다는 점입니다.
 
 ```swift
 enum Phase: CaseIterable {
