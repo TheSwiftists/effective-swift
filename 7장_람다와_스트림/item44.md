@@ -134,3 +134,10 @@ print(validateEmail(withString: "kimdo2297@g1230.com"))
 // false 
 // false 
 ```
+
+### 참고 
+
+* [자바 표준 함수형 인터페이스](https://johngrib.github.io/wiki/java-functional-interface/)
+* [RegEx with NSPrediacate](https://stackoverflow.com/questions/16852875/filter-nsarray-using-nspredicate)
+* [NSArray using NSPredicate](https://stackoverflow.com/questions/16852875/filter-nsarray-using-nspredicate)
+* [Predicates in Swift](https://www.swiftbysundell.com/articles/predicates-in-swift/)
