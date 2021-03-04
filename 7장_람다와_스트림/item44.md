@@ -48,3 +48,21 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 |Prediacate\<T> | (T) -> Bool |
 |Supplier\<T> | () -> T |
 |Consumer\<T> | (T) -> Void |
+
+## predicate 가 파라미터로 포함된 Swift 메소드들
+
+> 다음 메소드들은 Array의 메소드들로 predicate가 파라미터로 포함된 메소드들입니다.
+
+* `@inlinable public func first(where predicate: (Element) throws -> Bool) rethrows -> Element?`
+
+*  `@inlinable public func drop(while predicate: (Element) throws -> Bool) rethrows -> ArraySlice<Element>`
+
+* `@inlinable public func prefix(while predicate: (Element) throws -> Bool) rethrows -> ArraySlice<Element>`
+
+* `@inlinable public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Int?`
+
+* `@inlinable public func last(where predicate: (Element) throws -> Bool) rethrows -> Element?`
+
+* `@inlinable public func lastIndex(where predicate: (Element) throws -> Bool) rethrows -> Int?`
+
+등등 predicate가 파라미터로 있는 메소드들이 있습니다. 
