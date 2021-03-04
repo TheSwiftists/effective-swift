@@ -82,7 +82,7 @@ print("잔돈(달러): \(funds)")
 // 잔돈(달러): 0
 ```
 
-## Decimal의 반올림 모드 
+## Decimal의 반올림 메소드
 
 > `NSDecimalNumber rounding(accordingToBehavior:) method` 을 사용하는 경우
 
@@ -121,3 +121,22 @@ print(roundedValue2)
 // 0.684
 // 0.685
 ```
+
+## Decimal의 반올림 모드: NSDecimalNumber.RoundingMode
+
+```swift
+public enum RoundingMode : UInt {    
+    case plain = 0
+    case down = 1
+    case up = 2
+    case bankers = 3
+}
+```
+
+### 참고
+
+* [Decimal](https://developer.apple.com/documentation/foundation/decimal)
+* [NSDecimalNumber](https://developer.apple.com/documentation/foundation/nsdecimalnumber)
+* [NSDecimalNumber.RoundingMode](https://developer.apple.com/documentation/foundation/nsdecimalnumber/roundingmode)
+* [Rounding a double value to x number of decimal places in swift
+](https://stackoverflow.com/questions/27338573/rounding-a-double-value-to-x-number-of-decimal-places-in-swift)
