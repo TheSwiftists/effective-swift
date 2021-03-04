@@ -1,6 +1,7 @@
 # 표준 함수형 인터페이스를 사용하라 
 
 자바에는 함수형 인터페이스가 있고, 특히 매개변수로 함수 객체를 사용할 때 **타입**으로 사용되기도 합니다.
+
 ```java
 private <T> List<T> filter(List<T> list, Predicate<T> predicate) {
     List<T> filteredList = new ArrayList<>();
@@ -82,3 +83,54 @@ Most religions predicate life after death.
 * `@inlinable public func lastIndex(where predicate: (Element) throws -> Bool) rethrows -> Int?`
 
 등등 predicate가 파라미터로 있는 메소드들이 있습니다.
+
+## NSPredicate 
+
+* `NSArray`, `NSMutableArray`, `NSMutableSet`, `NSOrderedSet` 등등에서 filter 혹은 filtered 메소드에서 파라미터로 사용됩니다. 
+
+```swift
+let array = NSArray(arrayLiteral: "A", "B", "", "C", "", "D")
+let predicate = NSPredicate(format: "SELF != ''")
+
+let filteredArray = NSArray(array: array.filtered(using: predicate))
+print("Input array: \(array)") 
+print("Filterd array: \(filteredArray)")
+
+// 실행 결과 
+// Input array: (
+//    A,
+//    B,
+//    "",
+//    C,
+//    "",
+//    D
+// )
+// Filterd array: (
+//     A,
+//     B,
+//     C,
+//     D
+// )
+```
+
+* 정규표현식을 사용할 때에도 NSPredicate 가 사용될 수 있습니다. 
+
+```swift
+func validateEmail(withString userEmail: String) -> Bool {
+    let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z]+\\.[A-Za-z]{2,}"
+
+    let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+    return emailTest.evaluate(with: userEmail)
+}
+
+print(validateEmail(withString: "kimdo2297@gmail.com"))
+print(validateEmail(withString: "kim!!2297@gmail.com"))
+print(validateEmail(withString: "kimdo2297@gmail.c"))
+print(validateEmail(withString: "kimdo2297@g1230.com"))
+
+// 실행 결과
+// true
+// false 
+// false 
+// false 
+```
