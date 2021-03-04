@@ -49,6 +49,22 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 |Supplier\<T> | () -> T |
 |Consumer\<T> | (T) -> Void |
 
+## Predicate의 사전적 의미 
+
+* 술어, 술부, 빈사, 단언하다, 서술하다
+* 단정하다
+
+예시) 
+
+predicate the eternity of human life
+=> 인간의 생명은 영원하다고 단언하다
+
+Most religions predicate life after death.
+=> 대개의 종교는 내세가 있다고 단언한다.
+
+
+: 프로그래밍적으로 해석하자면,,, 난 이 내용의 결과가 `true` 라고 확신해,, 이 결과는 `false`라고 단언해,,  
+
 ## predicate 가 파라미터로 포함된 Swift 메소드들
 
 > 다음 메소드들은 Array의 메소드들로 predicate가 파라미터로 포함된 메소드들입니다.
@@ -65,4 +81,4 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 
 * `@inlinable public func lastIndex(where predicate: (Element) throws -> Bool) rethrows -> Int?`
 
-등등 predicate가 파라미터로 있는 메소드들이 있습니다. 
+등등 predicate가 파라미터로 있는 메소드들이 있습니다.
