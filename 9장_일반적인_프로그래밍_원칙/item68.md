@@ -332,5 +332,3 @@
    ## 참고
    1. [API Design Guidelines - swift.org](https://swift.org/documentation/api-design-guidelines/)
    2. [Swift ) API Design Guidelines](https://zeddios.tistory.com/401)
-
-2. https://infinum.com/the-capsized-eight/top-10-most-useful-iOS-libraries)
