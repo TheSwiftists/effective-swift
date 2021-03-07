@@ -41,5 +41,7 @@ func test3() {
 
 <img src="https://user-images.githubusercontent.com/40784518/110232054-bc6f5b80-7f5e-11eb-8d9e-1faf66c52ea5.png"/>
 
-두가지 방법으로 테스트 해 본 결과 각각 `+ 연산자`, `string interpolation`, `append()` 방법으로 빨랐습니다. 하지만 `test2()`인 `append()` 메서드를 이용한 경우 오차범위가 ±185%여서 신뢰할만한 측정값은 아니라는 결론을 내렸습니다. 
+두가지 방법으로 테스트 해 본 결과 각각 `+ 연산자`, `string interpolation`, `append()` 방법으로 빨랐습니다. 하지만 `test2()` 에서 `append()` 메서드를 이용한 경우 오차범위가 ±185%이어서 신뢰할만한 측정값은 아니라는 결론을 내렸습니다. 
+
+하지만 책에서 말하는 것처럼 많은 양의 문자열을 합칠 때 + 연산자를 지양하지는 않아도 될 것 같습니다.
 
