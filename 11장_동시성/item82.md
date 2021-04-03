@@ -49,3 +49,74 @@ GDC( Grand Central Dispatch )는 동시성 프로그래밍을 더 쉽고 간편�
   >Thread-Safe Designs에 대해 더 알고 싶으면 [Tips for Thread-Safe Designs](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW6)를 읽어보시면 좋습니다.
   
   
+
+### iOS에서의 Multi Thread Programming 체크 리스트 ✅
+
+ - [ ] ✅
+     프로세스간 '공유하는 자원'을 서로 다른 '여러 스레드'에서 '동시에' 접근하는 경우가 없는지 확인합니다.
+     서로 다른 스레드가 데이터와 Heap 영역을 공유하고 있기 때문에 한 스레드에서 사용 중인 공유 자원에 접근하여 엉뚱한 값을 읽어올 수 있습니다. 이와 관련된 문제를 Readers-Writers problem 라고 합니다.
+     
+     > The readers-writers problem is a concurrency problem faced when **a shared resource that is not thread-safe can be read and written by multiple threads at the same time.** **The problem happens when one thread is reading or writing and another thread writes at the same time.** In contrast, when the resource is only being read by more than one thread the problem doesn't appear since the resource is up to date and it won't provide outdated/wrong data.
+     > 출처: [The Readers-Writers Problem (Swift Edition)](https://medium.com/swlh/the-readers-writers-problem-swift-edition-dcba94c3f02d#:~:text=The%20readers%2Dwriters%20problem%20is,writes%20at%20the%20same%20time.)
+
+- [ ] ✅ 
+  위와 같은 Readers-Writers problem을 방지하기 위해 그리고
+
+  Thread-Safe하게 만들기 위해서는 Immutable 한 변수를 고려합니다. Immutable한 인스턴스는 서로 다른 여러 스레드에서 한 번에 접근해도 문제가 되지 않습니다. 즉, Thread-Safe 합니다. 
+  -> Structure 사용을 우선하여 고려하면 좋습니다. (이와 관련하여 클래스와 구조체에 다룬 내용은 [iOS Developer - Value and Reference Types](https://developer.apple.com/swift/blog/?id=10) 를 참고해주세요)
+  반면 Mutable한 인스턴스는 서로 다른 스레드에서 동시에 변경이 이뤄진다면 문제가 발생합니다. 때문에 Immutable 한 변수를 고려해보는 것을 권장합니다. 
+  (단, Mutable한 인스턴스를 사용해야할 경우, 읽기 전용으로 만든다면 문제가 되지 않게 할 수 있습니다.)
+  
+  
+  
+ - [ ] ✅ 
+    스레드 관련 Property Attirbute 는 atomic, nonatomic 이 있는데 atomic 키워드는 해당 프로퍼티가 동시에 접근 할 수 없게하므로 mutable 멤버 변수는 atomic 으로 하는 것을 권장합니다.
+(단, atomic 은 속도면에서 불리함 이있으니 mutable 인스턴스라도 변경 중에 동시 접근 할 일이 없다면 nonatomic 으로 해도 될 것입니다.)
+    
+    
+    Swift 언어의 anomic에 대한 내용은 [atomic/non atomic](https://hcn1519.github.io/articles/2019-03/atomic) 을 참고하면 좋습니다.
+    
+    > - atomic - 중단되지 않는
+    >   : an operation appears to occur at a single instant between its invocation and its response
+    >
+    >   `atomic`하다는 것은 프로그래밍에서 **데이터의 변경이 한 번에 일어난 것처럼 보이게 하는 것**을 의미합니다. 데이터의 값을 변경하는 작업에는 항상 값 변경의 시간이 필요합니다. 그런데 `atomic`한 데이터는 데이터의 값에 접근하는 여러 데이터 소비자(프로세스, 쓰레드 등)의 관점에서 데이터 값 변경에 걸리는 시간이 0초인 것처럼 느끼게 합니다.
+    >
+    >   --------------------------------
+    >
+    >   한편, Swift는 Thread-Safe를 고려하고 디자인된 언어가 아니기 때문에 모든 property는 `non atomic`입니다. 그리고 별도로 `atomic` 옵션을 지정할 수도 없습니다. 그래서 Swift의 property가 `atomic`을 지원하기 위해서는 GCD를 통해 이를 구현해주어야 합니다. 다음 [글](https://www.objc.io/blog/2018/12/18/atomic-variables/)에서 자세한 내용을 확인할 수 있습니다.
+    
+- [ ] ✅ 
+  함수를 실행 할 때 특정 구간에서 특정 자원을 동시에 접근 하지 못하게 하기 위해 Lock을 사용한 경우 Deadlock을 확인하는 것이 좋습니다.
+  이 경우 한 스레드에서 그 구간을 끝낼 때 까지 다른 스레드에서 접근 할 수 없게 될 수 있으므로 Deadlock 이 발생할 수 있습니다.
+
+- [ ] ✅ 
+  UI 업데이트 관련 작업들을 메인 스레드에서 구현하고 있는지 확인해야 합니다.
+
+- [ ] ✅ viewDidLoad() 나 UI스레드로부터 직접적으로(directly) 실행되는 어떤 코드 안에  DispatchQueue.main.sync { }  코드가 있는지 확인합니다. 또한 중첩된 Sync block 이 있는지 확인합니다.
+  중첩된 *sync* block은 deadlock과 코드 크러쉬를 발생시키는데, UI에 대한 일을 처리하는 메인큐가 **직렬(Serial)** 이므로 Deadlock이 발생하기 때문에 이런 코드가 있다면 당장 수정해야 합니다.
+  
+  > ```swift
+  > var concurrentQueue = DispatchQueue(label: "com.snobinsights.ConcurrentQueue", attributes: .concurrent)
+  > concurrentQueue.sync {
+  >     concurrentQueue.sync {
+  >         for _ in 1...5 { print("🔴") }
+  >     }
+  > }
+  > ```
+  >
+  > As the queue is serial, means it can **only execute one task at a time**. So when a sync function is used inside sync(or even async) function on a serial queue and the inner sync uses the same serial queue for executing its task. Then the **inner sync block won’t be able to start its execution and won’t return the control to the caller (serial queue in this case) as that serial queue is already busy executing tasks assigned to it.** **Hence, they both keep waiting for the completion of each other, and a deadlock is created.**
+  > 출처: [Multithreading in iOS with GCD: sync and async operations made easy](https://medium.com/@snobinsights/multithreading-in-ios-with-gcd-sync-and-async-operations-made-easy-9af0fe06c7b3)
+
+
+### 참고
+
+1. [Concurrency Programming Guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/ConcurrencyandApplicationDesign/ConcurrencyandApplicationDesign.html#//apple_ref/doc/uid/TP40008091-CH100-SW8)
+2. [Thread Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW1)
+3. [atomic/non atomic](https://hcn1519.github.io/articles/2019-03/atomic)
+4. [Swift Tip: Atomic Variables](https://www.objc.io/blog/2018/12/18/atomic-variables/)
+5. [iOS Developer - Value and Reference Types](https://developer.apple.com/swift/blog/?id=10)
+6. [The Readers-Writers Problem (Swift Edition)](https://medium.com/swlh/the-readers-writers-problem-swift-edition-dcba94c3f02d#:~:text=The%20readers%2Dwriters%20problem%20is,writes%20at%20the%20same%20time.)
+7. [iOS ) Concurrency Programming Guide - Concurrency and Application Design](https://zeddios.tistory.com/509)
+8. [Swift의 메모리 안정성](https://jcsoohwancho.github.io/2019-08-25-Swift%EC%9D%98-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%95%88%EC%A0%95%EC%84%B1/)
+9. [[iOS] 멀티 스레드(Multi Thread) 구현 시 고려해야될 것들](https://gwangyonglee.tistory.com/47)
+10. [Multithreading in iOS with GCD: sync and async operations made easy](https://medium.com/@snobinsights/multithreading-in-ios-with-gcd-sync-and-async-operations-made-easy-9af0fe06c7b3)
