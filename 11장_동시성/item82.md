@@ -15,3 +15,9 @@
   
   
 
+### iOS 에서 'Thread - Safe' 의 의미
+
+> Thread safe code can be **safely called from multiple threads or concurrent tasks without causing any problems** such as data corruption or app crashes. Code that is not thread safe can only run in one context at a time.
+> 출처: [raywenderlich - Grand Central Dispatch Tutorial for Swift 4: Part 1/2](https://www.raywenderlich.com/5370-grand-central-dispatch-tutorial-for-swift-4-part-1-2#toc-anchor-009)
+
+1. https://medium.com/@snobinsights/multithreading-in-ios-with-gcd-sync-and-async-operations-made-easy-9af0fe06c7b3)
