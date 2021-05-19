@@ -1,6 +1,6 @@
 # 표준 함수형 인터페이스를 사용하라 
 
-자바에는 함수형 인터페이스가 있고, 특히 매개변수로 함수 객체를 사용할 때 **타입**으로 사용되기도 합니다.
+자바에는 함수형 인터페이스가 있고, 특히 매개변수로 함수 객체를 사용할 때 **타입**으로 사용됩니다.
 
 ```java
 private <T> List<T> filter(List<T> list, Predicate<T> predicate) {
@@ -28,6 +28,10 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 }
 ```
 
+## 표준 함수형 인터페이스란?
+
+그 중에서도 java.util.function 패키지에서 제공하는 함수형 인터페이스를 **표준 함수형 인터페이스**라고 합니다. **책에서는 필요한 용도에 맞는 게 있다면, 직접 구현하지 말고 표준 함수형 인터페이스를 활용하라고 조언합니다.** 
+
 ## 자바의 대표적인 표준 함수형 인터페이스
 
 | 인터페이스 | 함수 시그니처 | 예 |
@@ -49,6 +53,9 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 |Prediacate\<T> | (T) -> Bool |
 |Supplier\<T> | () -> T |
 |Consumer\<T> | (T) -> Void |
+
+사실, 스위프트에는 인수로 함수 객체를 `(인수) -> (반환타입)` 형태로 나타내기 때문에 따로 표준 함수형 인터페이스가 필요없고, 따라서 Predicate니 Supplier니 용어를 알 필요가 자바보다는 적다고 할 수 있습니다. 
+<br>하지만 그럼에도 Swift 코드에서도 인수 이름으로 `Predicate` 가 많이 보여 해당 부분은 알면 좋겠다고 판단하여 `Predicate` 에 대해 조사하였습니다. `Predicate`도 `Object` 나 `atomic` 처럼 프로그래밍 세계에서의 고유명사라고 생각하시면 될 것 같습니다.
 
 ## Predicate의 사전적 의미 
 
