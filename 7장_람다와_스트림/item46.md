@@ -71,12 +71,12 @@ forEach로 계산한다는 것은 외부 상태를 수정한다는 뜻입니다.
 반복문을 사용하세요.
 물론 가끔은 forEach문이 스트림 계산 결과를 기존 컬렉션에 추가하는 등의 다른 용도로는 쓰일 수 있습니다. 
 
-## Collectors Method 
+## Collectors Method: toList, toMap, toSet
 
 * 자바에서는 스트림을 사용하는데 수집기(Collector)를 사용할 수 있습니다. `java.util.stream.Collectors` 클래스는 메서드를 무려 39개나 가지고 있고, 타입 매개변수가 5개나 되는 것도 있습니다. 
 <br>수집기는 총 세가지로, toList(), toMap(), toSet() 가 주인공입니다. 이 중에서 toList()와 toMap()을 알아보았습니다.
 
-* 스위프트는 따로 Collectors Method를 제공하고 있지 않아 자바 스트림 코드를 그대로 변환해 보았습니다. 
+* 스위프트는 따로 Collectors Method를 제공하고 있지 않습니다. 따라서 자바 스트림 코드를 그대로 변환만 해보았습니다. 
 
 ### toList
 
@@ -126,9 +126,9 @@ enum Operation: CaseIterable {
 }
 ```
 
-### groupingBy
+## Collectors Method: groupingBy
 
-groupingBy 메서드는 입력으로 분류함수(classifier)를 받고 출력으로는 원소들을 카테고리별로 모아 놓은 맵을 담은 수집기를 반환합니다. 그리고 **이 카테고리가 해당  원소의 맵 키로 쓰입니다.**  
+groupingBy 메서드는 Collectors의 또 다른 메서드로, 입력으로 분류함수(classifier)를 받고 출력으로는 원소들을 카테고리별로 모아 놓은 맵을 담은 수집기를 반환합니다. 그리고 **이 카테고리가 해당  원소의 맵 키로 쓰입니다.**  
 groupingBy는 다중정의된 메서드로 총 3가지 메서드가 있습니다. 
 
 * classifier만 사용하는 메서드 
