@@ -12,35 +12,14 @@
 다른 가변 상태를 참조하지 않고, 함수 스스로도 다른 상태를 변경하지 않습니다.
 이렇게 하려면 스트림 연산에 건네는 함수 객체는 **모두 부작용(side effect)가 없어야 하므로 순수 함수**이어야 합니다.
 
-## side effect가 있는 스트림 코드
+## Side effect가 있는 스트림 코드
 
-#### Java
-```java
-void sideEffectStream(String file) {
-    Map<String, Long> freq = new HashMap<>();
-    try(Stream<String> words = new Scanner(file).tokens()) {
-        words.forEach(word -> { freq.merge(word.toLowerCase(), 1L, Long::sum); });
-    }
-    System.out.println(freq); 
-}
-
-public static void main(String[] args) {
-    Item46 item = new Item46();
-    item.sideEffectStream("""
-            Hello I'm Jason.
-            Why not? i'm jason.
-            """);
-    // {why=1, hello=1, jason.=2, i'm=2, not?=1}
-}
-```
-
-#### Swift
 ```swift
 func sideEffectStream(file: String) {
     var freq = [String: Int]()
     let words = file.split(separator: " ").map { String($0) }
     words.forEach { word in
-        freq.merge(key: word.uppercased(), value: 1) { count, incr in count +  }
+        freq.merge(key: word.lowercased(), value: 1) { count, incr in count + incr }
     }
     print(freq)
 }
@@ -53,56 +32,25 @@ extension Dictionary {
         self[key] = newValue
     }
 }
+
+sideEffectExample(file: "Hello I'm Jason. Why not? i'm jason.") // ["not?": 1, "hello": 1, "jason.": 2, "why": 1, "i\'m": 2]
 ```
 
-위 코드는 외부 상태(freq)를 수정하며 side-effect를 발생시키는 스트림 코드입니다( `word -> { freq.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다 ).
-<br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다(forEach가 계산을 하는 코드는 보통 외부 값을 수정하는 side effect가 일어나느 코드이기 때문입니다).
+위 코드는 외부 상태(freq)를 수정하며 side-effect를 발생시키는 스트림 코드입니다. `word -> { freq.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다.
+<br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다. **forEach가 계산을 하는 코드는 보통 외부 값을 수정하는 side effect가 일어나는 코드**이기 때문입니다.
 
-## side effect가 없는 스트림 코드 
+다음은 올바르게 작성한 스트림 코드를 보겠습니다. 
 
-#### Java
-```java
-void nonSideEffectStream(String file) {
-    Map<String, Long> freq;
-    try(Stream<String> words = new Scanner(file).tokens()) {
-        freq = words.collect(groupingBy(String::toLowerCase, counting()));
-    }
-    System.out.println(freq);
-}
-```
+## Side effect가 없는 스트림 코드 
 
-```java
-<R, A> R collect(Collector<? super T, A, R> collector);
-```
-
-```java
-Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
-                                          Collector<? super T, A, D> downstream) {
-    return groupingBy(classifier, HashMap::new, downstream);
-}
-```
-
-```java
-public static <T> Collector<T, ?, Long> counting() {
-    return summingLong(e -> 1L);
-}
-
-summingLong(ToLongFunction<? super T> mapper) {
-    return new CollectorImpl<>(
-            () -> new long[1],
-            (a, t) -> { a[0] += mapper.applyAsLong(t); },
-            (a, b) -> { a[0] += b[0]; return a; },
-            a -> a[0], CH_NOID);
-}
-```
-
-#### Swift
 ```swift
 func nonSideEffectExample(file: String) {
     let words = file.split(separator: " ").map { String($0) }
-    let freq: [String: Int] = [String: [String]](grouping: words, by:{ $0.uppercased() })
-        .mapValues { values -> Int in values.count }
-        
+    let freq: [String: Int] = [String: [String]](
+        grouping: words, 
+        by:{ $0.lowercased() }
+    ).mapValues { values -> Int in values.count }
+
     print(freq)
 }
 ```
@@ -111,20 +59,30 @@ func nonSideEffectExample(file: String) {
 @inlinable public init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S : Sequence
 ```
 
-=> 앞서와 같은 일을 하지만, 이번엔 스트림 API를 제대로 사용했습니다. 그뿐만 아니라 짧고 명확합니다. 
+=> 앞서와 같은 일을 하지만, 이번엔 스트림 API를 제대로 사용했습니다. 그뿐만 아니라 짧고 명확합니다.
 
 ## forEach문은 보고할 때만 사용하고 계산할 때는 사용하지 마십시오 
 
-자바 프로그래머(스위프트도 마찬가지)라면 for-each 반복문을 사용할 줄 알 텐데, for-each 반복문은 forEach 종단 연산과 비슷하게 생겼습니다. 하지만 forEach 연산은 종단 연산 중 기능이 가장 적고 가장 **'덜' 스트림**답습니다. 대놓고 **반복적이라서 병렬화할 수도 없습니다.** 
-<br>**forEach 연산은 스트림 계산 결과를 보고할 때만 사용하고, 계산하는 데는 쓰지 마십시오. 반복문을 사용하십시오.**
-물론 가끔은 스트림 계산 결과를 기존 컬렉션에 추가하는 등의 다른 용도로는 쓰일 수 있습니다. 
+자바 프로그래머(스위프트도 마찬가지)라면 for-each 반복문을 사용할 줄 알텐데, for-each 반복문은 forEach 종단 연산과 비슷하게 생겼습니다. 
+하지만 forEach 종단 연산은 종단 연산 중 기능이 가장 적고 가장 **'덜' 스트림**답습니다. 
+대놓고 **반복적이라서 병렬화할 수도 없습니다.** 
+<br>**forEach 연산은 스트림 계산 결과를 보고할 때만 사용하고, 계산하는 데는 쓰지 마십시오.**
+forEach로 계산한다는 것은 외부 상태를 수정한다는 뜻입니다. 
+반복문을 사용하세요.
+물론 가끔은 forEach문이 스트림 계산 결과를 기존 컬렉션에 추가하는 등의 다른 용도로는 쓰일 수 있습니다. 
 
 ## Collectors Method 
+
+* 자바에서는 스트림을 사용하는데 수집기(Collector)를 사용할 수 있습니다. `java.util.stream.Collectors` 클래스는 메서드를 무려 39개나 가지고 있고, 타입 매개변수가 5개나 되는 것도 있습니다. 
+<br>수집기는 총 세가지로, toList(), toMap(), toSet() 가 주인공입니다. 이 중에서 toList()와 toMap()을 알아보았습니다.
+
+* 스위프트는 따로 Collectors Method를 제공하고 있지 않아 자바 스트림 코드를 그대로 변환해 보았습니다. 
 
 ### toList
 
 * 스트림을 컬렉션 List로 변환해주는 메서드입니다. 
 
+> Java
 ```java
 List<String> topTen = freq.keySet().stream()
                 .sorted(comparing(freq::get).reversed())
@@ -132,36 +90,41 @@ List<String> topTen = freq.keySet().stream()
                 .collect(Collectors.toList());
 ```
 
+> Swift
 ```swift
-let topTen = freq.keys
-                .sorted { (lhs, rhs) -> Bool in freq[lhs]! > freq[rhs]! }[0 ... 10]
-                     
+let topTen: [String] = freq.keys
+    .sorted { (lhs, rhs) -> Bool in freq[lhs]! > freq[rhs]! }
+    .enumerated()
+    .filter { (index, _ ) in  return index >= 0 && index < 10 }
+    .map { $0.element }
 ```
 
 ### toMap
 
 * 스트림을 컬렉션 Map으로 변환해주는 메서드입니다.
 
-#### Java
+> Java
 ```java
 private static final Map<String, Operation> stringToEnum
                 = Stream.of(values()).collect(toMap(Object::toString, e -> e));
 ```
 
-#### Swift
+> Swift
 ```Swift
 enum Operation: CaseIterable {
     case plus
     case minus
     case times
     case divide
-    
-static func stringToEnum() -> [String: Operation] {
-    return [String: [Operation]](grouping: allCases, by: { operation in "\(operation)" })
-            .mapValues { value in value.first! }
+
+    static func stringToEnum() -> [String: Operation] {
+        return [String: [Operation]](
+            grouping: allCases, 
+            by: { operation in "\(operation)" }
+        ).mapValues { value in value.first! }
+    } // 일단 이렇게 변환하는게 저는 최선입니다. 
 }
 ```
-
 
 ### groupingBy
 
@@ -171,6 +134,8 @@ groupingBy는 다중정의된 메서드로 총 3가지 메서드가 있습니다
 * classifier만 사용하는 메서드 
 
 groupingBy 메서드는 가장 간단한 것으로서 분류함수 classfier만 인수로 받고 Map을 반환합니다. 반환된 맵에 담긴 각각의 값은 해당 카테고리에 속하는 원소들을 모두 담은 List 입니다.
+
+> Java
 
 ```java
 Map<String, List<String>> map = words.collect(groupingBy(word -> alphabetize(word)))
@@ -189,16 +154,35 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 
 * classfier와 downstream, mapFactory를 모두 사용하는 메서드가 있습니다.
 
+> Swift 
+
+자바의 groupingBy에 대응되는 것은 딕셔너리의 생성자 `init(grouping:by:)` 라고 할 수 있겠습니다. 
+
+* Declaration
+
+`init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S : Sequence`
+
+=> 선언에서 알수 있듯이 해당 생성자를 사용하면 해당 디셕너리의 value 타입은 타입 파라미터 S의 배열임을 알 수 있습니다. 즉 타입은 `[S: [S]]` 입니다. 
+
+* 위 자바 코드에 대응되는 스위프트 코드입니다. 
+
+```swift
+let map: [String: [String]] = [String: [String]].init(grouping: words, by: { (word) in alphabetize(word) })
+```
+
+
 ## Swift 의 enumerated, zip 
+
+또 스위프트의 스트림을 사용할 때 유용한 메소드로 `enumerated` 와 `zip` 이 있습니다. 
 
 * enumerated
 
 쌍의 시퀀스 (n, x)를 반환합니다. 여기서 n은 0에서 시작하는 연속 정수를 나타내고 x는 시퀀스의 요소를 나타냅니다.
 
 ```swift
-for (n, c) in "Swift".enumerated() {
-    print("\(n): '\(c)'")
-}
+"Swift"
+    .enumerated()
+    .forEach { n, x in print(n, x) }
 // Prints "0: 'S'"
 // Prints "1: 'w'"
 // Prints "2: 'i'"
@@ -212,18 +196,9 @@ for (n, c) in "Swift".enumerated() {
 
 ```swift
 let names: Set = ["Sofia", "Camilla", "Martina", "Mateo", "Nicolás"]
-var shorterIndices: [Set<String>.Index] = []
-for (i, name) in zip(names.indices, names) {
-    if name.count <= 5 {
-        shorterIndices.append(i)
-    }
-}
-```
-
-```swift
-for i in shorterIndices {
-    print(names[i])
-}
+zip(names.indices, names)
+            .filter { (indice, name) -> Bool in return name.count <= 5}
+            .forEach { (indice, name) in print(names[indice]) }
 // Prints "Sofia"
 // Prints "Mateo"
 ```
