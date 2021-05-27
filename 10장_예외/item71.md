@@ -149,47 +149,35 @@ enum Result<Success, Failure> where Failure: Error {
   case success(Success)
   case failure(Failure)
 }
+```
 
-
-// 1
+```swift
 struct Tutorial {
   let title: String
   let author: String
 }
 
-// 2
 enum TutorialError: Error {
   case rejected
 }
 
-// 3
 func feedback(for tutorial: Tutorial) -> Result<String, 
                                                 TutorialError> {
   Bool.random() ? .success("published") : .failure(.rejected)
 }
 
-
 func edit(_ tutorial: Tutorial) {
-  queue.async {
-    // 1
     let result = feedback(for: tutorial)
-    DispatchQueue.main.async {
-      switch result {
-        // 2
-        case let .success(data):
-          print("\(tutorial.title) by \(tutorial.author) was 
-                 \(data) on the website.")
-        // 3
-        case let .failure(error):
-          print("\(tutorial.title) by \(tutorial.author) was 
-                 \(error).")
-      }
+    switch result {
+    case let .success(data):
+        print("\(tutorial.title) by \(tutorial.author) was \(data) on the website.")
+        
+    case let .failure(error):
+        print("\(tutorial.title) by \(tutorial.author) was \(error).")
     }
-  }
 }
 
-let tutorial = Tutorial(title: "What’s new in Swift 5.1", 
-                        author: "Cosmin Pupăză")
+let tutorial = Tutorial(title: "What’s new in Swift 5.1", author: "Cosmin Pupăză")
 edit(tutorial)
 ```
 
