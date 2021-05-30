@@ -162,7 +162,7 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 
 `init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S : Sequence`
 
-=> 선언에서 알수 있듯이 해당 생성자를 사용하면 해당 디셕너리의 value 타입은 타입 파라미터 S의 배열임을 알 수 있습니다. 즉 타입은 `[S: [S]]` 입니다. 
+=> 선언에서 알수 있듯이 해당 생성자를 사용하면 해당 딕셔너리의 value 타입은 타입 파라미터 S의 배열임을 알 수 있습니다. 즉 타입은 `[S: [S]]` 입니다. 
 
 * 위 자바 코드에 대응되는 스위프트 코드입니다. 
 
