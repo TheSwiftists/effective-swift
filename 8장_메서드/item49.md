@@ -7,17 +7,30 @@
 매개변수 제약을 문서화한다면 그 제약을 어겼을 때 발생하는 예외도 함께 기술되어야 합니다. 이런 간단한 방법으로도 사용자가 제약을 지키도록 유도할 수 있습니다.
 
 ```swift
+enum CaculateError: Error {
+    case notDualNumber
+}
+
+enum ParameterError: Error {
+  case invalidValue
+}
 /*
 	- Parameters:
 		- value: 계수(양수어야 함)
 	- Throws: value가 0보다 작거나 같으면 에러 던짐
 	- Returns: 현재 값 mod value
 */
-func mod(value: BigInteger) throws -> BigInteger {
-  if value <= 0 {
-    throw CalculateError.notDualNumber
-  }
-  // 계산 수행..
+func mod(value: Int) throws -> Int {
+    guard value > 0 else { throw CaculateError.notDualNumber }
+
+    // 계산 수행..
+}
+
+// 아래와같이 유효하지 않은 매개변수가 입력된 경우 즉각적으로 예외를 던질 수 있습니다
+func mod(value: Int?) throws -> Int {
+    guard let value = value else { throw ParameterError.invalidValue }
+
+    // 계산 수행..
 }
 ```
 
