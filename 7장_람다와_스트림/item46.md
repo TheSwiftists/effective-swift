@@ -16,12 +16,12 @@
 
 ```swift
 func sideEffectStream(file: String) {
-    var freq = [String: Int]()
+    var frequency = [String: Int]()
     let words = file.split(separator: " ").map { String($0) }
     words.forEach { word in
-        freq.merge(key: word.lowercased(), value: 1) { count, incr in count + incr }
+        frequency.merge(key: word.lowercased(), value: 1) { count, increment count + increment }
     }
-    print(freq)
+    print(frequency)
 }
 
 extension Dictionary {
@@ -36,7 +36,7 @@ extension Dictionary {
 sideEffectExample(file: "Hello I'm Jason. Why not? i'm jason.") // ["not?": 1, "hello": 1, "jason.": 2, "why": 1, "i\'m": 2]
 ```
 
-위 코드는 외부 상태(freq)를 수정하며 side-effect를 발생시키는 스트림 코드입니다. `word -> { freq.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다.
+위 코드는 외부 상태(frequency)를 수정하며 side-effect를 발생시키는 스트림 코드입니다. `word -> { frequency.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다.
 <br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다. **forEach가 계산을 하는 코드는 보통 외부 값을 수정하는 side effect가 일어나는 코드**이기 때문입니다.
 
 다음은 올바르게 작성한 스트림 코드를 보겠습니다. 
@@ -46,12 +46,12 @@ sideEffectExample(file: "Hello I'm Jason. Why not? i'm jason.") // ["not?": 1, "
 ```swift
 func nonSideEffectExample(file: String) {
     let words = file.split(separator: " ").map { String($0) }
-    let freq: [String: Int] = [String: [String]](
+    let frequency: [String: Int] = [String: [String]](
         grouping: words, 
         by:{ $0.lowercased() }
     ).mapValues { values -> Int in values.count }
 
-    print(freq)
+    print(frequency)
 }
 ```
 
@@ -84,16 +84,16 @@ forEach로 계산한다는 것은 외부 상태를 수정한다는 뜻입니다.
 
 > Java
 ```java
-List<String> topTen = freq.keySet().stream()
-                .sorted(comparing(freq::get).reversed())
+List<String> topTen = frequency.keySet().stream()
+                .sorted(comparing(frequency::get).reversed())
                 .limit(10)
                 .collect(Collectors.toList());
 ```
 
 > Swift
 ```swift
-let topTen: [String] = freq.keys
-    .sorted { (lhs, rhs) -> Bool in freq[lhs]! > freq[rhs]! }
+let topTen: [String] = frequency.keys
+    .sorted { (lhs, rhs) -> Bool in frequency[lhs]! > frequency[rhs]! }
     .enumerated()
     .filter { (index, _ ) in  return index >= 0 && index < 10 }
     .map { $0.element }
@@ -146,9 +146,9 @@ Map<String, List<String>> map = words.collect(groupingBy(word -> alphabetize(wor
 * groupingBy가 반환하는 수집기가 리스트 외의 값을 갖는 맵을 생성하게 하려면, 분류 함수와 함께 다운스트림(downstream) 수집기도 명시해야 합니다. 아래와 같이 다운스트림 수집기로 counting()을 건네는 방법도 있습니다. 이렇게 하면 각 카테고리(키)를 (원소를 담은 컬렉션이 아닌) 해당 카테고리에 속하는 원소의 개수(값)와 매핑한 맵을 얻는다.
 
 ```java
-Map<String, Long> freq;
+Map<String, Long> frequency;
 try(Stream<String> words = new Scanner(file).tokens()) {
-    freq = words.collect(groupingBy(String::toLowerCase, counting()));
+    frequency = words.collect(groupingBy(String::toLowerCase, counting()));
 }
 ```
 
