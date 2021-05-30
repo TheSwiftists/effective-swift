@@ -36,7 +36,7 @@ extension Dictionary {
 sideEffectExample(file: "Hello I'm Jason. Why not? i'm jason.") // ["not?": 1, "hello": 1, "jason.": 2, "why": 1, "i\'m": 2]
 ```
 
-위 코드는 외부 상태(frequency)를 수정하며 side-effect를 발생시키는 스트림 코드입니다. `word -> { frequency.merge(word.toLowerCase(), 1L, Long::sum); });` 구문을 보면 forEach 문으로 반복적으로 freq를 수정하는 것을 알 수 있습니다.
+위 코드는 외부 상태(frequency)를 수정하며 side-effect를 발생시키는 스트림 코드입니다. forEach 문으로 반복적으로 frequency를 수정하는 것을 알 수 있습니다.
 <br>forEach가 그저 스트림이 수행한 연산 결과를 보여주는 일 이상을 하는 것을 보니 나쁜 코드일 것 같은 냄새가 납니다. **forEach가 계산을 하는 코드는 보통 외부 값을 수정하는 side effect가 일어나는 코드**이기 때문입니다.
 
 다음은 올바르게 작성한 스트림 코드를 보겠습니다. 
