@@ -170,14 +170,13 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 let map: [String: [String]] = [String: [String]].init(grouping: words, by: { (word) in alphabetize(word) })
 ```
 
-
 ## Swift 의 enumerated, zip 
 
 또 스위프트의 스트림을 사용할 때 유용한 메소드로 `enumerated` 와 `zip` 이 있습니다. 
 
 * enumerated
 
-쌍의 시퀀스 (n, x)를 반환합니다. 여기서 n은 0에서 시작하는 연속 정수를 나타내고 x는 시퀀스의 요소를 나타냅니다.
+쌍의 시퀀스 (n, x)를 반환합니다. 여기서 n은 0에서 시작하는 연속 정수 즉 index를 나타내고, x는 시퀀스의 요소(value)를 나타냅니다.
 
 ```swift
 "Swift"
