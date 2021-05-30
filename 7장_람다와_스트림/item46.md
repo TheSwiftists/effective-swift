@@ -162,7 +162,7 @@ try(Stream<String> words = new Scanner(file).tokens()) {
 
 `init<S>(grouping values: S, by keyForValue: (S.Element) throws -> Key) rethrows where Value == [S.Element], S : Sequence`
 
-=> 선언에서 알수 있듯이 해당 생성자를 사용하면 해당 디셕너리의 value 타입은 타입 파라미터 S의 배열임을 알 수 있습니다. 즉 타입은 `[S: [S]]` 입니다. 
+=> 선언에서 알수 있듯이 해당 생성자를 사용하면 해당 딕셔너리의 value 타입은 타입 파라미터 S의 배열임을 알 수 있습니다. 즉 타입은 `[S: [S]]` 입니다. 
 
 * 위 자바 코드에 대응되는 스위프트 코드입니다. 
 
@@ -193,6 +193,7 @@ let map: [String: [String]] = [String: [String]].init(grouping: words, by: { (wo
 
 두 타입을 합쳐 tuple로 만들어 주는 기능을 합니다. 
 
+> 예시 코드 
 ```swift
 let names: Set = ["Sofia", "Camilla", "Martina", "Mateo", "Nicolás"]
 zip(names.indices, names)
@@ -201,3 +202,22 @@ zip(names.indices, names)
 // Prints "Sofia"
 // Prints "Mateo"
 ```
+
+* [출처](https://developer.apple.com/documentation/swift/1541125-zip)
+
+> 또 다른 예시 코드
+```swift
+let wizards2 = ["Harry", "Ron", "Hermione", "Draco"]
+let animals2 = ["Hedwig", "Scabbers", "Crookshanks"]
+
+for (wizard, animal) in zip(wizards2, animals2) {
+    print("\(wizard) has \(animal)")
+}
+
+/* 출력 결과
+Harry has Hedwig
+Ron has Scabbers
+Hermione has Crookshanks
+*/
+```
+* [출처](https://www.hackingwithswift.com/example-code/language/how-to-use-the-zip-function-to-join-two-arrays) 
