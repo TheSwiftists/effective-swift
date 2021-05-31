@@ -166,7 +166,7 @@
    grid.add(self, for: graphics) 
    ```
 
-   명료함을 회복하려면, **각 약식 매개변수(weakly typed parameter)앞에 그 역할을 설명하는 명사를 붙힙니다. ( precede each weakly typed parameter with a noun describing its role:)
+   명료함을 회복하려면, **각 약식 매개변수(weakly typed parameter)**앞에 그 역할을 설명하는 명사를 붙힙니다. ( precede each weakly typed parameter with a noun describing its role:)
 
    ``` swift
    // 👍🏻
