@@ -27,6 +27,19 @@ func functionName(parameter1: Type, parameter2: Type...) -> returnType {
 
 ### 활용 예시
 
+* 인수가 1개 이상이어야 할 때 가변인수를 제대로 사용하는 방법
+```swift
+static func min(firstArg: Int, remainArgs: Int...) -> Int {
+    var min = firstArg
+    for arg in remainArgs {
+        if arg < min {
+            min = arg
+        }
+    }
+    return min
+}
+```
+
 * 산술 평균 구하기 (주어진 수의 합을 수의 개수로 나눈 값)
 
 ```swift
