@@ -32,6 +32,27 @@ private func filter<T>(list: [T], isIncluded: (T) -> Bool) -> [T] {
 
 그 중에서도 java.util.function 패키지에서 제공하는 함수형 인터페이스를 **표준 함수형 인터페이스**라고 합니다. **책에서는 필요한 용도에 맞는 게 있다면, 직접 구현하지 말고 표준 함수형 인터페이스를 활용하라고 조언합니다.** 
 
+> 표준 함수형 인터페이스를 왜 사용하는가? 
+
+```java
+interface Predicate<T> {
+    boolean test(T t);
+}
+
+interface PredicateA<T> {
+    boolean test(T t);
+}
+
+interface PredicateB<T> {
+    boolean test(T t);
+}
+
+interface PredicateC<T> {
+    boolean test(T t);
+}
+```
+=> 이처럼 같은 `(인수)-> 반환타입`이어도 여러개의 함수형 인터페이스로 나타낼수 있으니 자바에서는 표준 함수형 인터페이스라는 걸 만든 것이고 함수를 전달할 때 **만들어둔 표준 함수형 인터페이스를 쓰라고 하는 것**입니다.
+
 ## 자바의 대표적인 표준 함수형 인터페이스
 
 | 인터페이스 | 함수 시그니처 | 예 |
