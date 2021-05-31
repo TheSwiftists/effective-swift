@@ -216,7 +216,128 @@ weekdayPay.pay(minutesWorked: 1500, payRate: 2) // 1020
 * `PayrollDay`의 init에서 `WEEKDAY`로 기본값을 주었고, `WEEKDAY`가 아니라 `WEEKEND`일 경우  init을 통해 초기화할 `PayrollDay`의 `payType`을 설정할 수 있습니다.
 * `PayrollDay`를 enum이 아니라 **Structure**로 한 이유: 책에 나와있는 Java 예제 코드에서는 `PayType` 타입의 `payType`을 enum 안에 저장하고 있습니다(Java에서 enum은 class입니다). 하지만 Swift의 enum에는 프로퍼티를 저장할 수 없습니다. `PayrollDay`의 각 case(MONDAY - SUNDAY)가 사용되는 곳이 없고, `WEEKDAY`와 `WEEKEND` 를 구분하여 pay를 계산하는게 핵심이라고 생각해 `PayrollDay`를 enum으로 구현하지 않고 Structure로 구현했습니다. 
 
-혹시 다른 의견 있으면 자유롭게 남겨주세요! 함께 논의해보면 좋을 것 같습니다 :)
+### 추가적으로 위 코드에서 더 개선된 코드를 제안해주셔서 문서에 기록합니다.
+
+* 첫번째
+
+> private init 과 static let을 사용해 자바 Enum 과 유사하게 사용되게끔 하였습니다.
+PayrollDay의 MONDAY 부터 SUNDAY 까지 case 구문이 계속 있는 형태입니다!
+덧붙여, 위의 코드는 basePay와 overtimePay가 생략되어 있는 것 같아 추가하였습니다.
+
+```swift
+struct PayrollDay {
+    static let monday = PayrollDay(.WEEKDAY)
+    static let tuesday = PayrollDay(.WEEKDAY)
+    static let wednesday = PayrollDay(.WEEKDAY)
+    static let thursday = PayrollDay(.WEEKDAY)
+    static let friday = PayrollDay(.WEEKDAY)
+    static let saturday = PayrollDay(.WEEKEND)
+    static let sunday = PayrollDay(.WEEKEND)
+
+    private let payType: PayType
+    private static var MINS_PER_SHIFT = 8 * 60
+
+    private init(_ payType: PayType) {
+        self.payType = payType
+    }
+
+    func pay(minutesWorked: Int, payRate: Int) -> Int {
+        return payType.pay(minsWorked: minutesWorked, payRate: payRate)
+    }
+
+    enum PayType {
+        case WEEKDAY, WEEKEND
+
+        func pay(minsWorked: Int, payRate: Int) -> Int {
+            let basePay = minsWorked * payRate
+            return basePay + overtimePay(minsWorked: minsWorked, payRate: payRate)
+        }
+        
+        private func overtimePay(minsWorked: Int, payRate: Int) -> Int {
+            switch self {
+            case .WEEKDAY:
+                return minsWorked <= PayrollDay.MINS_PER_SHIFT ?
+                    0 : (minsWorked - PayrollDay.MINS_PER_SHIFT) * payRate / 2
+            case .WEEKEND:
+                return minsWorked * payRate / 2
+            }
+        }
+    }
+}
+
+let curPayrollDay: PayrollDay = .monday
+```
+> 책에서 예시로 든 API가 클라이언트 측에서 일당을 요청했을 때 요일에 따라 이를 계산해주는 기능이기 때문에 요일을 고르는 절차가 필요한것 같습니다! 
+이 방법대로라면 클라이언트 측에서 요일을 고를 수도 있고, 생성자를 private으로 선언해서 기존 enum과 같이 case를 제한할 수도 있어서 좋은 것 같습니다.
+
+다만 모든 case를 순회하거나 모든 case의 개수를 구할 수는 없는데, 이에 대비해 CaseIterable 프로토콜을 구현해 놓으면 모든 case를 순회할 수도 있고, case의 개수도 구할 수 있을 것 같아요.
+
+```swift
+struct PayrollDay: CaseIterable {
+    typealias AllCases = [PayrollDay]
+    
+    static var allCases: [PayrollDay] {
+        return [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+    }
+}
+```
+
+* 두번째
+
+> 책에서 switch문을 지양하고 있어서 switch를 빼기 위해 프로토콜을 사용해서 추상화 해봤습니다.
+> 하지만 스위프트에서는 switch문에서 모든 case를 처리하지 않을 때 컴파일 에러로 알려주기 때문에 PayType이 enum이어도 저는 충분하다고 생각하긴 합니다. 새 payType이 추가됐을 때 case를 수정하지 않을 방법이 필요하다면 이 방법을 쓰면 좋을 것 같습니다.
+> 그리고 만약 책에서 나온 상수별 메서드 구현과 같은 기능이 필요하다면 이런 식으로 구현할 수도 있을 것 같습니다!
+
+```swift
+
+private protocol PayType {
+    func pay(minutesWorked: Int, payRate: Int) -> Int
+    func overtimePay(minutesWorked: Int, payRate: Int) -> Int
+}
+
+private extension PayType {
+    func pay(minutesWorked: Int, payRate: Int) -> Int {
+        let basePay = minutesWorked * payRate
+        return basePay + overtimePay(minutesWorked: minutesWorked, payRate: payRate)
+    }
+}
+
+struct PayrollDay {
+    private struct Weekday: PayType {
+        func overtimePay(minutesWorked: Int, payRate: Int) -> Int {
+            let minutesPerShift = 480
+            return minutesWorked <= minutesPerShift ? 0 : (minutesWorked - minutesPerShift) * payRate / 2
+        }
+    }
+    
+    private struct Weekend: PayType {
+        func overtimePay(minutesWorked: Int, payRate: Int) -> Int {
+            return minutesWorked * payRate / 2
+        }
+    }
+    
+    static let monday = PayrollDay(payType: Weekday())
+    static let tuesday = PayrollDay(payType: Weekday())
+    static let wednesday = PayrollDay(payType: Weekday())
+    static let thursday = PayrollDay(payType: Weekday())
+    static let friday = PayrollDay(payType: Weekday())
+    static let saturday = PayrollDay(payType: Weekend())
+    static let sunday = PayrollDay(payType: Weekend())
+    
+    private let payType: PayType
+    
+    private init(payType: PayType) {
+        self.payType = payType
+    }
+    
+    func pay(minutesWorked: Int, payRate: Int) -> Int {
+        return payType.pay(minutesWorked: minutesWorked, payRate: payRate)
+    }
+}
+
+// 시급 9000원, 일요일 4시간 근무 -> 54000원
+PayrollDay.sunday.pay(minutesWorked: 4 * 60, payRate: 9000 / 60)
+```
 
 ### 참고
 
