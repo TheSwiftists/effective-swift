@@ -122,7 +122,7 @@ extension Collection {
 
 ### 클로저에서 throw 사용하기 
 
-* 오직 sync closure, 즉 메소드 에서만 throw, rethrow를 사용할 수 있습니다. 즉 async 클로저는 불가합니다.
+* 에러를 던지는 throw, rethrow 키워드는 sync closure 에서만 사용 가능합니다. async closure 는 @escaping 키워드를 이용해 매개변수로 Error를 받아 상위로 에러를 던질 수 있습니다.
 
 ```swift
 enum BadLuckError: Error {
