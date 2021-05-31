@@ -317,11 +317,16 @@
 
    ## 📑 Conventions
    ### 🔖 General Conventions
+   https://swift.org/documentation/api-design-guidelines/#general-conventions
+   
    ### 🔖 Parameters
+   https://swift.org/documentation/api-design-guidelines/#parameter-names
+   
    ### 🔖 Argument Labels
+   https://swift.org/documentation/api-design-guidelines/#argument-labels
 
    ## 📑 Special Instructions
-
+   https://swift.org/documentation/api-design-guidelines/#special-instructions
    
 
    
