@@ -69,7 +69,8 @@ public class Exception extends Throwable {
     public Exception(Throwable cause) {
         super(cause);
     }
-}    
+}
+```
 
 **가능하다면 저수준 메서드가 반드시 성공하도록 하여 아래 계층에서는 예외가 발생하지 않도록 하는 것이 최선입니다.때로는 상위 계층 메서드의 매개변수 값을 아래 계층 메서드로 건네기 전에 미리 검사하는 방법으로 달성할 수 있습니다.** 
 차선책도 있습니다. 아래 계층에서의 예외를 피할 수 없다면, 상위 계층에서 그 예외를 조용히 처리하여 문제를 API 호출자에 전파하지 않는 방법이 있습니다.
@@ -135,7 +136,6 @@ open class JSONParameterEncoder: ParameterEncoder {
 
     // 생략
 }
-
 ```
 
 ### Enum의 연산 프로퍼티 사용하여 LowerLevel 에러 원인 나타내기 
