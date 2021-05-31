@@ -4,18 +4,40 @@
 
 ### 📚 스레드 안전성 문서화
 
-어떤 순서로 호출할 때 외부 동기화가 필요한지, 그리고 호출 순서와 관련 lock에 대한 내용을 명시해야합니다. 또한 클래스의 스레드 안전성은 보통 클래스의 문서화 주석에 기재하지만, 독특한 특성의 메서드라면 해당 메서드의 주석에 기재하도록 하는 것을 책에서 권장하고 있습니다.
+어떤 순서로 호출할 때 외부 동기화가 필요한지, 그리고 호출 순서와 관련 lock에 대한 내용을 명시해야합니다(조건부 안전한 클래스의 경우). 
+
+또한 클래스의 스레드 안전성은 보통 클래스의 문서화 주석에 기재하지만, 독특한 특성의 메서드라면 해당 메서드의 주석에 기재하도록 하는 것을 책에서 권장하고 있습니다.
 
 * 스레드 안정성 수준
-  * 불변 immutable
-  * 무조건적 스레드 안전 unconditionally thread-safe
-  * 조건부 스레드 안전 conditionally thread-safe
-  * 스레드 안전하지 않음 not thread-safe
-  * 스레드 적대적 thread-hostile
+  * 불변(immutable)
+이 클래스의 인스턴스는 마치 상수와 같아서 외부 동기화가 필요없다.
+String , Long, BigInteger
+@Immutable
+ 
+  * 무조건적 스레드 안전(unconditionally thread-safe)
+이 클래스의 인스턴스는 수정될 수 있으나, 내부에서 충실히 동기화하여 별도의 외부 동기화 없이 동시에 사용해도 안전하다.
+AtomicLong ,ConcurrentHashMap
+@ThreadSafe
+ 
+  * 조건부 스레드 안전(conditionally thread-safe)
+무조건적 스레드 안전과 같으나, 일부 메서드는 동시에 사용하려면 외부 동기화가 필요하다.
+Collections.synchronized 래퍼 메서드가 반환한 컬렉션들
+@ThreadSafe
+ 
+  * 스레드 안전하지 않음(not thread-safe)
+이 클래스의 인스턴스는 수정될 수 있다. 동시에 사용하려면 각각의 메서드 호출을 클라이언트가 선택한 외부 동기화 메커니즘으로 감싸야한다.
+ArrayList , HashMap
+@NotThreadSafe
+ 
+* 스레드 적대적(thread-hostil)
+이 클래스는 모든 메서드 호출을 외부 동기화로 감싸더라도 멀티스레드 환경에서 안전하지 않다.
+이 수준의 클래스는 일반적으로 정적 데이터를 아무 동기화 없이 수정한다.
+문제를 고쳐 재배포 하거나 사용자제 (deprecated) API로 지정한다.
   
+  (출처: [[아이템 82] 스레드 안전성 수준을 문서화하라](https://javabom.tistory.com/91))
   
 
-### iOS 에서 'Thread - Safe' 의 의미
+### 'Thread - Safe' 의 의미
 
 > Thread safe code can be **safely called from multiple threads or concurrent tasks without causing any problems** such as data corruption or app crashes. Code that is not thread safe can only run in one context at a time.
 > 출처: [raywenderlich - Grand Central Dispatch Tutorial for Swift 4: Part 1/2](https://www.raywenderlich.com/5370-grand-central-dispatch-tutorial-for-swift-4-part-1-2#toc-anchor-009)
@@ -60,9 +82,7 @@ GDC( Grand Central Dispatch )는 동시성 프로그래밍을 더 쉽고 간편�
      > 출처: [The Readers-Writers Problem (Swift Edition)](https://medium.com/swlh/the-readers-writers-problem-swift-edition-dcba94c3f02d#:~:text=The%20readers%2Dwriters%20problem%20is,writes%20at%20the%20same%20time.)
 
 - [ ] ✅ 
-  위와 같은 Readers-Writers problem을 방지하기 위해 그리고
-
-  Thread-Safe하게 만들기 위해서는 Immutable 한 변수를 고려합니다. Immutable한 인스턴스는 서로 다른 여러 스레드에서 한 번에 접근해도 문제가 되지 않습니다. 즉, Thread-Safe 합니다. 
+  위와 같은 Readers-Writers problem을 방지하기 위해 그리고 Thread-Safe하게 만들기 위해서는 Immutable 한 변수를 고려합니다. Immutable한 인스턴스는 서로 다른 여러 스레드에서 한 번에 접근해도 문제가 되지 않습니다. 즉, Thread-Safe 합니다. 
   -> Structure 사용을 우선하여 고려하면 좋습니다. (이와 관련하여 클래스와 구조체에 다룬 내용은 [iOS Developer - Value and Reference Types](https://developer.apple.com/swift/blog/?id=10) 를 참고해주세요)
   반면 Mutable한 인스턴스는 서로 다른 스레드에서 동시에 변경이 이뤄진다면 문제가 발생합니다. 때문에 Immutable 한 변수를 고려해보는 것을 권장합니다. 
   (단, Mutable한 인스턴스를 사용해야할 경우, 읽기 전용으로 만든다면 문제가 되지 않게 할 수 있습니다.)
