@@ -262,7 +262,7 @@
    ● **"무엇"인지를 설명하는 프로토콜은 명사로 읽어야 합니다.** (e.g. `Collection`).
    (Protocols that describe what something is should read as nouns (e.g. Collection).)
 
-   ● **기능을 설명하는 프로토콜은 "`able`,`ible"`,`ing`" 접미사를 사용하여 명명해야 합니다.**
+   ● **기능을 설명하는 프로토콜은 "`able`,`ible`,`ing`" 접미사를 사용하여 명명해야 합니다.**
    (Protocols that describe a capability should be named using the suffixes able, ible, or ing (e.g. Equatable, ProgressReporting).)
 
    ● **다른 타입, 프로퍼티, 변수 및 상수의 이름은 명사로 읽어야 합니다.**
