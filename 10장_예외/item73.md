@@ -21,22 +21,22 @@ try {
 ```
 
 ```java
-    /**
-     * Returns the element at the specified position in this list.
-     *
-     * <p>This implementation first gets a list iterator pointing to the
-     * indexed element (with {@code listIterator(index)}).  Then, it gets
-     * the element using {@code ListIterator.next} and returns it.
-     *
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     */
-    public E get(int index) {
-        try {
-            return listIterator(index).next();
-        } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
-        }
+/**
+ * Returns the element at the specified position in this list.
+ *
+ * <p>This implementation first gets a list iterator pointing to the
+ * indexed element (with {@code listIterator(index)}).  Then, it gets
+ * the element using {@code ListIterator.next} and returns it.
+ *
+ * @throws IndexOutOfBoundsException {@inheritDoc}
+ */
+public E get(int index) {
+    try {
+        return listIterator(index).next();
+    } catch (NoSuchElementException exc) {
+        throw new IndexOutOfBoundsException("Index: "+index);
     }
+}
 ```
 
 ### 예외 연쇄 
