@@ -157,21 +157,21 @@ let professor = School.professor(name:"Jack", age:56)
 enum PayrollDay {
     case MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
     static private var MINS_PER_SHIFT: Int = 8 * 60 // enums must not contatin stored properties
-    func pay(minutesWorked: Int, payRate: Int)-> Int { 
-        var basePay: Int = minutesWorked * payRate
+    func pay(minutesWorked: Int, payRate: Int)-> Int {
+        let basePay: Int = minutesWorked * payRate
         var overtimePay: Int
         switch(self) {
         case .SATURDAY, .SUNDAY: // Weekend
             overtimePay = basePay / 2;
             break;
         default: // Weekday
-            overtimePay = 
-            minutesWorked <= PayrollDay.MINS_PER_SHIFT ?
-             0 : (minutesWorked - PayrollDay.MINS_PER_SHIFT) * payRate /2
+            overtimePay =
+                minutesWorked <= PayrollDay.MINS_PER_SHIFT ?
+                    0 : (minutesWorked - PayrollDay.MINS_PER_SHIFT) * payRate / 2
         }
-       return basePay + overtimePay
+        return basePay + overtimePay
     }
-  }
+}
 ```
 
 코드 34-8를 제가 이해한 바대로 전략 열거 타입 패턴을 적용하여 바꿔봤습니다.
