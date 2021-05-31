@@ -71,7 +71,7 @@ for index in 1...5 {
 그렇다면 이제 While 문을 살펴봅시다.
 
 ```java
-책에 나온 예시
+// 책에 나온 예시
 Iterator<Element> i = c.iterator();
 while (i.hasNext()) {
   doSomething(i.next());
