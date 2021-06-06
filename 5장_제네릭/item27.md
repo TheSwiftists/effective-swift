@@ -95,6 +95,7 @@ guard let newLatte: Latte = coffee as? Latte else { return }
 
 Java는 제네릭을 사용할 때 경고를 통해 타입 불안정성을 알려주지만, Swift는 경고가 아닌 컴파일 오류를 통해 타입 불안전성을 더 확실히 알려줍니다. 덧붙여 Java의 비검사 경고는 잠재적으로 런타임 에러 가능성이 있는 코드를 경고하지만, 이와 달리 Swift의 타입 캐스팅 관련 경고들은 직접적으로 런타임 오류 가능성이 나는 부분은 아니지만 교정해야 하는 부분(ex.`as를 써도 되는 부분에 as? 를 쓴 경우`, `타입이 서로 상관이 없어 타입 캐스팅이 항상 실패하는 경우`)을 알려주는 역할을 합니다. Swift의 타입 캐스팅 관련 경고(warning)들은 런타임 오류 가능성를 내포하지 않습니다. 
 
+
 ### 참고
 
 1. [Java ClassCastException - Oracle Docs](https://docs.oracle.com/javase/9/docs/api/java/lang/ClassCastException.html)
@@ -102,4 +103,3 @@ Java는 제네릭을 사용할 때 경고를 통해 타입 불안정성을 알�
 3. 야곰, 『스위프트 프로그래밍 3판』, 한빛미디어(2019)
 4. [Effective Java Generics](https://www.informit.com/articles/article.aspx?p=2861454&seqNum=2)
 5. [What is SuppressWarnings (“unchecked”) in Java?](https://stackoverflow.com/a/48366669)
-
