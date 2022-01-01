@@ -6,9 +6,9 @@
 
 ### **잘못된 예외처리**
 
-**java**
+**Java**
 
-```
+```java
 try {
 	int i = 0;
 	while(true) {
@@ -19,15 +19,16 @@ try {
 
 ```
 
-**swift**
+**Swift**
 
-```
+```swift
 let array: [String] = ["one","two","three","four","five"]
 
 do {
     var index = 0
     while(true) {
-				let value = try array[index]      
+        let value = try array[index]      
+// 배열에 Index를 통해 직접 접근하는 경우 'OutOfIndexError'가 예상되기 때문에 try 를 시도함
 // yellow error: No calls to throwing functions occur within 'try' expression
         print("\\(value)")
         index += 1
@@ -64,7 +65,7 @@ func object(at index: Int) -> Any
 
 ```
 
-- 애초에 `object(:at)` 라는 메소드에서 throw 처리가 안되어 있기 때문에 `try` 를 사용할 수가 없습니다.
+- 애초에 `object(at:)` 라는 메소드에서 throw 처리가 안되어 있기 때문에 `try` 를 사용할 수가 없습니다.
 
 책에서는 위와 같은 예시를 통해 잘못된 예외처리 상황을 설명하고 있습니다.
 
@@ -78,7 +79,7 @@ func object(at index: Int) -> Any
 
 **Java**
 
-```
+```java
 for (Iterator<Foo> i = collection.iterator(); i.hasNext();) {
   Foo foo = i.next()
 	...
@@ -90,7 +91,7 @@ for (Iterator<Foo> i = collection.iterator(); i.hasNext();) {
 
 **Swift**
 
-```
+```swift
 // IteratorProtocol.swift 
 
 public protocol IteratorProtocol {
@@ -127,7 +128,7 @@ struct CountdownIterator: IteratorProtocol {
 
 let countdown = Countdown(start: 3)
 for count in countdown {
-    print("\\(count)...")
+    print("\(count)...")
 }
 // Prints "3..."
 // Prints "2..."
