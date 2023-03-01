@@ -143,29 +143,27 @@ public class ThreadLocal {
 
 위와 같은 방식은 두 클라이언트가 서로 소통하지 않고 키값을 사용하게 된다면, 두 클라이언트는 제대로 기능을 하지 못할 것입니다.
 
-```
+```java
 public class ThreadLocal {
-	private ThreadLocal() { } 
+    private ThreadLocal() { } 
 
-	public static class Key { 
-		Key() {}
-	}
+    public static class Key { 
+        Key() {}
+    }
 
-	public static Key getKey() {
-		return new Key();	
-	}
+    public static Key getKey() {
+        return new Key();	
+    }
 
-	public static void set(Key key, Object: value);
-	public static Object get(Key key);
+    public static void set(Key key, Object: value);
+    public static Object get(Key key);
 }
 
 // ThreadLocal 클래스 자체를 Key값으로 사용하기
 public final class ThreadLocal<T> {
-	public ThreadLocal();
-	public void set(T value);
-	public T get();
+    public ThreadLocal();
+    public void set(T value);
+    public T get();
 }
-
-```
 
 위의 코드에서는 Thread 별로 고유한 키값을 맵핑시킬 수 있습니다. 이로써 Thread의 권한을 적절하게 표현할 수 있게 되었습니다.
