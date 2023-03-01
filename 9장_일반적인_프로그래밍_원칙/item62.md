@@ -56,36 +56,32 @@ let dreamCar: Car = .init(type: .convertible, name: "911", is4WD: false)
 
 **데이터가 열거형으로 구분될 때**
 
-```
+```swift
 struct Car {
-	let type: CarType
-	let name: String
-	let drivingSystem: DrivingSystem
+    let type: CarType
+    let name: String
+    let drivingSystem: DrivingSystem
 }
 
-enum DrivingSystem: Customstringconvertible {
-	case FF
-  case FR
-	case MR
-	case RR
-	case 4WD
+enum DrivingSystem: CustomStringConvertible {
+    case FF
+    case FR
+    case MR
+    case RR
+    case 4WD
 
-	var description: String {
-		switch self {
-			case .FF:
-				return "frontEngineFrontWheel"
-			case .FR:
-				return "frontEngineRearWheel"
-			.
-			.
-			.
-		}
-  }
+    var description: String {
+	switch self {
+	case .FF:
+	    return "frontEngineFrontWheel"
+	case .FR:
+            return "frontEngineRearWheel"
+        //... 이하 생략
+	}
+    }
 }
-
 let dreamCar: Car = .init(type: .convertible, name: "911", drivingSystem: .FR)
 
-```
 
 <br>
 
