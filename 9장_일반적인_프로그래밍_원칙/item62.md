@@ -173,4 +173,4 @@ public final class ThreadLocal<T> {
 
 ```
 
-위의 코드에서는 Thread 별로 고유한 키값을 맵핑시킬 수 있다. 이로써 Thread의 권한을 적절하게 표현할 수 있게 되었습니다.
+위의 코드에서는 Thread 별로 고유한 키값을 맵핑시킬 수 있습니다. 이로써 Thread의 권한을 적절하게 표현할 수 있게 되었습니다.
