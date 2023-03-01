@@ -31,28 +31,26 @@ let gwonii: Person = .init(name: "gwonii", age: 29)
 
 **데이터가 "예/아니오" 로 구분될 때**
 
-```
+```swift
 // 잘못된 예
 struct Car {
-  let type: CarType
-  let name: String
+    let type: CarType
+    let name: String
 
-	// 2륜, 4륜 등의 구동방식
-  let drivingSystem: String
+    // 2륜, 4륜 등의 구동방식
+    let drivingSystem: String
 }
 
 let dreamCar: Car = .init(type: .convertible, name: "911", drivingSystem: "2wd")
 
 // 올바른 예
 struct Car {
-	let type: CarType
-	let name: String
-	let is4WD: Bool
+    let type: CarType
+    let name: String
+    let is4WD: Bool
 }
 
 let dreamCar: Car = .init(type: .convertible, name: "911", is4WD: false)
-
-```
 
 **데이터가 열거형으로 구분될 때**
 
