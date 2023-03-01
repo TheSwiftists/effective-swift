@@ -12,24 +12,22 @@
 
 **데이터가 수치형일 때**
 
-```
+```swift
 // 잘못된 예
 struct Person {
-  let name: String
-	let age: String
+    let name: String
+    let age: String
 } 
 
-let gwonii: Person = .init(name: "gwonii", age: "twenty-nine")
+let gwonii: Person = .init(name: "gwonii", age: "29")
 
 // 올바른 예
 struct Person {
-	let name: String
-  let age: Int
+    let name: String
+    let age: Int
 }
 
 let gwonii: Person = .init(name: "gwonii", age: 29)
-
-```
 
 **데이터가 "예/아니오" 로 구분될 때**
 
