@@ -129,7 +129,7 @@ class Anagrams {
             word.lowercased().sorted(by: { $0 > $1 }).description
         })
         .map { (groups) -> [String] in groups.value  }
-        .filter { (group) in group.count <= minGroupSize }
+        .filter { (group) in group.count >= minGroupSize }
         .map { (group) in "\\(group.count): \\(group)" }
         .forEach { print($0) }
     }
