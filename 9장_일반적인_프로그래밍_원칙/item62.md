@@ -108,22 +108,20 @@ let identifier: String = "\\(commuteType.description)_\\(weekday)_\\(count)"
 
 **개선방안**
 
-```
+```swift
 struct LocalNotificationIdentifer {
-	static func isEqualCommuteType(lhs: Self, rhs: Self) -> Bool {
-		return lhs.commuteType.rawValue == rhs.commuteType.rawValue
-	}
+    static func isEqualCommuteType(lhs: Self, rhs: Self) -> Bool {
+        return lhs.commuteType.rawValue == rhs.commuteType.rawValue
+    }
 
-	static func isEqualWeekday(lhs: Self, rhs: Self) -> Bool {
-		return lhs.weekday.rawValue == rhs.weekday.rawValue
-	}
+    static func isEqualWeekday(lhs: Self, rhs: Self) -> Bool {
+        return lhs.weekday.rawValue == rhs.weekday.rawValue
+    }
 
-	let commuteType: CommuteType
-	let weekday: Weekday
-	let number: Int
+    let commuteType: CommuteType
+    let weekday: Weekday
+    let number: Int
 }
-
-```
 
 이런식으로 객체를 만들어서 활용할 수 있습니다.
 
