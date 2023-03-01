@@ -129,16 +129,15 @@ struct LocalNotificationIdentifer {
 
 ### 3. 문자열은 권한을 표현하기에 적합하지 않습니다.
 
-```
+```java
 public class ThreadLocal {
-	private ThreadLocal() { } // 외부에서 객체 생성 불가
+    private ThreadLocal() { } // 외부에서 객체 생성 불가
 
-	public static void set(String key, Object: value);
+    public static void set(String key, Object: value);
 
-	public static Object get(String key);
+    public static Object get(String key);
 }
 
-```
 
 `String` 키값을 이용하여 쓰레드를 구분하고 있습니다.
 
