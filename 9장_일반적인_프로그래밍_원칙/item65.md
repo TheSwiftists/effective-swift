@@ -54,7 +54,7 @@ Class testObejct = Class.forName(TestClass)
 
 **리플렉션으로 생성하고 인터페이스를 참조하는 경우**
 
-```
+```java
 public static void main(String[] args) {
 
 	// Class 객체 
