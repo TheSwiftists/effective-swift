@@ -61,7 +61,7 @@ public class Anagrams {
 
 **Swift**
 
-```
+```swift
 class Anagrams {
     typealias Group = [String: [String]]
     
