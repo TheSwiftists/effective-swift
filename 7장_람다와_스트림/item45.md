@@ -77,7 +77,7 @@ class Anagrams {
     func invoke() {
         Group.init(grouping: words, by: { $0.lowercased().sorted(by: { $0 > $1 }).description })
             .map { $0.value }
-            .filter { $0.count <= minGroupSize }
+            .filter { $0.count >= minGroupSize }
             .map { "\\($0.count): \\($0)" }
             .forEach { print($0) }
     }
