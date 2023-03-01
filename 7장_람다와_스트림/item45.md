@@ -35,7 +35,7 @@
 
 **Java**
 
-```
+```java
 public class Anagrams {
   public static void main(String[] args) throws IOException {
     Path dictionary = Paths.get(args[0]);
